@@ -16,9 +16,9 @@
     --faded: #9a8f7a;
     --shadow: rgba(26,18,9,0.15);
   }
-
+ 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   body {
     background: var(--paper);
     color: var(--ink);
@@ -29,7 +29,7 @@
       radial-gradient(ellipse at 80% 20%, rgba(139,44,10,0.06) 0%, transparent 60%);
     padding: 0 0 60px;
   }
-
+ 
   /* Header */
   header {
     background: var(--ink);
@@ -80,7 +80,7 @@
     color: rgba(245,240,232,0.55);
     letter-spacing: 0.05em;
   }
-
+ 
   /* Stats bar */
   .stats-bar {
     background: var(--ink);
@@ -107,10 +107,10 @@
     color: rgba(245,240,232,0.5);
     margin-top: 3px;
   }
-
+ 
   /* Main */
   main { max-width: 680px; margin: 0 auto; padding: 32px 16px 0; }
-
+ 
   /* ヘッダーカテゴリー別達成率 */
   .header-cat-stats {
     background: var(--paper);
@@ -172,7 +172,7 @@
     border-radius: 2px;
     transition: width 0.6s ease;
   }
-
+ 
   /* Add form */
   .add-section {
     background: white;
@@ -212,7 +212,7 @@
   }
   input[type="text"]:focus { border-bottom-color: var(--accent); }
   input[type="text"]::placeholder { color: var(--faded); font-size: 13px; }
-
+ 
   .add-meta {
     display: flex;
     gap: 8px;
@@ -242,7 +242,7 @@
     color: var(--faded);
   }
   .prio-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-
+ 
   .add-meta-row {
     display: flex;
     gap: 8px;
@@ -266,7 +266,7 @@
     color: var(--faded);
   }
   .urg-btn.active { background: #8b2c0a; color: white; border-color: #8b2c0a; }
-
+ 
   .add-btn {
     background: var(--ink);
     color: var(--gold);
@@ -281,7 +281,7 @@
     white-space: nowrap;
   }
   .add-btn:hover { background: var(--accent); color: white; }
-
+ 
   /* Filter tabs */
   .filter-tabs {
     display: flex;
@@ -317,7 +317,7 @@
   .tab:hover:not(.active) { color: var(--ink); }
   .tab-trash { color: #9a8f7a; }
   .tab-trash.active { color: #8b2c0a; border-bottom-color: #8b2c0a; }
-
+ 
   /* ゴミ箱を空にするボタン */
   .trash-actions {
     display: flex;
@@ -350,10 +350,10 @@
   }
   .restore-btn:hover { color: #2a5a2a; }
   .item.trashed { background: #fdf5f5; border-left-color: #e0b0b0 !important; opacity: 0.8; }
-
+ 
   /* Items */
   .items-list { display: flex; flex-direction: column; gap: 10px; }
-
+ 
   .item {
     background: white;
     border: 1px solid var(--aged);
@@ -385,14 +385,14 @@
     opacity: 0.75;
   }
   .item.done .item-text { color: var(--faded); }
-
+ 
   .item[data-cat="海外旅行"] { border-left-color: #5b8db8; }
   .item[data-cat="国内旅行"] { border-left-color: #3a9e7a; }
   .item[data-cat="食・グルメ"] { border-left-color: #c87941; }
   .item[data-cat="スキル・学習"] { border-left-color: #7a5bb8; }
   .item[data-cat="人生の目標"] { border-left-color: var(--accent); }
   .item.done { border-left-color: var(--sage) !important; }
-
+ 
   .check-btn {
     width: 24px; height: 24px;
     border: 1.5px solid var(--aged);
@@ -411,7 +411,7 @@
     color: white;
   }
   .check-btn:hover { border-color: var(--sage); }
-
+ 
   .item-body { flex: 1; min-width: 0; }
   .item-text {
     font-size: 17px;
@@ -439,7 +439,7 @@
   .prio-dot.高 { background: var(--accent); }
   .prio-dot.中 { background: var(--gold); }
   .prio-dot.低 { background: var(--faded); }
-
+ 
   .prio-change-btns {
     display: flex;
     gap: 3px;
@@ -460,7 +460,7 @@
   .prio-change-btn.active-高 { background: var(--accent); color: white; border-color: var(--accent); }
   .prio-change-btn.active-中 { background: var(--gold); color: white; border-color: var(--gold); }
   .prio-change-btn.active-低 { background: var(--faded); color: white; border-color: var(--faded); }
-
+ 
   .urg-change-btn {
     border: 1px solid var(--aged);
     background: var(--paper);
@@ -476,7 +476,7 @@
   .urg-change-btn.active-高 { background: #8b2c0a; color: white; border-color: #8b2c0a; }
   .urg-change-btn.active-中 { background: #b84a20; color: white; border-color: #b84a20; }
   .urg-change-btn.active-低 { background: #c8907a; color: white; border-color: #c8907a; }
-
+ 
   .item-badges {
     display: flex;
     gap: 5px;
@@ -497,7 +497,7 @@
   .badge-urg-高  { background: rgba(139,44,10,0.15); color: #8b2c0a; }
   .badge-urg-中  { background: rgba(200,100,60,0.13); color: #b84a20; }
   .badge-urg-低  { background: rgba(220,160,140,0.15); color: #b07060; }
-
+ 
   /* スコアバッジ：9点が最高、1点が最低 */
   .badge-score { font-weight: 700; letter-spacing: 0.05em; }
   .score-9 { background: rgba(139,44,10,0.18); color: #8b2c0a; border: 1px solid rgba(139,44,10,0.3); }
@@ -506,7 +506,7 @@
   .score-3 { background: rgba(106,156,191,0.15); color: #3a6ea5; border: 1px solid rgba(106,156,191,0.25); }
   .score-2 { background: rgba(154,143,122,0.12); color: var(--faded); border: 1px solid rgba(154,143,122,0.2); }
   .score-1 { background: rgba(154,143,122,0.08); color: #bbb; border: 1px solid rgba(154,143,122,0.15); }
-
+ 
   .change-row {
     display: flex;
     gap: 10px;
@@ -524,7 +524,7 @@
     letter-spacing: 0.05em;
     white-space: nowrap;
   }
-
+ 
   .delete-btn {
     background: none;
     border: 1px solid var(--aged);
@@ -538,7 +538,7 @@
     flex-shrink: 0;
   }
   .delete-btn:hover { color: white; background: var(--accent); border-color: var(--accent); }
-
+ 
   .edit-btn {
     background: none;
     border: 1px solid var(--aged);
@@ -552,7 +552,7 @@
     flex-shrink: 0;
   }
   .edit-btn:hover { color: white; background: var(--gold); border-color: var(--gold); }
-
+ 
   .item-edit-row {
     display: flex;
     gap: 6px;
@@ -593,7 +593,7 @@
     transition: all 0.15s;
   }
   .item-edit-cancel:hover { color: var(--ink); border-color: var(--ink); }
-
+ 
   /* Progress */
   .progress-section { margin-bottom: 24px; }
   .progress-label {
@@ -616,7 +616,7 @@
     border-radius: 2px;
     transition: width 0.5s ease;
   }
-
+ 
   /* Empty state */
   .empty {
     text-align: center;
@@ -626,7 +626,7 @@
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
   .empty-text { font-family: 'Shippori Mincho', serif; font-size: 16px; }
   .empty-sub { font-size: 12px; margin-top: 6px; letter-spacing: 0.05em; }
-
+ 
   /* カテゴリー別達成率 */
   .cat-stats {
     background: white;
@@ -686,7 +686,7 @@
     text-align: right;
     flex-shrink: 0;
   }
-
+ 
   /* Confetti */
   .confetti-piece {
     position: fixed;
@@ -700,7 +700,7 @@
     0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
     100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
   }
-
+ 
   /* 同期ステータス */
   #syncStatus {
     position: fixed;
@@ -735,13 +735,13 @@
   <span class="sync-dot" id="syncDot"></span>
   <span id="syncText">接続中…</span>
 </div>
-
+ 
 <header>
   <div class="header-sub">My Bucket List</div>
   <h1>バケットリスト</h1>
   <div class="header-desc">死ぬまでにやりたいこと、行きたい場所、なりたい自分</div>
 </header>
-
+ 
 <div class="stats-bar">
   <div class="stat">
     <span class="stat-num" id="totalCount">0</span>
@@ -756,9 +756,9 @@
     <div class="stat-label">残 り</div>
   </div>
 </div>
-
-
-
+ 
+ 
+ 
 <main>
   <!-- Progress -->
   <!-- Add form -->
@@ -791,7 +791,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Filter tabs -->
   <div class="filter-tabs">
     <button class="tab active" onclick="setFilter('全て', this)">全て</button>
@@ -803,12 +803,12 @@
     <button class="tab" onclick="setFilter('達成済み', this)">✅ 達成</button>
     <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)">🗑️ <span id="trashCount"></span></button>
   </div>
-
+ 
   <!-- Items -->
   <div class="header-cat-stats" id="headerCatStats"></div>
   <div class="items-list" id="itemsList"></div>
 </main>
-
+ 
 <script>
 const DEFAULT_ITEMS = [
   // 海外旅行
@@ -1094,12 +1094,12 @@ const DEFAULT_ITEMS = [
   { text: '週末農業を体験してみる', cat: '人生の目標', prio: '低', urg: '低', done: false },
   { text: '離島でネット断ちの一週間を過ごす', cat: '人生の目標', prio: '中', urg: '中', done: false },
 ];
-
+ 
 // バージョン管理でローカルストレージをリセット
 const DATA_VERSION = 'v7_new23';
 // ===== Firebase REST API =====
 const DB_URL = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.firebasedatabase.app";
-
+ 
 let items = [];
 let trash = [];
 let currentFilter = '全て';
@@ -1107,7 +1107,7 @@ let currentPrio = '高';
 let currentUrg = '高';
 let isSyncing = false;
 let pollTimer = null;
-
+ 
 async function loadFromFirebase() {
   try {
     const [itemsRes, trashRes] = await Promise.all([
@@ -1127,7 +1127,7 @@ async function loadFromFirebase() {
     return null;
   }
 }
-
+ 
 async function saveToFirebase() {
   try {
     await Promise.all([
@@ -1148,13 +1148,13 @@ async function saveToFirebase() {
     setSyncStatus('error');
   }
 }
-
+ 
 function save() {
   isSyncing = true;
   setSyncStatus('saving');
   saveToFirebase().then(() => { isSyncing = false; });
 }
-
+ 
 function setSyncStatus(state) {
   const el  = document.getElementById('syncStatus');
   const dot = document.getElementById('syncDot');
@@ -1171,7 +1171,7 @@ function setSyncStatus(state) {
     txt.textContent = '同期エラー';
   }
 }
-
+ 
 function startPolling() {
   pollTimer = setInterval(async () => {
     if (isSyncing) return;
@@ -1189,7 +1189,7 @@ function startPolling() {
     }
   }, 5000);
 }
-
+ 
 window.onload = async function() {
   // まず先にデフォルトデータで画面を表示
   items = DEFAULT_ITEMS.map(i => ({...i, urg: i.urg || '中'}));
@@ -1197,13 +1197,13 @@ window.onload = async function() {
   render();
   updateStats();
   updateTrashCount();
-
+ 
   // Firebaseから読み込み
   try {
     document.getElementById('syncStatus').style.display = 'flex';
     document.getElementById('syncDot').className = 'sync-dot saving';
     document.getElementById('syncText').textContent = '接続中…';
-
+ 
     const data = await loadFromFirebase();
     if (data && data.items) {
       items = data.items;
@@ -1226,26 +1226,26 @@ window.onload = async function() {
     document.getElementById('syncText').textContent = '同期エラー（オフライン動作中）';
   }
 };
-
+ 
 function setPrio(btn) {
   document.querySelectorAll('.prio-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentPrio = btn.dataset.prio;
 }
-
+ 
 function setUrg(btn) {
   document.querySelectorAll('.urg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentUrg = btn.dataset.urg;
 }
-
+ 
 function setFilter(f, el) {
   currentFilter = f;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   render();
 }
-
+ 
 function addItem() {
   const input = document.getElementById('newItem');
   const text = input.value.trim();
@@ -1256,14 +1256,14 @@ function addItem() {
   save();
   render();
 }
-
+ 
 function toggle(i) {
   items[i].done = !items[i].done;
   save();
   if (items[i].done) celebrate();
   renderAnimated();
 }
-
+ 
 function remove(i) {
   // ゴミ箱に移動
   trash.unshift({...items[i], trashedAt: Date.now()});
@@ -1272,14 +1272,14 @@ function remove(i) {
   renderAnimated();
   updateTrashCount();
 }
-
+ 
 function removeFromTrash(i) {
   trash.splice(i, 1);
   save();
   render();
   updateTrashCount();
 }
-
+ 
 function restoreFromTrash(i) {
   const item = {...trash[i]};
   delete item.trashedAt;
@@ -1289,7 +1289,7 @@ function restoreFromTrash(i) {
   render();
   updateTrashCount();
 }
-
+ 
 function emptyTrash() {
   if (trash.length === 0) return;
   trash = [];
@@ -1297,12 +1297,12 @@ function emptyTrash() {
   render();
   updateTrashCount();
 }
-
+ 
 function updateTrashCount() {
   const el = document.getElementById('trashCount');
   if (el) el.textContent = trash.length > 0 ? `(${trash.length})` : '';
 }
-
+ 
 function celebrate() {
   const colors = ['#c9a227', '#8b2c0a', '#5a7a5a', '#5b8db8', '#c87941'];
   for (let i = 0; i < 30; i++) {
@@ -1319,26 +1319,26 @@ function celebrate() {
     }, i * 40);
   }
 }
-
+ 
 function changePrio(i, prio) {
   items[i].prio = prio;
   save();
   renderAnimated();
 }
-
+ 
 function changeUrg(i, urg) {
   items[i].urg = urg;
   save();
   renderAnimated();
 }
-
+ 
 // スコア計算
 function calcScore(item) {
   const pts = { '高': 3, '中': 2, '低': 1 };
   const urg = item.urg || '中';
   return pts[item.prio] * pts[urg];
 }
-
+ 
 // 表示すべき順序を返す
 function getSortedItems() {
   if (currentFilter === 'ゴミ箱') return { active: [], done: [] };
@@ -1361,7 +1361,7 @@ function getSortedItems() {
   }
   return { active, done };
 }
-
+ 
 // アイテム1件のHTML内容だけ更新（要素は再利用）
 function updateItemContent(el, item) {
   // done状態
@@ -1386,36 +1386,36 @@ function updateItemContent(el, item) {
   const cr = el.querySelector('.change-row');
   if (cr) cr.style.display = item.done ? 'none' : '';
 }
-
+ 
 // DOM要素を保持したまま並び替え（FLIPアニメーション）
 function renderAnimated() {
   const list = document.getElementById('itemsList');
   const { active, done } = getSortedItems();
   const ordered = [...active, ...done];
-
+ 
   // stats更新
   updateStats();
-
+ 
   if (ordered.length === 0) {
     list.innerHTML = `<div class="empty"><div class="empty-icon">🌿</div><div class="empty-text">まだ何もありません</div><div class="empty-sub">夢を追加してみましょう</div></div>`;
     return;
   }
-
+ 
   // 既存のDOM要素をidxでマップ
   const existingEls = {};
   list.querySelectorAll('.item[data-idx]').forEach(el => {
     existingEls[el.dataset.idx] = el;
   });
-
+ 
   // STEP1: First — 現在位置を記録
   const beforePos = {};
   Object.keys(existingEls).forEach(idx => {
     beforePos[idx] = existingEls[idx].getBoundingClientRect().top;
   });
-
+ 
   // STEP2: セパレーターを除いて既存要素だけ取り出す
   const sep = list.querySelector('.done-separator');
-
+ 
   // STEP3: 新しい順序でDOMを並び替え（要素を移動・新規作成）
   ordered.forEach((item, pos) => {
     const idx = String(item._i);
@@ -1439,7 +1439,7 @@ function renderAnimated() {
       updateItemContent(el, item);
     }
   });
-
+ 
   // セパレーターを正しい位置に挿入
   if (active.length > 0 && done.length > 0) {
     let sepEl = list.querySelector('.done-separator');
@@ -1458,14 +1458,14 @@ function renderAnimated() {
     const sepEl = list.querySelector('.done-separator');
     if (sepEl) sepEl.remove();
   }
-
+ 
   // 表示不要なアイテムを非表示・削除
   const visibleIdxs = new Set(ordered.map(x => String(x._i)));
   list.querySelectorAll('.item[data-idx]').forEach(el => {
     if (!visibleIdxs.has(el.dataset.idx)) el.style.display = 'none';
     else el.style.display = '';
   });
-
+ 
   // STEP4: DOMを正しい順序に並べ替え
   const fragment = document.createDocumentFragment();
   ordered.forEach(item => {
@@ -1482,7 +1482,7 @@ function renderAnimated() {
     }
   });
   list.appendChild(fragment);
-
+ 
   // STEP5: Last→Invert→Play
   requestAnimationFrame(() => {
     const movers = [];
@@ -1497,7 +1497,7 @@ function renderAnimated() {
       el.style.transform = `translateY(${delta}px)`;
       movers.push({ el, delta });
     });
-
+ 
     requestAnimationFrame(() => {
       movers.forEach(({ el }) => {
         el.style.transition = 'transform 0.9s cubic-bezier(0.34, 1.5, 0.64, 1), opacity 0.5s ease';
@@ -1512,7 +1512,7 @@ function renderAnimated() {
     });
   });
 }
-
+ 
 function updateStats() {
   const total = items.length;
   const doneCount = items.filter(i => i.done).length;
@@ -1520,7 +1520,7 @@ function updateStats() {
   document.getElementById('doneCount').textContent = doneCount;
   document.getElementById('remainCount').textContent = total - doneCount;
   const pct = total ? Math.round(doneCount / total * 100) : 0;
-
+ 
   const cats = [
     { key: '海外旅行',    label: '✈️ 海外旅行',    color: '#5b8db8' },
     { key: '国内旅行',    label: '🗾 国内旅行',    color: '#3a9e7a' },
@@ -1528,9 +1528,9 @@ function updateStats() {
     { key: 'スキル・学習',label: '📚 スキル・学習', color: '#7a5bb8' },
     { key: '人生の目標',  label: '⭐ 人生の目標',  color: '#8b2c0a' },
   ];
-
+ 
   // フィルタータブ下の一覧は削除済み
-
+ 
   // ヘッダーのコンパクト版
   const headerEl = document.getElementById('headerCatStats');
   // アイコンだけ抽出（絵文字部分）
@@ -1553,7 +1553,7 @@ function updateStats() {
     </div>` +
     `</div>`;
 }
-
+ 
 function buildItemHTML(item) {
   return `<div class="item ${item.done ? 'done' : ''}" data-cat="${item.cat}" data-idx="${item._i}">
     <button class="check-btn" onclick="toggle(${item._i})">✓</button>
@@ -1590,10 +1590,10 @@ function buildItemHTML(item) {
     <button class="delete-btn" onclick="remove(${item._i})" title="削除">×</button>
   </div>`;
 }
-
+ 
 function render() {
   const list = document.getElementById('itemsList');
-
+ 
   // ゴミ箱表示
   if (currentFilter === 'ゴミ箱') {
     updateStats();
@@ -1624,7 +1624,7 @@ function render() {
     list.innerHTML = parts.join('');
     return;
   }
-
+ 
   const pts = { '高': 3, '中': 2, '低': 1 };
   const mapped = items.map((item, i) => ({
     ...item, urg: item.urg || '中',
@@ -1657,7 +1657,7 @@ function render() {
   }
   list.innerHTML = parts.join('');
 }
-
+ 
 function editItem(i) {
   const el = document.getElementById(`edit-row-${i}`);
   const textEl = document.getElementById(`item-text-${i}`);
@@ -1672,22 +1672,22 @@ function editItem(i) {
     textEl.style.opacity = '0.4';
   }
 }
-
+ 
 function saveEdit(i) {
   const input = document.getElementById(`edit-input-${i}`);
   const val = input.value.trim();
   if (val) { items[i].text = val; save(); }
   render();
 }
-
+ 
 function cancelEdit(i) {
   const el = document.getElementById(`edit-row-${i}`);
   const textEl = document.getElementById(`item-text-${i}`);
   el.style.display = 'none';
   textEl.style.opacity = '1';
 }
-
-
+ 
+ 
 document.getElementById('newItem').addEventListener('keydown', e => {
   if (e.key === 'Enter') addItem();
 });
@@ -1695,3 +1695,4 @@ document.getElementById('newItem').addEventListener('keydown', e => {
 </script>
 </body>
 </html>
+ 
