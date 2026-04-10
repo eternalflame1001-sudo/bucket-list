@@ -2007,15 +2007,15 @@ function updateMapColor(key, name, opacity) {
   if (key === 'world') {
     const code = COUNTRY_CODE_MAP[name];
     if (!code) return;
-    d3.select(`#worldD3svg path[data-code="${code}"]`).attr('fill', fill);
+    d3.select(`#worldD3svg path[data-code="${code}"]`).style('fill', fill);
     return;
   }
   if (key === 'japan') {
-    d3.selectAll(`#worldD3svg path[data-pref="${name}"]`).attr('fill', fill);
+    d3.selectAll(`#worldD3svg path[data-pref="${name}"]`).style('fill', fill);
     return;
   }
   if (key === 'china') {
-    d3.selectAll(`#worldD3svg path[data-province="${name}"]`).attr('fill', fill);
+    d3.selectAll(`#worldD3svg path[data-province="${name}"]`).style('fill', fill);
     return;
   }
   const mapEl = document.getElementById('visitMap');
@@ -2117,8 +2117,8 @@ async function renderMapD3(key, visited, currentYear) {
         .data(countries.features)
         .join('path')
         .attr('d', pathGen)
-        .attr('data-code', d => d.id)
-        .attr('fill', d => {
+        .attr('data-code', d => String(d.id))
+        .style('fill', d => {
           const name = CODE_COUNTRY_MAP[String(d.id)];
           if (name && visited[name] !== undefined) {
             const age = currentYear - (visited[name] || currentYear);
@@ -2142,7 +2142,7 @@ async function renderMapD3(key, visited, currentYear) {
             : '#e8dfc8');
         });
       // 描画完了後に全色を再適用
-      reapplyAllMapColors(key, visited, currentYear);
+      setTimeout(() => reapplyAllMapColors(key, visited, currentYear), 100);
     } catch(e) {
       mapEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--faded);">地図の読み込みに失敗しました</div>';
     }
@@ -2205,7 +2205,7 @@ async function renderMapD3(key, visited, currentYear) {
         .join('path')
         .attr('d', pathGen)
         .attr('data-pref', d => getJpName(d))
-        .attr('fill', d => {
+        .style('fill', d => {
           const name = getJpName(d);
           if (name && visited[name] !== undefined) {
             const age = currentYear - (visited[name] || currentYear);
@@ -2227,7 +2227,7 @@ async function renderMapD3(key, visited, currentYear) {
             : '#e8dfc8');
         });
       // 描画完了後に全色を再適用
-      reapplyAllMapColors(key, visited, currentYear);
+      setTimeout(() => reapplyAllMapColors(key, visited, currentYear), 100);
     } catch(e) {
       console.error('日本地図エラー:', e);
       mapEl.innerHTML = MAP_SVG['japan'];
@@ -2272,7 +2272,7 @@ async function renderMapD3(key, visited, currentYear) {
           const cnName = (d.properties || {}).name || '';
           return CN_JP_MAP[cnName] || cnName;
         })
-        .attr('fill', d => {
+        .style('fill', d => {
           const props = d.properties || {};
           const cnName = props.name || '';
           const jpName = CN_JP_MAP[cnName] || cnName;
@@ -2297,7 +2297,7 @@ async function renderMapD3(key, visited, currentYear) {
             : '#e8dfc8');
         });
       // 描画完了後に全色を再適用
-      reapplyAllMapColors(key, visited, currentYear);
+      setTimeout(() => reapplyAllMapColors(key, visited, currentYear), 100);
     } catch(e) {
       console.error('中国地図エラー:', e);
       mapEl.innerHTML = MAP_SVG['china'];
@@ -2307,7 +2307,6 @@ async function renderMapD3(key, visited, currentYear) {
 }
  
 function reapplyAllMapColors(key, visited, currentYear) {
-  // D3レンダリング完了後に訪問済みの色を全て再適用
   const entries = Object.entries(visited || {});
   if (entries.length === 0) return;
   entries.forEach(([name, year]) => {
@@ -2316,11 +2315,14 @@ function reapplyAllMapColors(key, visited, currentYear) {
     const fill = `rgba(139,44,100,${opacity})`;
     if (key === 'world') {
       const code = COUNTRY_CODE_MAP[name];
-      if (code) d3.select(`#worldD3svg path[data-code="${code}"]`).attr('fill', fill);
+      if (!code) return;
+      let sel = d3.select(`#worldD3svg path[data-code="${code}"]`);
+      if (sel.empty()) sel = d3.select(`#worldD3svg path[data-code="${parseInt(code)}"]`);
+      if (!sel.empty()) sel.style('fill', fill);
     } else if (key === 'japan') {
-      d3.selectAll(`#worldD3svg path[data-pref="${name}"]`).attr('fill', fill);
+      d3.selectAll(`#worldD3svg path[data-pref="${name}"]`).style('fill', fill);
     } else if (key === 'china') {
-      d3.selectAll(`#worldD3svg path[data-province="${name}"]`).attr('fill', fill);
+      d3.selectAll(`#worldD3svg path[data-province="${name}"]`).style('fill', fill);
     }
   });
 }
