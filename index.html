@@ -300,7 +300,7 @@
   }
   .filter-tabs::-webkit-scrollbar { display: none; }
   .tab {
-    padding: 8px 12px;
+    padding: 6px 10px 4px;
     font-size: 22px;
     letter-spacing: 0.1em;
     cursor: pointer;
@@ -312,10 +312,23 @@
     border-bottom: 2px solid transparent;
     margin-bottom: -1.5px;
     transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
   }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
   .tab:hover:not(.active) { color: var(--ink); }
-  .tab-all { font-size: 13px; padding: 10px 12px; }
+  .tab-all { font-size: 22px; padding: 6px 10px 4px; }
+  .tab-stat {
+    font-size: 10px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+  .tab.active .tab-stat { color: var(--accent); }
   .tab-trash { color: #9a8f7a; }
   .tab-trash.active { color: #8b2c0a; border-bottom-color: #8b2c0a; }
  
@@ -439,8 +452,8 @@
   .prio-change-btn {
     border: 1px solid var(--aged);
     background: var(--paper);
-    padding: 3px 9px;
-    font-size: 12px;
+    padding: 2px 6px;
+    font-size: 11px;
     cursor: pointer;
     border-radius: 2px;
     transition: all 0.15s;
@@ -455,8 +468,8 @@
   .urg-change-btn {
     border: 1px solid var(--aged);
     background: var(--paper);
-    padding: 3px 9px;
-    font-size: 12px;
+    padding: 2px 6px;
+    font-size: 11px;
     cursor: pointer;
     border-radius: 2px;
     transition: all 0.15s;
@@ -501,9 +514,9 @@
   .change-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     margin-top: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
   .change-group {
     display: flex;
@@ -511,7 +524,7 @@
     gap: 4px;
   }
   .change-group-label {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--ink);
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -854,18 +867,18 @@
  
   <!-- Filter tabs -->
   <div class="filter-tabs">
-    <button class="tab tab-all active" onclick="setFilter('全て', this)">全て</button>
-    <button class="tab" onclick="setFilter('海外旅行', this)">✈️</button>
-    <button class="tab" onclick="setFilter('国内旅行', this)">🗾</button>
-    <button class="tab" onclick="setFilter('食・グルメ', this)">🍜</button>
-    <button class="tab" onclick="setFilter('スキル・学習', this)">📚</button>
-    <button class="tab" onclick="setFilter('人生の目標', this)">⭐</button>
-    <button class="tab" onclick="setFilter('達成済み', this)">✅</button>
-    <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)">🗑️ <span id="trashCount"></span></button>
+    <button class="tab tab-all active" onclick="setFilter('全て', this)">📚<span class="tab-stat" id="stat-all"></span></button>
+    <button class="tab" onclick="setFilter('海外旅行', this)">🗺️<span class="tab-stat" id="stat-海外旅行"></span></button>
+    <button class="tab" onclick="setFilter('国内旅行', this)">🗾<span class="tab-stat" id="stat-国内旅行"></span></button>
+    <button class="tab" onclick="setFilter('食・グルメ', this)">🍜<span class="tab-stat" id="stat-食・グルメ"></span></button>
+    <button class="tab" onclick="setFilter('スキル・学習', this)">✏️<span class="tab-stat" id="stat-スキル・学習"></span></button>
+    <button class="tab" onclick="setFilter('人生の目標', this)">⭐<span class="tab-stat" id="stat-人生の目標"></span></button>
+    <button class="tab" onclick="setFilter('達成済み', this)">✅<span class="tab-stat" id="stat-達成済み"></span></button>
+    <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)">🗑️<span class="tab-stat" id="trashCount"></span></button>
   </div>
  
   <!-- Items -->
-  <div class="header-cat-stats" id="headerCatStats"></div>
+  <div class="header-cat-stats" id="headerCatStats" style="display:none;"></div>
   <div class="items-list" id="itemsList"></div>
 </main>
  
@@ -1454,39 +1467,28 @@ function updateStats() {
   document.getElementById('totalCount').textContent = total;
   document.getElementById('doneCount').textContent = doneCount;
   document.getElementById('remainCount').textContent = total - doneCount;
-  const pct = total ? Math.round(doneCount / total * 100) : 0;
  
-  const cats = [
-    { key: '海外旅行',    label: '✈️ 海外旅行',    color: '#5b8db8' },
-    { key: '国内旅行',    label: '🗾 国内旅行',    color: '#3a9e7a' },
-    { key: '食・グルメ',  label: '🍜 食・グルメ',  color: '#c87941' },
-    { key: 'スキル・学習',label: '📚 スキル・学習', color: '#7a5bb8' },
-    { key: '人生の目標',  label: '⭐ 人生の目標',  color: '#8b2c0a' },
-  ];
+  // タブの統計を更新
+  const cats = ['海外旅行', '国内旅行', '食・グルメ', 'スキル・学習', '人生の目標'];
+  cats.forEach(cat => {
+    const el = document.getElementById(`stat-${cat}`);
+    if (!el) return;
+    const ci = items.filter(x => x.cat === cat);
+    const ct = ci.length, cd = ci.filter(x => x.done).length;
+    const cp = ct ? Math.round(cd / ct * 100) : 0;
+    el.textContent = `${cd}/${ct} ${cp}%`;
+  });
  
-  // フィルタータブ下の一覧は削除済み
+  // 全て
+  const allEl = document.getElementById('stat-all');
+  if (allEl) {
+    const pct = total ? Math.round(doneCount / total * 100) : 0;
+    allEl.textContent = `${doneCount}/${total} ${pct}%`;
+  }
  
-  // ヘッダーのコンパクト版
-  const headerEl = document.getElementById('headerCatStats');
-  // アイコンだけ抽出（絵文字部分）
-  const icons = { '海外旅行':'✈️', '国内旅行':'🗾', '食・グルメ':'🍜', 'スキル・学習':'📚', '人生の目標':'⭐' };
-  headerEl.innerHTML = `<div class="header-cat-grid">` +
-    cats.map(c => {
-      const ci = items.filter(x => x.cat === c.key);
-      const ct = ci.length, cd = ci.filter(x => x.done).length;
-      const cp = ct ? Math.round(cd / ct * 100) : 0;
-      return `<div class="header-cat-item">
-        <span class="header-cat-icon">${icons[c.key]}</span>
-        <span class="header-cat-fraction">${cd}/${ct}</span>
-        <span class="header-cat-pct">${cp}%</span>
-      </div>`;
-    }).join('') +
-    `<div class="header-cat-item header-cat-total">
-      <span class="header-cat-icon" style="color:#5a7a5a;">✓</span>
-      <span class="header-cat-fraction">${items.filter(x=>x.done).length}/${items.length}</span>
-      <span class="header-cat-pct">${items.length ? Math.round(items.filter(x=>x.done).length/items.length*100) : 0}%</span>
-    </div>` +
-    `</div>`;
+  // 達成済み
+  const doneEl = document.getElementById('stat-達成済み');
+  if (doneEl) doneEl.textContent = `${doneCount}件`;
 }
  
 function toFullWidth(n) {
