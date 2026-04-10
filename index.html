@@ -17,9 +17,9 @@
     --faded: #9a8f7a;
     --shadow: rgba(26,18,9,0.15);
   }
- 
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   body {
     background: var(--paper);
     color: var(--ink);
@@ -30,7 +30,7 @@
       radial-gradient(ellipse at 80% 20%, rgba(139,44,10,0.06) 0%, transparent 60%);
     padding: 0 0 60px;
   }
- 
+
   /* Header */
   header {
     background: var(--ink);
@@ -81,7 +81,7 @@
     color: rgba(245,240,232,0.55);
     letter-spacing: 0.05em;
   }
- 
+
   /* Stats bar */
   .stats-bar {
     background: var(--ink);
@@ -108,10 +108,10 @@
     color: rgba(245,240,232,0.5);
     margin-top: 3px;
   }
- 
+
   /* Main */
   main { max-width: 680px; margin: 0 auto; padding: 16px 0 0; }
- 
+
   /* ヘッダーカテゴリー別達成率 */
   .header-cat-stats {
     background: var(--paper);
@@ -173,7 +173,7 @@
     border-radius: 2px;
     transition: width 0.6s ease;
   }
- 
+
   /* Add form */
   .add-section {
     background: white;
@@ -258,7 +258,7 @@
   }
   input[type="text"]:focus { border-bottom-color: var(--accent); }
   input[type="text"]::placeholder { color: var(--faded); font-size: 12px; }
- 
+
   .add-meta {
     display: flex;
     gap: 8px;
@@ -288,7 +288,7 @@
     color: var(--faded);
   }
   .prio-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
- 
+
   .add-meta-row {
     display: flex;
     gap: 8px;
@@ -312,7 +312,7 @@
     color: var(--faded);
   }
   .urg-btn.active { background: #8b2c0a; color: white; border-color: #8b2c0a; }
- 
+
   .add-btn {
     background: var(--ink);
     color: var(--gold);
@@ -327,7 +327,7 @@
     white-space: nowrap;
   }
   .add-btn:hover { background: var(--accent); color: white; }
- 
+
   /* Filter tabs */
   .filter-tabs {
     display: flex;
@@ -391,7 +391,7 @@
   .tab.active .tab-stat { color: var(--accent); }
   .tab-trash { color: #9a8f7a; }
   .tab-trash.active { color: #8b2c0a; border-bottom-color: #8b2c0a; }
- 
+
   /* ゴミ箱を空にするボタン */
   .trash-actions {
     display: flex;
@@ -424,10 +424,10 @@
   }
   .restore-btn:hover { color: #2a5a2a; }
   .item.trashed { background: #fdf5f5; border-left-color: #e0b0b0 !important; opacity: 0.8; }
- 
+
   /* Items */
   .items-list { display: flex; flex-direction: column; gap: 10px; padding: 0 4px; }
- 
+
   .item {
     background: white;
     border: 1px solid var(--aged);
@@ -448,14 +448,14 @@
     opacity: 0.75;
   }
   .item.done .item-text { color: var(--faded); }
- 
+
   .item[data-cat="海外旅行"] { border-left-color: #5b8db8; }
   .item[data-cat="国内旅行"] { border-left-color: #3a9e7a; }
   .item[data-cat="食・グルメ"] { border-left-color: #c87941; }
   .item[data-cat="スキル・学習"] { border-left-color: #7a5bb8; }
   .item[data-cat="人生の目標"] { border-left-color: var(--accent); }
   .item.done { border-left-color: var(--sage) !important; }
- 
+
   .check-btn {
     width: 24px; height: 24px;
     border: 1.5px solid var(--aged);
@@ -474,7 +474,7 @@
     color: white;
   }
   .check-btn:hover { border-color: var(--sage); }
- 
+
   .item-body { flex: 1; min-width: 0; }
   .item-text {
     font-size: 19px;
@@ -504,7 +504,7 @@
   .prio-dot.高 { background: var(--accent); }
   .prio-dot.中 { background: var(--gold); }
   .prio-dot.低 { background: var(--faded); }
- 
+
   .prio-change-btns {
     display: flex;
     gap: 3px;
@@ -526,7 +526,7 @@
   .prio-change-btn.active-高 { background: var(--accent); color: white; border-color: var(--accent); }
   .prio-change-btn.active-中 { background: var(--gold); color: white; border-color: var(--gold); }
   .prio-change-btn.active-低 { background: var(--faded); color: white; border-color: var(--faded); }
- 
+
   .urg-change-btn {
     border: 1px solid var(--aged);
     background: var(--paper);
@@ -543,7 +543,7 @@
   .urg-change-btn.active-高 { background: #8b2c0a; color: white; border-color: #8b2c0a; }
   .urg-change-btn.active-中 { background: #b84a20; color: white; border-color: #b84a20; }
   .urg-change-btn.active-低 { background: #c8907a; color: white; border-color: #c8907a; }
- 
+
   .item-badges {
     display: flex;
     gap: 5px;
@@ -564,7 +564,7 @@
   .badge-urg-高  { background: rgba(139,44,10,0.15); color: #8b2c0a; }
   .badge-urg-中  { background: rgba(200,100,60,0.13); color: #b84a20; }
   .badge-urg-低  { background: rgba(220,160,140,0.15); color: #b07060; }
- 
+
   /* スコアバッジ：9点が最高、1点が最低 */
   .badge-score { font-weight: 700; font-size: 12px; color: var(--ink); letter-spacing: 0; border: 1px solid var(--aged); background: var(--paper); white-space: nowrap; }
   .score-9 { }
@@ -573,7 +573,7 @@
   .score-3 { }
   .score-2 { }
   .score-1 { }
- 
+
   .change-row {
     display: flex;
     align-items: center;
@@ -595,7 +595,7 @@
   }
     white-space: nowrap;
   }
- 
+
   .delete-btn {
     background: none;
     border: 1px solid var(--aged);
@@ -609,7 +609,7 @@
     flex-shrink: 0;
   }
   .delete-btn:hover { color: white; background: var(--accent); border-color: var(--accent); }
- 
+
   .edit-btn {
     background: none;
     border: 1px solid var(--aged);
@@ -623,7 +623,7 @@
     flex-shrink: 0;
   }
   .edit-btn:hover { color: white; background: var(--gold); border-color: var(--gold); }
- 
+
   .detail-btn {
     background: none;
     border: 1px solid var(--aged);
@@ -638,14 +638,14 @@
   }
   .detail-btn:hover { color: white; background: #3a6ea5; border-color: #3a6ea5; }
   .detail-btn.active { color: white; background: #3a6ea5; border-color: #3a6ea5; }
- 
+
   .item-btn-col {
     display: flex;
     flex-direction: column;
     gap: 4px;
     flex-shrink: 0;
   }
- 
+
   .item-memo-row {
     margin-top: 8px;
     display: none;
@@ -691,7 +691,7 @@
     border-radius: 4px;
     border-left: 3px solid #3a6ea5;
   }
- 
+
   .item-edit-row {
     display: flex;
     gap: 6px;
@@ -732,7 +732,7 @@
     transition: all 0.15s;
   }
   .item-edit-cancel:hover { color: var(--ink); border-color: var(--ink); }
- 
+
   /* Progress */
   .progress-section { margin-bottom: 24px; }
   .progress-label {
@@ -755,7 +755,7 @@
     border-radius: 2px;
     transition: width 0.5s ease;
   }
- 
+
   /* Empty state */
   .empty {
     text-align: center;
@@ -765,7 +765,7 @@
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
   .empty-text { font-family: 'Shippori Mincho', serif; font-size: 16px; }
   .empty-sub { font-size: 12px; margin-top: 6px; letter-spacing: 0.05em; }
- 
+
   /* カテゴリー別達成率 */
   .cat-stats {
     background: white;
@@ -825,7 +825,7 @@
     text-align: right;
     flex-shrink: 0;
   }
- 
+
   /* Confetti */
   .confetti-piece {
     position: fixed;
@@ -839,7 +839,7 @@
     0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
     100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
   }
- 
+
   /* モード切り替えバー */
   .mode-bar {
     background: var(--ink);
@@ -867,7 +867,7 @@
     font-weight: 700;
   }
   .mode-btn:hover:not(.active) { color: var(--paper); }
- 
+
   /* 訪問記録パネル */
   .visit-header {
     background: white;
@@ -1034,7 +1034,7 @@
     color: var(--ink);
     line-height: 1.8;
   }
- 
+
   /* 年選択ダイアログ */
   .year-dialog-overlay {
     position: fixed;
@@ -1105,7 +1105,7 @@
     cursor: pointer;
   }
   .year-dialog-cancel:hover { color: var(--ink); border-color: var(--ink); }
- 
+
   /* 同期ステータス */
   #syncStatus {
     position: fixed;
@@ -1142,7 +1142,7 @@
   <span class="sync-dot" id="syncDot"></span>
   <span id="syncText">接続中…</span>
 </div>
- 
+
 <!-- 年選択ダイアログ -->
 <div class="year-dialog-overlay" id="yearDialog" style="display:none;">
   <div class="year-dialog">
@@ -1156,12 +1156,12 @@
     </div>
   </div>
 </div>
- 
+
 <header>
   <h1>Bucket List</h1>
   <div class="header-desc">死ぬまでにやりたいこと、行きたい場所、なりたい自分</div>
 </header>
- 
+
 <div class="stats-bar">
   <div class="stat">
     <span class="stat-num" id="totalCount">0</span>
@@ -1176,7 +1176,7 @@
     <div class="stat-label">残 り</div>
   </div>
 </div>
- 
+
 <!-- モード切り替えバー -->
 <div class="mode-bar">
   <button class="mode-btn active" onclick="setMode('bucket')">📚 バケットリスト</button>
@@ -1184,7 +1184,7 @@
   <button class="mode-btn" onclick="setMode('china')">🇨🇳 中国</button>
   <button class="mode-btn" onclick="setMode('world')">🌍 世界</button>
 </div>
- 
+
 <!-- 訪問記録パネル -->
 <div id="visitPanel" style="display:none;">
   <div class="visit-header">
@@ -1201,9 +1201,9 @@
   <!-- 訪問履歴 -->
   <div class="visit-history" id="visitHistory"></div>
 </div>
- 
- 
- 
+
+
+
 <main>
   <!-- Progress -->
   <!-- Add form + Search -->
@@ -1245,7 +1245,7 @@
     <div id="searchCount" class="search-count"></div>
   </div>
   </div>
- 
+
   <!-- Filter tabs -->
   <div class="filter-tabs">
     <button class="tab tab-all active" onclick="setFilter('全て', this)"><span class="tab-pct" id="pct-all"></span>📚<span class="tab-stat" id="stat-all"></span></button>
@@ -1257,12 +1257,12 @@
     <button class="tab" onclick="setFilter('達成済み', this)"><span class="tab-pct" id="pct-達成済み"></span>✅<span class="tab-stat" id="stat-達成済み"></span></button>
     <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)"><span class="tab-pct"></span>🗑️<span class="tab-stat" id="trashCount"></span></button>
   </div>
- 
+
   <!-- Items -->
   <div class="header-cat-stats" id="headerCatStats" style="display:none;"></div>
   <div class="items-list" id="itemsList"></div>
 </main>
- 
+
 <script>
 const DEFAULT_ITEMS = [
   // 海外旅行
@@ -1548,12 +1548,12 @@ const DEFAULT_ITEMS = [
   { text: '週末農業を体験してみる', cat: '人生の目標', prio: '低', urg: '低', done: false },
   { text: '離島でネット断ちの一週間を過ごす', cat: '人生の目標', prio: '中', urg: '中', done: false },
 ];
- 
+
 // バージョン管理でローカルストレージをリセット
 const DATA_VERSION = 'v7_new23';
 // ===== Firebase REST API =====
 const DB_URL = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.firebasedatabase.app";
- 
+
 let items = [];
 let trash = [];
 let currentFilter = '全て';
@@ -1561,7 +1561,7 @@ let currentPrio = '高';
 let currentUrg = '高';
 let isSyncing = false;
 let pollTimer = null;
- 
+
 async function loadFromFirebase() {
   try {
     const [itemsRes, trashRes] = await Promise.all([
@@ -1581,7 +1581,7 @@ async function loadFromFirebase() {
     return null;
   }
 }
- 
+
 async function saveToFirebase() {
   try {
     await Promise.all([
@@ -1602,13 +1602,13 @@ async function saveToFirebase() {
     setSyncStatus('error');
   }
 }
- 
+
 function save() {
   isSyncing = true;
   setSyncStatus('saving');
   saveToFirebase().then(() => { isSyncing = false; });
 }
- 
+
 function setSyncStatus(state) {
   const el  = document.getElementById('syncStatus');
   const dot = document.getElementById('syncDot');
@@ -1625,7 +1625,7 @@ function setSyncStatus(state) {
     txt.textContent = '同期エラー';
   }
 }
- 
+
 function startPolling() {
   pollTimer = setInterval(async () => {
     if (isSyncing) return;
@@ -1643,7 +1643,7 @@ function startPolling() {
     }
   }, 5000);
 }
- 
+
 window.onload = async function() {
   // まず先にデフォルトデータで画面を表示
   items = DEFAULT_ITEMS.map(i => ({...i, urg: i.urg || '中'}));
@@ -1651,13 +1651,13 @@ window.onload = async function() {
   render();
   updateStats();
   updateTrashCount();
- 
+
   // Firebaseから読み込み
   try {
     document.getElementById('syncStatus').style.display = 'flex';
     document.getElementById('syncDot').className = 'sync-dot saving';
     document.getElementById('syncText').textContent = '接続中…';
- 
+
     const data = await loadFromFirebase();
     if (data && data.items) {
       items = data.items;
@@ -1682,10 +1682,10 @@ window.onload = async function() {
     document.getElementById('syncText').textContent = '同期エラー（オフライン動作中）';
   }
 };
- 
+
 // ===== 地図SVGデータ =====
 const MAP_SVG = {
- 
+
 japan: `<svg viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
 <path data-name="北海道" d="M280,30 L320,25 L370,40 L400,60 L410,90 L390,120 L360,140 L320,150 L290,145 L260,130 L240,110 L245,80 L260,55 Z"/>
 <path data-name="青森" d="M270,155 L310,150 L330,160 L325,185 L300,195 L275,190 L260,175 Z"/>
@@ -1735,7 +1735,7 @@ japan: `<svg viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
 <path data-name="鹿児島" d="M55,418 L92,410 L98,440 L68,458 L40,445 Z"/>
 <path data-name="沖縄" d="M85,520 L115,515 L118,535 L95,542 L78,535 Z"/>
 </svg>`,
- 
+
 china: `<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
 <path data-name="北京市" d="M355,112 L372,108 L378,120 L368,130 L350,125 Z"/>
 <path data-name="天津市" d="M370,125 L388,120 L392,135 L378,142 L362,138 Z"/>
@@ -1771,15 +1771,15 @@ china: `<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
 <path data-name="マカオ" d="M345,335 L355,330 L357,340 L347,344 Z"/>
 <path data-name="台湾" d="M442,235 L458,228 L465,265 L450,275 L435,258 Z"/>
 </svg>`,
- 
+
 world: `<div id='worldMapD3'></div>`
- 
+
 };
 // ===== 訪問記録 =====
 const JAPAN_PREFS = ['北海道','青森','岩手','宮城','秋田','山形','福島','茨城','栃木','群馬','埼玉','千葉','東京','神奈川','新潟','富山','石川','福井','山梨','長野','岐阜','静岡','愛知','三重','滋賀','京都','大阪','兵庫','奈良','和歌山','鳥取','島根','岡山','広島','山口','徳島','香川','愛媛','高知','福岡','佐賀','長崎','熊本','大分','宮崎','鹿児島','沖縄'];
- 
+
 const CHINA_REGIONS = ['北京市','天津市','上海市','重慶市','河北省','山西省','遼寧省','吉林省','黒竜江省','江蘇省','浙江省','安徽省','福建省','江西省','山東省','河南省','湖北省','湖南省','広東省','海南省','四川省','貴州省','雲南省','陝西省','甘粛省','青海省','内モンゴル自治区','広西チワン族自治区','チベット自治区','寧夏回族自治区','新疆ウイグル自治区','香港','マカオ','台湾'];
- 
+
 const WORLD_CONTINENTS = {
   '🌏 東アジア': ['日本','韓国','中国','台湾','香港','モンゴル'],
   '🌴 東南アジア': ['ベトナム','タイ','カンボジア','ラオス','ミャンマー','マレーシア','シンガポール','インドネシア','フィリピン','ブルネイ','東ティモール'],
@@ -1792,11 +1792,11 @@ const WORLD_CONTINENTS = {
   '🦘 オセアニア': ['オーストラリア','ニュージーランド','パプアニューギニア','フィジー','ソロモン諸島','バヌアツ','サモア','トンガ','キリバス','ミクロネシア','マーシャル諸島','パラオ','ナウル','ツバル']
 };
 const WORLD_COUNTRIES = Object.values(WORLD_CONTINENTS).flat();
- 
+
 // visitData構造: { japan: { '北海道': 2023, '東京': 2024 }, china: {...}, world: {...} }
 let currentMode = 'bucket';
 let visitData = {};
- 
+
 async function loadVisitFromFirebase() {
   try {
     const res = await fetch(DB_URL + '/visitData.json');
@@ -1804,7 +1804,7 @@ async function loadVisitFromFirebase() {
     if (data && typeof data === 'object') visitData = data;
   } catch(e) { console.error('visitData読み込みエラー:', e); }
 }
- 
+
 async function saveVisitToFirebase() {
   try {
     await fetch(DB_URL + '/visitData.json', {
@@ -1814,9 +1814,9 @@ async function saveVisitToFirebase() {
     });
   } catch(e) { console.error('visitData保存エラー:', e); }
 }
- 
+
 function saveVisit() { saveVisitToFirebase(); }
- 
+
 function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -1836,13 +1836,13 @@ function setMode(mode) {
     renderVisit(mode);
   }
 }
- 
+
 function renderVisit(mode) {
   const titleEl = document.getElementById('visitTitle');
   const statsEl = document.getElementById('visitStats');
   const fillEl  = document.getElementById('visitFill');
   const gridEl  = document.getElementById('visitGrid');
- 
+
   let list, title, key;
   if (mode === 'japan') {
     list = JAPAN_PREFS; title = '🗾 日本 都道府県'; key = 'japan';
@@ -1851,22 +1851,22 @@ function renderVisit(mode) {
   } else {
     list = WORLD_COUNTRIES; title = '🌍 世界の国々'; key = 'world';
   }
- 
+
   const visited = visitData[key] || {};
   const count = Object.keys(visited).length;
   const total = list.length;
   const pct = total ? Math.round(count / total * 100) : 0;
- 
+
   titleEl.textContent = title;
   statsEl.textContent = `訪問済み ${count} / ${total}ヶ所　達成率 ${pct}%`;
   fillEl.style.width = pct + '%';
   const overlayEl = document.getElementById('mapOverlay');
   if (overlayEl) overlayEl.innerHTML = `${count}/${total}<br>${pct}%`;
- 
+
   // 地図を表示
   const mapEl = document.getElementById('visitMap');
   const currentYear = new Date().getFullYear();
- 
+
   if (key === 'world' || key === 'japan' || key === 'china') {
     // D3.js で地図を描画
     mapEl.innerHTML = '<svg id="worldD3svg" style="width:100%;height:auto;display:block;"></svg>';
@@ -1903,7 +1903,7 @@ function renderVisit(mode) {
       });
     });
   }
- 
+
   // ボタン表示（世界は大陸別グループ）
   if (key === 'world') {
     let html = '';
@@ -1943,16 +1943,16 @@ function renderVisit(mode) {
   }
   renderVisitHistory(key);
 }
- 
+
 function toggleVisitAndMap(key, name, el) {
   toggleVisit(key, name, el);
 }
- 
+
 // 年選択ダイアログ用の一時変数
 let _yearDialogKey = '';
 let _yearDialogName = '';
 let _yearDialogEl = null;
- 
+
 function showYearDialog(key, name, el) {
   _yearDialogKey = key;
   _yearDialogName = name;
@@ -1970,14 +1970,14 @@ function showYearDialog(key, name, el) {
   document.getElementById('yearDialogTitle').textContent = `「${name}」を訪問した年`;
   document.getElementById('yearDialog').style.display = 'flex';
 }
- 
+
 function confirmYear() {
   const year = parseInt(document.getElementById('yearSelect').value);
   const key = _yearDialogKey;
   const name = _yearDialogName;
   const el = _yearDialogEl;
   document.getElementById('yearDialog').style.display = 'none';
- 
+
   if (!visitData[key]) visitData[key] = {};
   visitData[key][name] = year;
   const currentYear = new Date().getFullYear();
@@ -1997,11 +1997,11 @@ function confirmYear() {
   // 地図も更新
   updateMapColor(key, name, opacity);
 }
- 
+
 function cancelYear() {
   document.getElementById('yearDialog').style.display = 'none';
 }
- 
+
 function updateMapColor(key, name, opacity) {
   const fill = opacity !== null ? `rgba(139,44,100,${opacity})` : '#e8dfc8';
   if (key === 'world') {
@@ -2030,7 +2030,7 @@ function updateMapColor(key, name, opacity) {
     path.classList.remove('map-visited');
   }
 }
- 
+
 // 日本語国名 → ISO 3166-1 numeric コードのマッピング
 const JP_KANJI_MAP_GLOBAL = {
   '北海道':'北海道','青森県':'青森','岩手県':'岩手','宮城県':'宮城','秋田県':'秋田',
@@ -2044,7 +2044,7 @@ const JP_KANJI_MAP_GLOBAL = {
   '佐賀県':'佐賀','長崎県':'長崎','熊本県':'熊本','大分県':'大分','宮崎県':'宮崎',
   '鹿児島県':'鹿児島','沖縄県':'沖縄'
 };
- 
+
 const COUNTRY_CODE_MAP = {
   '日本':'392','韓国':'410','中国':'156','台湾':'158','香港':'344','モンゴル':'496',
   'ベトナム':'704','タイ':'764','カンボジア':'116','ラオス':'418','ミャンマー':'104',
@@ -2096,11 +2096,11 @@ const COUNTRY_CODE_MAP = {
   'ミクロネシア':'583','マーシャル諸島':'584','パラオ':'585','ナウル':'520','ツバル':'798'
 };
 const CODE_COUNTRY_MAP = Object.fromEntries(Object.entries(COUNTRY_CODE_MAP).map(([k,v])=>[v,k]));
- 
+
 async function renderMapD3(key, visited, currentYear) {
   const mapEl = document.getElementById('visitMap');
   const w = mapEl.clientWidth || 800;
- 
+
   if (key === 'world') {
     const h = Math.round(w * 0.5);
     const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
@@ -2146,7 +2146,7 @@ async function renderMapD3(key, visited, currentYear) {
     } catch(e) {
       mapEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--faded);">地図の読み込みに失敗しました</div>';
     }
- 
+
   } else if (key === 'japan') {
     const h = Math.round(w * 0.85);
     const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
@@ -2233,7 +2233,7 @@ async function renderMapD3(key, visited, currentYear) {
       mapEl.innerHTML = MAP_SVG['japan'];
       applyMapColors('japan', visited, currentYear);
     }
- 
+
   } else if (key === 'china') {
     const h = Math.round(w * 0.8);
     const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
@@ -2305,7 +2305,7 @@ async function renderMapD3(key, visited, currentYear) {
     }
   }
 }
- 
+
 function reapplyAllMapColors(key, visited, currentYear) {
   const entries = Object.entries(visited || {});
   if (entries.length === 0) return;
@@ -2326,7 +2326,7 @@ function reapplyAllMapColors(key, visited, currentYear) {
     }
   });
 }
- 
+
 function applyMapColors(key, visited, currentYear) {
   const mapEl = document.getElementById('visitMap');
   mapEl.querySelectorAll('path[data-name]').forEach(path => {
@@ -2338,7 +2338,7 @@ function applyMapColors(key, visited, currentYear) {
     }
   });
 }
- 
+
 function renderVisitHistory(key) {
   const historyEl = document.getElementById('visitHistory');
   if (!historyEl) return;
@@ -2363,7 +2363,7 @@ function renderVisitHistory(key) {
   });
   historyEl.innerHTML = html;
 }
- 
+
 function updateVisitStats(key, el) {
   const visited = Object.keys(visitData[key] || {}).length;
   const grid = el.closest('.visit-grid');
@@ -2375,7 +2375,7 @@ function updateVisitStats(key, el) {
   if (overlayEl) overlayEl.innerHTML = `${visited}/${total}<br>${pct}%`;
   renderVisitHistory(key);
 }
- 
+
 function toggleVisit(key, name, el) {
   if (!visitData[key]) visitData[key] = {};
   if (visitData[key][name] !== undefined) {
@@ -2400,9 +2400,9 @@ function toggleVisit(key, name, el) {
     showYearDialog(key, name, targetEl);
   }
 }
- 
+
 let searchQuery = '';
- 
+
 function doSearch(val) {
   searchQuery = val.trim();
   const clearBtn = document.getElementById('searchClear');
@@ -2420,7 +2420,7 @@ function doSearch(val) {
     render();
   }
 }
- 
+
 function clearSearch() {
   searchQuery = '';
   const input = document.getElementById('searchInput');
@@ -2431,7 +2431,7 @@ function clearSearch() {
   if (countEl) countEl.textContent = '';
   render();
 }
- 
+
 function highlightText(text, query) {
   if (!query) return text;
   const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -2439,26 +2439,26 @@ function highlightText(text, query) {
     `<span class="search-highlight">${match}</span>`
   );
 }
- 
+
 function setPrio(btn) {
   document.querySelectorAll('.prio-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentPrio = btn.dataset.prio;
 }
- 
+
 function setUrg(btn) {
   document.querySelectorAll('.urg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentUrg = btn.dataset.urg;
 }
- 
+
 function setFilter(f, el) {
   currentFilter = f;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   render();
 }
- 
+
 function addItem() {
   const input = document.getElementById('newItem');
   const text = input.value.trim();
@@ -2469,14 +2469,14 @@ function addItem() {
   save();
   render();
 }
- 
+
 function toggle(i) {
   items[i].done = !items[i].done;
   save();
   if (items[i].done) celebrate();
   render();
 }
- 
+
 function remove(i) {
   // ゴミ箱に移動
   trash.unshift({...items[i], trashedAt: Date.now()});
@@ -2485,14 +2485,14 @@ function remove(i) {
   render();
   updateTrashCount();
 }
- 
+
 function removeFromTrash(i) {
   trash.splice(i, 1);
   save();
   render();
   updateTrashCount();
 }
- 
+
 function restoreFromTrash(i) {
   const item = {...trash[i]};
   delete item.trashedAt;
@@ -2502,7 +2502,7 @@ function restoreFromTrash(i) {
   render();
   updateTrashCount();
 }
- 
+
 function emptyTrash() {
   if (trash.length === 0) return;
   trash = [];
@@ -2510,12 +2510,12 @@ function emptyTrash() {
   render();
   updateTrashCount();
 }
- 
+
 function updateTrashCount() {
   const el = document.getElementById('trashCount');
   if (el) el.textContent = trash.length > 0 ? `(${trash.length})` : '';
 }
- 
+
 function celebrate() {
   const colors = ['#c9a227', '#8b2c0a', '#5a7a5a', '#5b8db8', '#c87941'];
   for (let i = 0; i < 30; i++) {
@@ -2532,26 +2532,26 @@ function celebrate() {
     }, i * 40);
   }
 }
- 
+
 function changePrio(i, prio) {
   items[i].prio = prio;
   save();
   render();
 }
- 
+
 function changeUrg(i, urg) {
   items[i].urg = urg;
   save();
   render();
 }
- 
+
 // スコア計算
 function calcScore(item) {
   const pts = { '高': 3, '中': 2, '低': 1 };
   const urg = item.urg || '中';
   return pts[item.prio] * pts[urg];
 }
- 
+
 // 表示すべき順序を返す
 function getSortedItems() {
   if (currentFilter === 'ゴミ箱') return { active: [], done: [] };
@@ -2574,7 +2574,7 @@ function getSortedItems() {
   }
   return { active, done };
 }
- 
+
 // アイテム1件のHTML内容だけ更新（要素は再利用）
 function updateItemContent(el, item) {
   // done状態
@@ -2599,15 +2599,15 @@ function updateItemContent(el, item) {
   const cr = el.querySelector('.change-row');
   if (cr) cr.style.display = item.done ? 'none' : '';
 }
- 
- 
+
+
 function updateStats() {
   const total = items.length;
   const doneCount = items.filter(i => i.done).length;
   document.getElementById('totalCount').textContent = total;
   document.getElementById('doneCount').textContent = doneCount;
   document.getElementById('remainCount').textContent = total - doneCount;
- 
+
   // タブの統計を更新
   const cats = ['海外旅行', '国内旅行', '食・グルメ', 'スキル・学習', '人生の目標'];
   cats.forEach(cat => {
@@ -2620,7 +2620,7 @@ function updateStats() {
     statEl.textContent = `${cd}/${ct}`;
     if (pctEl) pctEl.textContent = `${cp}%`;
   });
- 
+
   // 全て
   const allStat = document.getElementById('stat-all');
   const allPct  = document.getElementById('pct-all');
@@ -2629,18 +2629,18 @@ function updateStats() {
     allStat.textContent = `${doneCount}/${total}`;
     if (allPct) allPct.textContent = `${pct}%`;
   }
- 
+
   // 達成済み
   const doneStat = document.getElementById('stat-達成済み');
   const donePct  = document.getElementById('pct-達成済み');
   if (doneStat) doneStat.textContent = `${doneCount}件`;
   if (donePct)  donePct.textContent = '';
 }
- 
+
 function toFullWidth(n) {
   return String(n).replace(/[0-9]/g, c => '０１２３４５６７８９'[c]);
 }
- 
+
 function buildItemHTML(item) {
   return `<div class="item ${item.done ? 'done' : ''}" data-cat="${item.cat}" data-idx="${item._i}">
     <button class="check-btn" onclick="toggle(${item._i})">✓</button>
@@ -2680,10 +2680,10 @@ function buildItemHTML(item) {
     </div>
   </div>`;
 }
- 
+
 function render() {
   const list = document.getElementById('itemsList');
- 
+
   // ゴミ箱表示
   if (currentFilter === 'ゴミ箱') {
     updateStats();
@@ -2714,20 +2714,20 @@ function render() {
     list.innerHTML = parts.join('');
     return;
   }
- 
+
   const pts = { '高': 3, '中': 2, '低': 1 };
   let mapped = items.map((item, i) => ({
     ...item, urg: item.urg || '中',
     score: pts[item.prio] * pts[item.urg || '中'], _i: i
   }));
- 
+
   // 検索フィルタリング
   if (searchQuery) {
     mapped = mapped.filter(x =>
       x.text.includes(searchQuery) || (x.memo || '').includes(searchQuery)
     );
   }
- 
+
   let active, done;
   if (currentFilter === '達成済み') {
     active = [];
@@ -2755,7 +2755,7 @@ function render() {
   }
   list.innerHTML = parts.join('');
 }
- 
+
 function toggleMemo(i) {
   const row = document.getElementById(`memo-row-${i}`);
   const btn = row ? row.closest('.item').querySelector('.detail-btn') : null;
@@ -2767,7 +2767,7 @@ function toggleMemo(i) {
     if (ta) ta.focus();
   }
 }
- 
+
 function saveMemo(i) {
   const ta = document.getElementById(`memo-input-${i}`);
   if (!ta) return;
@@ -2777,7 +2777,7 @@ function saveMemo(i) {
   if (btn) btn.classList.toggle('active', !!ta.value);
   save();
 }
- 
+
 function editItem(i) {
   const el = document.getElementById(`edit-row-${i}`);
   const textEl = document.getElementById(`item-text-${i}`);
@@ -2792,22 +2792,22 @@ function editItem(i) {
     textEl.style.opacity = '0.4';
   }
 }
- 
+
 function saveEdit(i) {
   const input = document.getElementById(`edit-input-${i}`);
   const val = input.value.trim();
   if (val) { items[i].text = val; save(); }
   render();
 }
- 
+
 function cancelEdit(i) {
   const el = document.getElementById(`edit-row-${i}`);
   const textEl = document.getElementById(`item-text-${i}`);
   el.style.display = 'none';
   textEl.style.opacity = '1';
 }
- 
- 
+
+
 document.getElementById('newItem').addEventListener('keydown', e => {
   if (e.key === 'Enter') addItem();
 });
@@ -2815,4 +2815,3 @@ document.getElementById('newItem').addEventListener('keydown', e => {
 </script>
 </body>
 </html>
- 
