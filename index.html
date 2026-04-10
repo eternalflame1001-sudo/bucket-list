@@ -1,6 +1,3 @@
-t list firebase · HTML
-コピー
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -303,8 +300,8 @@ t list firebase · HTML
   }
   .filter-tabs::-webkit-scrollbar { display: none; }
   .tab {
-    padding: 10px 16px;
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 22px;
     letter-spacing: 0.1em;
     cursor: pointer;
     border: none;
@@ -318,6 +315,7 @@ t list firebase · HTML
   }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
   .tab:hover:not(.active) { color: var(--ink); }
+  .tab-all { font-size: 13px; padding: 10px 12px; }
   .tab-trash { color: #9a8f7a; }
   .tab-trash.active { color: #8b2c0a; border-bottom-color: #8b2c0a; }
  
@@ -856,13 +854,13 @@ t list firebase · HTML
  
   <!-- Filter tabs -->
   <div class="filter-tabs">
-    <button class="tab active" onclick="setFilter('全て', this)">全て</button>
-    <button class="tab" onclick="setFilter('海外旅行', this)">✈️ 海外</button>
-    <button class="tab" onclick="setFilter('国内旅行', this)">🗾 国内</button>
-    <button class="tab" onclick="setFilter('食・グルメ', this)">🍜 グルメ</button>
-    <button class="tab" onclick="setFilter('スキル・学習', this)">📚 学習</button>
-    <button class="tab" onclick="setFilter('人生の目標', this)">⭐ 目標</button>
-    <button class="tab" onclick="setFilter('達成済み', this)">✅ 達成</button>
+    <button class="tab tab-all active" onclick="setFilter('全て', this)">全て</button>
+    <button class="tab" onclick="setFilter('海外旅行', this)">✈️</button>
+    <button class="tab" onclick="setFilter('国内旅行', this)">🗾</button>
+    <button class="tab" onclick="setFilter('食・グルメ', this)">🍜</button>
+    <button class="tab" onclick="setFilter('スキル・学習', this)">📚</button>
+    <button class="tab" onclick="setFilter('人生の目標', this)">⭐</button>
+    <button class="tab" onclick="setFilter('達成済み', this)">✅</button>
     <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)">🗑️ <span id="trashCount"></span></button>
   </div>
  
