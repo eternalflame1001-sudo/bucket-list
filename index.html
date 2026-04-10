@@ -2003,46 +2003,19 @@ function cancelYear() {
 }
  
 function updateMapColor(key, name, opacity) {
+  const fill = opacity !== null ? `rgba(139,44,100,${opacity})` : '#e8dfc8';
   if (key === 'world') {
     const code = COUNTRY_CODE_MAP[name];
     if (!code) return;
-    d3.select(`#worldD3svg path[data-code="${code}"]`)
-      .attr('fill', opacity !== null ? `rgba(139,44,100,${opacity})` : '#e8dfc8');
+    d3.select(`#worldD3svg path[data-code="${code}"]`).attr('fill', fill);
     return;
   }
   if (key === 'japan') {
-    // nam_jaで一致するpathを探して色更新
-    d3.selectAll('#worldD3svg path').each(function(d) {
-      if (!d || !d.properties) return;
-      const p = d.properties;
-      const jpName = p.nam_ja ? (JP_KANJI_MAP_GLOBAL[p.nam_ja] || p.nam_ja.replace(/[都道府県]$/, '')) : '';
-      if (jpName === name) {
-        d3.select(this).attr('fill', opacity !== null ? `rgba(139,44,100,${opacity})` : '#e8dfc8');
-      }
-    });
+    d3.selectAll(`#worldD3svg path[data-pref="${name}"]`).attr('fill', fill);
     return;
   }
   if (key === 'china') {
-    const CN_JP_MAP_REV = {
-      '北京市':'北京市','天津市':'天津市','上海市':'上海市','重庆市':'重慶市',
-      '河北省':'河北省','山西省':'山西省','辽宁省':'遼寧省','吉林省':'吉林省',
-      '黑龙江省':'黒竜江省','江苏省':'江蘇省','浙江省':'浙江省','安徽省':'安徽省',
-      '福建省':'福建省','江西省':'江西省','山东省':'山東省','河南省':'河南省',
-      '湖北省':'湖北省','湖南省':'湖南省','广东省':'広東省','海南省':'海南省',
-      '四川省':'四川省','贵州省':'貴州省','云南省':'雲南省','陕西省':'陝西省',
-      '甘肃省':'甘粛省','青海省':'青海省','内蒙古自治区':'内モンゴル自治区',
-      '广西壮族自治区':'広西チワン族自治区','西藏自治区':'チベット自治区',
-      '宁夏回族自治区':'寧夏回族自治区','新疆维吾尔自治区':'新疆ウイグル自治区',
-      '香港特别行政区':'香港','澳门特别行政区':'マカオ','台湾省':'台湾'
-    };
-    d3.selectAll('#worldD3svg path').each(function(d) {
-      if (!d || !d.properties) return;
-      const cnName = d.properties.name || '';
-      const jpName = CN_JP_MAP_REV[cnName] || cnName;
-      if (jpName === name) {
-        d3.select(this).attr('fill', opacity !== null ? `rgba(139,44,100,${opacity})` : '#e8dfc8');
-      }
-    });
+    d3.selectAll(`#worldD3svg path[data-province="${name}"]`).attr('fill', fill);
     return;
   }
   const mapEl = document.getElementById('visitMap');
@@ -2050,7 +2023,7 @@ function updateMapColor(key, name, opacity) {
   const path = mapEl.querySelector(`path[data-name="${name}"]`);
   if (!path) return;
   if (opacity !== null) {
-    path.style.fill = `rgba(139,44,100,${opacity})`;
+    path.style.fill = fill;
     path.classList.add('map-visited');
   } else {
     path.style.fill = '';
@@ -2161,15 +2134,17 @@ async function renderMapD3(key, visited, currentYear) {
           const name = CODE_COUNTRY_MAP[String(d.id)];
           if (!name) return;
           const gridItem = [...document.querySelectorAll('.visit-item')].find(el => el.textContent.startsWith(name));
-          if (gridItem) {
-            toggleVisit(key, name, gridItem);
-            const yr = visitData[key] && visitData[key][name];
-            if (yr !== undefined) {
-              const age = currentYear - (yr || currentYear);
-              d3.select(this).attr('fill', `rgba(139,44,100,${Math.max(0.4, 1 - age * 0.06)})`);
-            } else {
-              d3.select(this).attr('fill', '#e8dfc8');
-            }
+          const targetEl = gridItem || document.createElement('div');
+          if (!gridItem) { targetEl._mapProxy = true; }
+          toggleVisit(key, name, targetEl);
+          const yr = visitData[key] && visitData[key][name];
+          if (yr !== undefined) {
+            const age = currentYear - (yr || currentYear);
+            d3.select(this).attr('fill', `rgba(139,44,100,${Math.max(0.4, 1 - age * 0.06)})`);
+          } else {
+            d3.select(this).attr('fill', '#e8dfc8');
+          }
+          if (true) {
           }
         });
     } catch(e) {
@@ -2177,13 +2152,15 @@ async function renderMapD3(key, visited, currentYear) {
     }
  
   } else if (key === 'japan') {
-    const h = Math.round(w * 1.1);
+    const h = Math.round(w * 0.85);
     const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
     svg.selectAll('*').remove();
+    // clipExtentで本州中心にクロップ（離島カット）
     const projection = d3.geoMercator()
-      .center([136, 36])
-      .scale(w * 1.6)
-      .translate([w / 2, h / 2]);
+      .center([136.5, 37.5])
+      .scale(w * 2.0)
+      .translate([w / 2, h / 2])
+      .clipExtent([[0, 0], [w, h]]);
     const pathGen = d3.geoPath().projection(projection);
     try {
       const japanData = await d3.json('https://eternalflame1001-sudo.github.io/bucket-list/japan.json');
@@ -2231,6 +2208,7 @@ async function renderMapD3(key, visited, currentYear) {
         .data(features)
         .join('path')
         .attr('d', pathGen)
+        .attr('data-pref', d => getJpName(d))
         .attr('fill', d => {
           const name = getJpName(d);
           if (name && visited[name] !== undefined) {
@@ -2293,6 +2271,10 @@ async function renderMapD3(key, visited, currentYear) {
         .data(cnFeatures)
         .join('path')
         .attr('d', pathGen)
+        .attr('data-province', d => {
+          const cnName = (d.properties || {}).name || '';
+          return CN_JP_MAP[cnName] || cnName;
+        })
         .attr('fill', d => {
           const props = d.properties || {};
           const cnName = props.name || '';
@@ -2380,16 +2362,23 @@ function toggleVisit(key, name, el) {
   if (visitData[key][name] !== undefined) {
     // 訪問済み → 未訪問に戻す
     delete visitData[key][name];
-    el.classList.remove('visited');
-    el.removeAttribute('style');
-    const yearEl = el.querySelector('.visit-year');
-    if (yearEl) yearEl.remove();
+    if (el && el.classList) {
+      el.classList.remove('visited');
+      el.removeAttribute('style');
+      const yearEl = el.querySelector('.visit-year');
+      if (yearEl) yearEl.remove();
+    }
     saveVisit();
-    updateVisitStats(key, el);
+    // グリッドの対応ボタンも更新
+    const gridItem = [...document.querySelectorAll('.visit-item')].find(e => e.textContent.startsWith(name));
+    if (gridItem) { gridItem.classList.remove('visited'); gridItem.removeAttribute('style'); const y=gridItem.querySelector('.visit-year'); if(y)y.remove(); }
+    updateVisitStats(key, el && el.closest ? el : (gridItem || document.createElement('div')));
     updateMapColor(key, name, null);
   } else {
     // 未訪問 → 年選択ダイアログを表示
-    showYearDialog(key, name, el);
+    // elがダミーの場合はgridItemを探す
+    const targetEl = (el && el.classList) ? el : ([...document.querySelectorAll('.visit-item')].find(e => e.textContent.startsWith(name)) || document.createElement('div'));
+    showYearDialog(key, name, targetEl);
   }
 }
  
