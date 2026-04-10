@@ -1107,6 +1107,8 @@
     0%,100% { opacity:1; } 50% { opacity:0.3; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 </head>
 <body>
 <div id="syncStatus">
@@ -1743,201 +1745,7 @@ china: `<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
 <path data-name="台湾" d="M442,235 L458,228 L465,265 L450,275 L435,258 Z"/>
 </svg>`,
  
-world: `<svg viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg">
-<!-- アジア -->
-<path data-name="日本" d="M748,130 L758,120 L768,132 L762,148 L750,150 Z"/>
-<path data-name="韓国" d="M728,140 L742,135 L748,148 L738,158 L724,152 Z"/>
-<path data-name="中国" d="M620,100 L740,90 L755,170 L700,200 L620,195 L590,160 Z"/>
-<path data-name="台湾" d="M745,175 L755,170 L760,185 L750,192 Z"/>
-<path data-name="香港" d="M718,185 L728,182 L730,190 Z"/>
-<path data-name="モンゴル" d="M620,72 L742,60 L748,100 L622,108 Z"/>
-<path data-name="ベトナム" d="M688,185 L705,178 L715,220 L698,228 L682,210 Z"/>
-<path data-name="タイ" d="M665,185 L690,178 L698,218 L678,230 L658,215 Z"/>
-<path data-name="カンボジア" d="M682,210 L700,205 L705,225 L685,232 Z"/>
-<path data-name="ラオス" d="M672,178 L692,172 L698,205 L675,212 Z"/>
-<path data-name="ミャンマー" d="M645,165 L678,158 L685,200 L658,215 L638,195 Z"/>
-<path data-name="マレーシア" d="M668,228 L710,220 L715,242 L672,248 Z"/>
-<path data-name="シンガポール" d="M690,245 L698,242 L700,250 L692,252 Z"/>
-<path data-name="インドネシア" d="M680,252 L780,242 L788,272 L682,278 Z"/>
-<path data-name="フィリピン" d="M718,185 L738,178 L745,218 L722,228 Z"/>
-<path data-name="ブルネイ" d="M712,235 L722,230 L725,242 Z"/>
-<path data-name="東ティモール" d="M748,258 L762,252 L765,265 L750,268 Z"/>
-<path data-name="インド" d="M570,148 L640,138 L652,215 L608,242 L562,218 L548,175 Z"/>
-<path data-name="パキスタン" d="M530,128 L578,118 L588,165 L545,178 L518,158 Z"/>
-<path data-name="バングラデシュ" d="M638,175 L655,170 L658,192 L640,198 Z"/>
-<path data-name="スリランカ" d="M608,238 L620,232 L622,248 L610,252 Z"/>
-<path data-name="ネパール" d="M588,148 L638,140 L642,158 L590,165 Z"/>
-<path data-name="ブータン" d="M638,148 L655,144 L658,158 L640,162 Z"/>
-<path data-name="モルディブ" d="M590,252 L598,248 L600,260 Z"/>
-<path data-name="アフガニスタン" d="M505,115 L558,105 L565,142 L515,152 Z"/>
-<path data-name="イラン" d="M455,118 L515,108 L525,158 L472,172 L440,148 Z"/>
-<path data-name="イラク" d="M428,118 L465,112 L472,155 L435,165 L415,142 Z"/>
-<path data-name="サウジアラビア" d="M415,148 L485,138 L492,195 L445,212 L405,188 Z"/>
-<path data-name="UAE" d="M490,168 L515,162 L520,182 L495,188 Z"/>
-<path data-name="カタール" d="M480,168 L492,164 L495,178 L482,182 Z"/>
-<path data-name="クウェート" d="M460,148 L475,144 L478,158 L462,162 Z"/>
-<path data-name="バーレーン" d="M472,165 L480,162 L482,172 Z"/>
-<path data-name="オマーン" d="M498,162 L528,155 L535,195 L505,208 L488,185 Z"/>
-<path data-name="イエメン" d="M432,195 L498,182 L505,215 L440,225 Z"/>
-<path data-name="ヨルダン" d="M405,128 L432,122 L438,152 L408,160 Z"/>
-<path data-name="レバノン" d="M395,118 L410,114 L412,128 L397,132 Z"/>
-<path data-name="シリア" d="M395,108 L438,100 L442,128 L398,135 Z"/>
-<path data-name="イスラエル" d="M390,122 L402,118 L405,135 L392,138 Z"/>
-<path data-name="トルコ" d="M345,98 L425,88 L432,122 L350,132 Z"/>
-<path data-name="カザフスタン" d="M480,65 L618,52 L625,108 L485,118 Z"/>
-<path data-name="ウズベキスタン" d="M490,108 L545,100 L550,128 L495,135 Z"/>
-<path data-name="キルギス" d="M548,95 L595,88 L600,112 L552,118 Z"/>
-<path data-name="タジキスタン" d="M542,112 L578,105 L582,128 L545,135 Z"/>
-<path data-name="トルクメニスタン" d="M468,112 L518,105 L522,135 L472,142 Z"/>
-<path data-name="アゼルバイジャン" d="M435,98 L462,92 L465,115 L438,120 Z"/>
-<path data-name="グルジア" d="M395,88 L438,82 L440,100 L398,106 Z"/>
-<path data-name="アルメニア" d="M425,100 L445,95 L448,112 L428,118 Z"/>
-<!-- ヨーロッパ -->
-<path data-name="ロシア" d="M295,18 L720,8 L732,72 L488,82 L298,75 Z"/>
-<path data-name="ウクライナ" d="M345,88 L415,80 L420,112 L348,120 Z"/>
-<path data-name="ベラルーシ" d="M335,72 L380,65 L385,92 L338,98 Z"/>
-<path data-name="モルドバ" d="M368,108 L385,104 L388,120 L370,124 Z"/>
-<path data-name="ポーランド" d="M310,68 L355,62 L360,92 L312,98 Z"/>
-<path data-name="チェコ" d="M305,82 L340,76 L342,96 L308,102 Z"/>
-<path data-name="スロバキア" d="M328,88 L362,82 L365,100 L330,106 Z"/>
-<path data-name="ハンガリー" d="M318,98 L358,92 L360,115 L320,120 Z"/>
-<path data-name="オーストリア" d="M295,88 L330,82 L335,105 L298,110 Z"/>
-<path data-name="ドイツ" d="M278,62 L318,55 L322,95 L280,100 Z"/>
-<path data-name="スイス" d="M275,92 L305,86 L308,108 L278,112 Z"/>
-<path data-name="リヒテンシュタイン" d="M289,98 L295,95 L296,104 Z"/>
-<path data-name="フランス" d="M248,82 L292,75 L298,118 L252,125 Z"/>
-<path data-name="ベルギー" d="M255,68 L280,62 L282,82 L258,86 Z"/>
-<path data-name="オランダ" d="M255,58 L278,52 L280,72 L258,76 Z"/>
-<path data-name="ルクセンブルク" d="M268,78 L280,74 L282,86 L270,90 Z"/>
-<path data-name="デンマーク" d="M275,45 L300,38 L305,62 L278,66 Z"/>
-<path data-name="スウェーデン" d="M292,18 L328,12 L335,62 L295,68 Z"/>
-<path data-name="ノルウェー" d="M255,12 L300,5 L308,50 L258,55 Z"/>
-<path data-name="フィンランド" d="M318,15 L368,8 L372,65 L320,70 Z"/>
-<path data-name="アイスランド" d="M172,18 L215,12 L218,42 L175,48 Z"/>
-<path data-name="英国" d="M222,48 L252,42 L258,82 L225,88 Z"/>
-<path data-name="アイルランド" d="M208,52 L228,46 L232,78 L210,82 Z"/>
-<path data-name="スペイン" d="M218,108 L278,98 L285,138 L222,145 Z"/>
-<path data-name="ポルトガル" d="M205,112 L228,106 L232,142 L208,148 Z"/>
-<path data-name="イタリア" d="M285,102 L320,95 L332,148 L295,158 L278,132 Z"/>
-<path data-name="バチカン" d="M297,128 L303,125 L304,132 Z"/>
-<path data-name="サンマリノ" d="M305,118 L312,114 L313,122 Z"/>
-<path data-name="モナコ" d="M272,118 L278,114 L279,122 Z"/>
-<path data-name="ギリシャ" d="M325,118 L358,112 L365,148 L328,155 Z"/>
-<path data-name="マルタ" d="M305,158 L315,154 L317,165 L307,168 Z"/>
-<path data-name="スロベニア" d="M298,105 L318,100 L320,115 L300,120 Z"/>
-<path data-name="クロアチア" d="M308,108 L338,102 L342,128 L312,135 Z"/>
-<path data-name="ボスニア・ヘルツェゴビナ" d="M318,118 L345,112 L348,135 L320,142 Z"/>
-<path data-name="セルビア" d="M328,112 L360,106 L364,138 L330,145 Z"/>
-<path data-name="モンテネグロ" d="M322,135 L342,130 L345,148 L325,152 Z"/>
-<path data-name="北マケドニア" d="M338,138 L362,132 L365,152 L340,158 Z"/>
-<path data-name="アルバニア" d="M322,148 L342,142 L345,162 L325,168 Z"/>
-<path data-name="コソボ" d="M332,130 L348,126 L350,142 L334,146 Z"/>
-<path data-name="ルーマニア" d="M335,98 L378,90 L382,125 L338,132 Z"/>
-<path data-name="ブルガリア" d="M338,125 L380,118 L384,145 L340,152 Z"/>
-<path data-name="エストニア" d="M322,48 L355,42 L358,62 L325,68 Z"/>
-<path data-name="ラトビア" d="M320,58 L358,52 L362,72 L322,78 Z"/>
-<path data-name="リトアニア" d="M318,68 L355,62 L358,82 L320,88 Z"/>
-<path data-name="アンドラ" d="M245,118 L258,114 L260,126 Z"/>
-<!-- アフリカ -->
-<path data-name="モロッコ" d="M218,148 L268,140 L275,188 L222,198 Z"/>
-<path data-name="アルジェリア" d="M222,188 L310,175 L318,242 L225,252 Z"/>
-<path data-name="チュニジア" d="M295,148 L322,142 L328,178 L298,185 Z"/>
-<path data-name="リビア" d="M295,178 L378,168 L385,238 L298,248 Z"/>
-<path data-name="エジプト" d="M362,158 L415,150 L420,205 L365,215 Z"/>
-<path data-name="スーダン" d="M362,205 L430,195 L438,262 L365,275 Z"/>
-<path data-name="南スーダン" d="M365,262 L438,252 L445,298 L368,308 Z"/>
-<path data-name="エチオピア" d="M400,252 L468,240 L475,298 L405,312 Z"/>
-<path data-name="エリトリア" d="M410,232 L445,225 L448,252 L412,258 Z"/>
-<path data-name="ジブチ" d="M448,252 L462,248 L465,262 L450,266 Z"/>
-<path data-name="ソマリア" d="M445,248 L498,235 L505,295 L448,308 Z"/>
-<path data-name="ケニア" d="M415,295 L468,282 L475,338 L418,352 Z"/>
-<path data-name="タンザニア" d="M402,335 L465,320 L472,378 L405,392 Z"/>
-<path data-name="ウガンダ" d="M402,295 L438,285 L442,322 L405,332 Z"/>
-<path data-name="ルワンダ" d="M395,318 L412,312 L415,332 L398,336 Z"/>
-<path data-name="ブルンジ" d="M392,330 L410,324 L412,345 L395,350 Z"/>
-<path data-name="コンゴ民主共和国" d="M335,275 L415,258 L425,355 L338,368 Z"/>
-<path data-name="コンゴ共和国" d="M305,262 L345,252 L350,308 L308,318 Z"/>
-<path data-name="中央アフリカ" d="M330,228 L415,215 L420,262 L332,272 Z"/>
-<path data-name="カメルーン" d="M295,218 L338,208 L342,262 L298,272 Z"/>
-<path data-name="ナイジェリア" d="M258,205 L312,195 L318,252 L262,262 Z"/>
-<path data-name="ガーナ" d="M228,218 L262,210 L268,258 L232,268 Z"/>
-<path data-name="コートジボワール" d="M205,215 L242,208 L248,252 L208,262 Z"/>
-<path data-name="セネガル" d="M182,185 L222,178 L225,212 L185,218 Z"/>
-<path data-name="マリ" d="M198,165 L278,155 L285,215 L202,225 Z"/>
-<path data-name="ブルキナファソ" d="M228,195 L278,188 L282,218 L230,225 Z"/>
-<path data-name="ニジェール" d="M268,168 L358,158 L365,218 L270,228 Z"/>
-<path data-name="チャド" d="M330,178 L395,168 L400,245 L332,255 Z"/>
-<path data-name="ガボン" d="M295,272 L330,262 L335,308 L298,318 Z"/>
-<path data-name="赤道ギニア" d="M282,268 L302,262 L305,282 L285,288 Z"/>
-<path data-name="サントメ・プリンシペ" d="M270,278 L280,274 L282,286 Z"/>
-<path data-name="カーボベルデ" d="M165,188 L180,182 L182,200 L168,205 Z"/>
-<path data-name="モーリタニア" d="M168,168 L228,158 L232,205 L172,215 Z"/>
-<path data-name="ギニア" d="M178,205 L215,198 L218,232 L182,238 Z"/>
-<path data-name="ギニアビサウ" d="M172,205 L192,200 L195,218 L175,222 Z"/>
-<path data-name="シエラレオネ" d="M182,225 L208,218 L212,242 L185,248 Z"/>
-<path data-name="リベリア" d="M192,238 L222,230 L228,258 L195,265 Z"/>
-<path data-name="トーゴ" d="M248,205 L262,200 L265,242 L250,248 Z"/>
-<path data-name="ベナン" d="M255,198 L278,192 L282,235 L258,242 Z"/>
-<path data-name="ガンビア" d="M172,198 L198,192 L200,205 L175,208 Z"/>
-<path data-name="南アフリカ" d="M318,368 L408,355 L415,418 L322,428 Z"/>
-<path data-name="ナミビア" d="M290,342 L345,330 L350,385 L295,395 Z"/>
-<path data-name="ボツワナ" d="M322,345 L375,335 L380,385 L325,395 Z"/>
-<path data-name="ジンバブエ" d="M360,322 L412,310 L418,358 L362,368 Z"/>
-<path data-name="ザンビア" d="M340,295 L415,280 L420,335 L342,348 Z"/>
-<path data-name="モザンビーク" d="M390,318 L432,305 L440,385 L392,398 Z"/>
-<path data-name="マラウイ" d="M405,305 L422,298 L428,345 L408,352 Z"/>
-<path data-name="アンゴラ" d="M292,295 L358,280 L365,345 L295,358 Z"/>
-<path data-name="マダガスカル" d="M428,325 L448,318 L452,385 L432,392 Z"/>
-<path data-name="コモロ" d="M438,308 L450,302 L452,315 L440,320 Z"/>
-<path data-name="セーシェル" d="M475,278 L485,274 L487,285 Z"/>
-<path data-name="モーリシャス" d="M462,368 L472,362 L475,375 L464,380 Z"/>
-<path data-name="レソト" d="M348,388 L362,382 L365,398 L350,402 Z"/>
-<path data-name="エスワティニ" d="M372,375 L385,370 L388,385 L374,390 Z"/>
-<!-- 南北アメリカ -->
-<path data-name="カナダ" d="M28,18 L195,8 L205,85 L32,92 Z"/>
-<path data-name="アメリカ" d="M32,88 L205,78 L215,148 L35,158 Z"/>
-<path data-name="メキシコ" d="M35,155 L128,145 L138,195 L42,205 Z"/>
-<path data-name="グアテマラ" d="M62,192 L98,185 L102,212 L65,218 Z"/>
-<path data-name="ベリーズ" d="M90,185 L105,180 L108,205 L92,210 Z"/>
-<path data-name="ホンジュラス" d="M68,208 L108,200 L112,225 L72,232 Z"/>
-<path data-name="エルサルバドル" d="M62,218 L88,212 L92,232 L65,238 Z"/>
-<path data-name="ニカラグア" d="M72,228 L112,220 L118,252 L75,258 Z"/>
-<path data-name="コスタリカ" d="M78,252 L112,244 L118,268 L82,275 Z"/>
-<path data-name="パナマ" d="M88,268 L128,258 L135,282 L92,290 Z"/>
-<path data-name="キューバ" d="M88,175 L138,165 L145,188 L92,195 Z"/>
-<path data-name="ジャマイカ" d="M108,192 L128,186 L132,202 L112,208 Z"/>
-<path data-name="ハイチ" d="M128,185 L150,178 L155,202 L132,208 Z"/>
-<path data-name="ドミニカ共和国" d="M148,182 L172,175 L178,198 L152,205 Z"/>
-<path data-name="トリニダード・トバゴ" d="M155,215 L172,208 L175,225 L158,230 Z"/>
-<path data-name="バルバドス" d="M172,212 L182,208 L184,220 Z"/>
-<path data-name="コロンビア" d="M88,285 L155,272 L162,335 L92,345 Z"/>
-<path data-name="ベネズエラ" d="M112,258 L178,245 L185,295 L115,308 Z"/>
-<path data-name="ガイアナ" d="M162,258 L192,250 L198,295 L165,305 Z"/>
-<path data-name="スリナム" d="M182,255 L212,248 L218,292 L185,302 Z"/>
-<path data-name="ブラジル" d="M115,305 L232,285 L245,408 L118,422 Z"/>
-<path data-name="エクアドル" d="M72,318 L108,308 L115,348 L75,358 Z"/>
-<path data-name="ペルー" d="M68,340 L128,325 L138,408 L72,422 Z"/>
-<path data-name="ボリビア" d="M108,368 L165,352 L172,418 L112,432 Z"/>
-<path data-name="チリ" d="M75,388 L112,375 L125,448 L78,455 Z"/>
-<path data-name="アルゼンチン" d="M100,388 L162,372 L172,448 L105,462 Z"/>
-<path data-name="ウルグアイ" d="M142,408 L172,400 L178,428 L145,435 Z"/>
-<path data-name="パラグアイ" d="M128,375 L168,365 L175,405 L132,415 Z"/>
-<!-- オセアニア -->
-<path data-name="オーストラリア" d="M718,272 L828,258 L838,372 L722,385 Z"/>
-<path data-name="ニュージーランド" d="M818,355 L842,345 L850,398 L822,408 Z"/>
-<path data-name="パプアニューギニア" d="M748,248 L800,235 L808,275 L752,288 Z"/>
-<path data-name="フィジー" d="M828,295 L845,288 L848,308 L832,315 Z"/>
-<path data-name="ソロモン諸島" d="M798,268 L818,260 L822,282 L802,288 Z"/>
-<path data-name="バヌアツ" d="M812,298 L825,292 L828,315 L815,320 Z"/>
-<path data-name="サモア" d="M852,285 L865,278 L868,295 Z"/>
-<path data-name="トンガ" d="M858,305 L868,298 L870,315 Z"/>
-<path data-name="キリバス" d="M838,248 L858,240 L862,258 L842,265 Z"/>
-<path data-name="ミクロネシア" d="M778,218 L808,210 L812,232 L782,238 Z"/>
-<path data-name="マーシャル諸島" d="M818,212 L835,205 L838,222 L822,228 Z"/>
-<path data-name="パラオ" d="M758,225 L772,218 L775,235 L762,240 Z"/>
-<path data-name="ナウル" d="M828,248 L838,244 L840,255 Z"/>
-<path data-name="ツバル" d="M848,268 L858,262 L860,275 Z"/>
-</svg>`
+world: `<div id='worldMapD3'></div>`
  
 };
 // ===== 訪問記録 =====
@@ -2019,38 +1827,44 @@ function renderVisit(mode) {
  
   // 地図を表示
   const mapEl = document.getElementById('visitMap');
-  mapEl.innerHTML = MAP_SVG[key];
   const currentYear = new Date().getFullYear();
-  // 地図の各pathに色を適用
-  mapEl.querySelectorAll('path[data-name]').forEach(path => {
-    const name = path.getAttribute('data-name');
-    const year = visited[name];
-    if (year !== undefined) {
-      const age = currentYear - (year || currentYear);
-      const opacity = Math.max(0.4, 1 - age * 0.06);
-      path.style.fill = `rgba(139,44,100,${opacity})`;
-      path.classList.add('map-visited');
-      path.title = `${name}（${year || currentYear}年）`;
-    }
-    // 地図クリックでもトグル
-    path.addEventListener('click', () => {
-      const gridItem = [...document.querySelectorAll('.visit-item')].find(el => el.textContent.startsWith(name));
-      if (gridItem) {
-        toggleVisit(key, name, gridItem);
-        // 地図の色も更新
-        if (visitData[key] && visitData[key][name] !== undefined) {
-          const y = visitData[key][name];
-          const age2 = currentYear - (y || currentYear);
-          const op = Math.max(0.4, 1 - age2 * 0.06);
-          path.style.fill = `rgba(139,44,100,${op})`;
-          path.classList.add('map-visited');
-        } else {
-          path.style.fill = '';
-          path.classList.remove('map-visited');
-        }
+ 
+  if (key === 'world' || key === 'japan' || key === 'china') {
+    // D3.js で地図を描画
+    mapEl.innerHTML = '<svg id="worldD3svg" style="width:100%;height:auto;display:block;"></svg>';
+    renderMapD3(key, visited, currentYear);
+  } else {
+    mapEl.innerHTML = MAP_SVG[key];
+    // 地図の各pathに色を適用
+    mapEl.querySelectorAll('path[data-name]').forEach(path => {
+      const name = path.getAttribute('data-name');
+      const year = visited[name];
+      if (year !== undefined) {
+        const age = currentYear - (year || currentYear);
+        const opacity = Math.max(0.4, 1 - age * 0.06);
+        path.style.fill = `rgba(139,44,100,${opacity})`;
+        path.classList.add('map-visited');
+        path.title = `${name}（${year || currentYear}年）`;
       }
+      // 地図クリックでもトグル
+      path.addEventListener('click', () => {
+        const gridItem = [...document.querySelectorAll('.visit-item')].find(el => el.textContent.startsWith(name));
+        if (gridItem) {
+          toggleVisit(key, name, gridItem);
+          if (visitData[key] && visitData[key][name] !== undefined) {
+            const y = visitData[key][name];
+            const age2 = currentYear - (y || currentYear);
+            const op = Math.max(0.4, 1 - age2 * 0.06);
+            path.style.fill = `rgba(139,44,100,${op})`;
+            path.classList.add('map-visited');
+          } else {
+            path.style.fill = '';
+            path.classList.remove('map-visited');
+          }
+        }
+      });
     });
-  });
+  }
  
   // 年ごとに色を変える（最近=濃い緑、古い=薄い緑）
   gridEl.innerHTML = list.map(name => {
@@ -2127,6 +1941,17 @@ function cancelYear() {
 }
  
 function updateMapColor(key, name, opacity) {
+  if (key === 'world') {
+    const code = COUNTRY_CODE_MAP[name];
+    if (!code) return;
+    d3.select(`#worldD3svg path[data-code="${code}"]`)
+      .attr('fill', opacity !== null ? `rgba(139,44,100,${opacity})` : '#e8dfc8');
+    return;
+  }
+  if (key === 'japan' || key === 'china') {
+    // D3で描画した地図のpathを再描画で色更新（再renderで対応）
+    return;
+  }
   const mapEl = document.getElementById('visitMap');
   if (!mapEl) return;
   const path = mapEl.querySelector(`path[data-name="${name}"]`);
@@ -2138,6 +1963,273 @@ function updateMapColor(key, name, opacity) {
     path.style.fill = '';
     path.classList.remove('map-visited');
   }
+}
+ 
+// 日本語国名 → ISO 3166-1 numeric コードのマッピング
+const COUNTRY_CODE_MAP = {
+  '日本':'392','韓国':'410','中国':'156','台湾':'158','香港':'344','モンゴル':'496',
+  'ベトナム':'704','タイ':'764','カンボジア':'116','ラオス':'418','ミャンマー':'104',
+  'マレーシア':'458','シンガポール':'702','インドネシア':'360','フィリピン':'608',
+  'ブルネイ':'096','東ティモール':'626','インド':'356','パキスタン':'586',
+  'バングラデシュ':'050','スリランカ':'144','ネパール':'524','ブータン':'064',
+  'モルディブ':'462','アフガニスタン':'004','イラン':'364','イラク':'368',
+  'サウジアラビア':'682','UAE':'784','カタール':'634','クウェート':'414',
+  'バーレーン':'048','オマーン':'512','イエメン':'887','ヨルダン':'400',
+  'レバノン':'422','シリア':'760','イスラエル':'376','トルコ':'792',
+  'カザフスタン':'398','ウズベキスタン':'860','キルギス':'417','タジキスタン':'762',
+  'トルクメニスタン':'795','アゼルバイジャン':'031','グルジア':'268','アルメニア':'051',
+  'ロシア':'643','ウクライナ':'804','ベラルーシ':'112','モルドバ':'498',
+  'ポーランド':'616','チェコ':'203','スロバキア':'703','ハンガリー':'348',
+  'オーストリア':'040','ドイツ':'276','スイス':'756','リヒテンシュタイン':'438',
+  'フランス':'250','ベルギー':'056','オランダ':'528','ルクセンブルク':'442',
+  'デンマーク':'208','スウェーデン':'752','ノルウェー':'578','フィンランド':'246',
+  'アイスランド':'352','英国':'826','アイルランド':'372','スペイン':'724',
+  'ポルトガル':'620','イタリア':'380','バチカン':'336','サンマリノ':'674',
+  'モナコ':'492','ギリシャ':'300','マルタ':'470','スロベニア':'705',
+  'クロアチア':'191','ボスニア・ヘルツェゴビナ':'070','セルビア':'688',
+  'モンテネグロ':'499','北マケドニア':'807','アルバニア':'008','コソボ':'383',
+  'ルーマニア':'642','ブルガリア':'100','エストニア':'233','ラトビア':'428',
+  'リトアニア':'440','アンドラ':'020',
+  'モロッコ':'504','アルジェリア':'012','チュニジア':'788','リビア':'434',
+  'エジプト':'818','スーダン':'729','南スーダン':'728','エチオピア':'231',
+  'エリトリア':'232','ジブチ':'262','ソマリア':'706','ケニア':'404',
+  'タンザニア':'834','ウガンダ':'800','ルワンダ':'646','ブルンジ':'108',
+  'コンゴ民主共和国':'180','コンゴ共和国':'178','中央アフリカ':'140',
+  'カメルーン':'120','ナイジェリア':'566','ガーナ':'288','コートジボワール':'384',
+  'セネガル':'686','マリ':'466','ブルキナファソ':'854','ニジェール':'562',
+  'チャド':'148','ガボン':'266','赤道ギニア':'226','サントメ・プリンシペ':'678',
+  'カーボベルデ':'132','モーリタニア':'478','ギニア':'324','ギニアビサウ':'624',
+  'シエラレオネ':'694','リベリア':'430','トーゴ':'768','ベナン':'204',
+  'ガンビア':'270','南アフリカ':'710','ナミビア':'516','ボツワナ':'072',
+  'ジンバブエ':'716','ザンビア':'894','モザンビーク':'508','マラウイ':'454',
+  'アンゴラ':'024','マダガスカル':'450','コモロ':'174','セーシェル':'690',
+  'モーリシャス':'480','レソト':'426','エスワティニ':'748',
+  'カナダ':'124','アメリカ':'840','メキシコ':'484','グアテマラ':'320',
+  'ベリーズ':'084','ホンジュラス':'340','エルサルバドル':'222','ニカラグア':'558',
+  'コスタリカ':'188','パナマ':'591','キューバ':'192','ジャマイカ':'388',
+  'ハイチ':'332','ドミニカ共和国':'214','トリニダード・トバゴ':'780',
+  'バルバドス':'052','コロンビア':'170','ベネズエラ':'862','ガイアナ':'328',
+  'スリナム':'740','ブラジル':'076','エクアドル':'218','ペルー':'604',
+  'ボリビア':'068','チリ':'152','アルゼンチン':'032','ウルグアイ':'858',
+  'パラグアイ':'600','オーストラリア':'036','ニュージーランド':'554',
+  'パプアニューギニア':'598','フィジー':'242','ソロモン諸島':'090',
+  'バヌアツ':'548','サモア':'882','トンガ':'776','キリバス':'296',
+  'ミクロネシア':'583','マーシャル諸島':'584','パラオ':'585','ナウル':'520','ツバル':'798'
+};
+const CODE_COUNTRY_MAP = Object.fromEntries(Object.entries(COUNTRY_CODE_MAP).map(([k,v])=>[v,k]));
+ 
+async function renderMapD3(key, visited, currentYear) {
+  const mapEl = document.getElementById('visitMap');
+  const w = mapEl.clientWidth || 800;
+ 
+  if (key === 'world') {
+    const h = Math.round(w * 0.5);
+    const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
+    svg.selectAll('*').remove();
+    const projection = d3.geoNaturalEarth1()
+      .scale(w / 5.8)
+      .rotate([-150, 0])
+      .translate([w / 2, h / 2]);
+    const pathGen = d3.geoPath().projection(projection);
+    try {
+      const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+      const countries = topojson.feature(world, world.objects.countries);
+      svg.selectAll('path')
+        .data(countries.features)
+        .join('path')
+        .attr('d', pathGen)
+        .attr('data-code', d => d.id)
+        .attr('fill', d => {
+          const name = CODE_COUNTRY_MAP[String(d.id)];
+          if (name && visited[name] !== undefined) {
+            const age = currentYear - (visited[name] || currentYear);
+            const opacity = Math.max(0.4, 1 - age * 0.06);
+            return `rgba(139,44,100,${opacity})`;
+          }
+          return '#e8dfc8';
+        })
+        .attr('stroke', '#9a8f7a')
+        .attr('stroke-width', 0.4)
+        .style('cursor', 'pointer')
+        .on('click', function(event, d) {
+          const name = CODE_COUNTRY_MAP[String(d.id)];
+          if (!name) return;
+          const gridItem = [...document.querySelectorAll('.visit-item')].find(el => el.textContent.startsWith(name));
+          if (gridItem) {
+            toggleVisit(key, name, gridItem);
+            const yr = visitData[key] && visitData[key][name];
+            if (yr !== undefined) {
+              const age = currentYear - (yr || currentYear);
+              d3.select(this).attr('fill', `rgba(139,44,100,${Math.max(0.4, 1 - age * 0.06)})`);
+            } else {
+              d3.select(this).attr('fill', '#e8dfc8');
+            }
+          }
+        });
+    } catch(e) {
+      mapEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--faded);">地図の読み込みに失敗しました</div>';
+    }
+ 
+  } else if (key === 'japan') {
+    const h = Math.round(w * 1.1);
+    const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
+    svg.selectAll('*').remove();
+    const projection = d3.geoMercator()
+      .center([136, 36])
+      .scale(w * 1.6)
+      .translate([w / 2, h / 2]);
+    const pathGen = d3.geoPath().projection(projection);
+    try {
+      const japanData = await d3.json('https://eternalflame1001-sudo.github.io/bucket-list/japan.json');
+      // TopoJSONかGeoJSONか判定
+      let features;
+      if (japanData.type === 'Topology') {
+        const prefKey = Object.keys(japanData.objects)[0];
+        features = topojson.feature(japanData, japanData.objects[prefKey]).features;
+      } else {
+        features = japanData.features || [];
+      }
+      const JP_KANJI_MAP = {
+        '北海道':'北海道','青森県':'青森','岩手県':'岩手','宮城県':'宮城','秋田県':'秋田',
+        '山形県':'山形','福島県':'福島','茨城県':'茨城','栃木県':'栃木','群馬県':'群馬',
+        '埼玉県':'埼玉','千葉県':'千葉','東京都':'東京','神奈川県':'神奈川','新潟県':'新潟',
+        '富山県':'富山','石川県':'石川','福井県':'福井','山梨県':'山梨','長野県':'長野',
+        '岐阜県':'岐阜','静岡県':'静岡','愛知県':'愛知','三重県':'三重','滋賀県':'滋賀',
+        '京都府':'京都','大阪府':'大阪','兵庫県':'兵庫','奈良県':'奈良','和歌山県':'和歌山',
+        '鳥取県':'鳥取','島根県':'島根','岡山県':'岡山','広島県':'広島','山口県':'山口',
+        '徳島県':'徳島','香川県':'香川','愛媛県':'愛媛','高知県':'高知','福岡県':'福岡',
+        '佐賀県':'佐賀','長崎県':'長崎','熊本県':'熊本','大分県':'大分','宮崎県':'宮崎',
+        '鹿児島県':'鹿児島','沖縄県':'沖縄'
+      };
+      const JP_NAME_MAP = {
+        '1':'北海道','2':'青森','3':'岩手','4':'宮城','5':'秋田',
+        '6':'山形','7':'福島','8':'茨城','9':'栃木','10':'群馬',
+        '11':'埼玉','12':'千葉','13':'東京','14':'神奈川','15':'新潟',
+        '16':'富山','17':'石川','18':'福井','19':'山梨','20':'長野',
+        '21':'岐阜','22':'静岡','23':'愛知','24':'三重','25':'滋賀',
+        '26':'京都','27':'大阪','28':'兵庫','29':'奈良','30':'和歌山',
+        '31':'鳥取','32':'島根','33':'岡山','34':'広島','35':'山口',
+        '36':'徳島','37':'香川','38':'愛媛','39':'高知','40':'福岡',
+        '41':'佐賀','42':'長崎','43':'熊本','44':'大分','45':'宮崎',
+        '46':'鹿児島','47':'沖縄'
+      };
+      function getJpName(d) {
+        const p = d.properties || {};
+        const kanjiName = p.name || p.NAME || p.N03_001 || p.pref || '';
+        if (JP_KANJI_MAP[kanjiName]) return JP_KANJI_MAP[kanjiName];
+        if (JP_KANJI_MAP[kanjiName + '県']) return JP_KANJI_MAP[kanjiName + '県'];
+        const code = String(parseInt(p.id || p.ken_id || p.N03_007 || d.id || 0));
+        return JP_NAME_MAP[code] || '';
+      }
+      svg.selectAll('path')
+        .data(features)
+        .join('path')
+        .attr('d', pathGen)
+        .attr('fill', d => {
+          const name = getJpName(d);
+          if (name && visited[name] !== undefined) {
+            const age = currentYear - (visited[name] || currentYear);
+            return `rgba(139,44,100,${Math.max(0.4, 1 - age * 0.06)})`;
+          }
+          return '#e8dfc8';
+        })
+        .attr('stroke', '#9a8f7a').attr('stroke-width', 0.5)
+        .style('cursor', 'pointer')
+        .on('click', function(event, d) {
+          const name = getJpName(d);
+          if (!name) return;
+          const gridItem = [...document.querySelectorAll('.visit-item')].find(el => el.textContent.startsWith(name));
+          if (gridItem) {
+            toggleVisit(key, name, gridItem);
+            const yr = visitData[key]?.[name];
+            d3.select(this).attr('fill', yr !== undefined
+              ? `rgba(139,44,100,${Math.max(0.4, 1-(currentYear-(yr||currentYear))*0.06)})`
+              : '#e8dfc8');
+          }
+        });
+    } catch(e) {
+      console.error('日本地図エラー:', e);
+      mapEl.innerHTML = MAP_SVG['japan'];
+      applyMapColors('japan', visited, currentYear);
+    }
+ 
+  } else if (key === 'china') {
+    const h = Math.round(w * 0.8);
+    const svg = d3.select('#worldD3svg').attr('viewBox', `0 0 ${w} ${h}`);
+    svg.selectAll('*').remove();
+    const projection = d3.geoMercator()
+      .center([104, 35])
+      .scale(w * 0.9)
+      .translate([w / 2, h / 2]);
+    const pathGen = d3.geoPath().projection(projection);
+    try {
+      const chinaData = await d3.json('https://eternalflame1001-sudo.github.io/bucket-list/china.json');
+      let cnFeatures;
+      if (chinaData.type === 'Topology') {
+        const provKey = Object.keys(chinaData.objects)[0];
+        cnFeatures = topojson.feature(chinaData, chinaData.objects[provKey]).features;
+      } else {
+        cnFeatures = chinaData.features || [];
+      }
+      const CN_JP_MAP = {
+        'Beijing':'北京市','Tianjin':'天津市','Shanghai':'上海市','Chongqing':'重慶市',
+        'Hebei':'河北省','Shanxi':'山西省','Liaoning':'遼寧省','Jilin':'吉林省',
+        'Heilongjiang':'黒竜江省','Jiangsu':'江蘇省','Zhejiang':'浙江省','Anhui':'安徽省',
+        'Fujian':'福建省','Jiangxi':'江西省','Shandong':'山東省','Henan':'河南省',
+        'Hubei':'湖北省','Hunan':'湖南省','Guangdong':'広東省','Hainan':'海南省',
+        'Sichuan':'四川省','Guizhou':'貴州省','Yunnan':'雲南省','Shaanxi':'陝西省',
+        'Gansu':'甘粛省','Qinghai':'青海省','Inner Mongolia':'内モンゴル自治区',
+        'Guangxi':'広西チワン族自治区','Tibet':'チベット自治区',
+        'Ningxia':'寧夏回族自治区','Xinjiang':'新疆ウイグル自治区',
+        'Hong Kong':'香港','Macao':'マカオ','Taiwan':'台湾'
+      };
+      svg.selectAll('path')
+        .data(cnFeatures)
+        .join('path')
+        .attr('d', pathGen)
+        .attr('fill', d => {
+          const props = d.properties || {};
+          const enName = props.NAME_1 || props.name || props.NAME || '';
+          const jpName = CN_JP_MAP[enName] || enName;
+          if (visited[jpName] !== undefined) {
+            const age = currentYear - (visited[jpName] || currentYear);
+            return `rgba(139,44,100,${Math.max(0.4, 1 - age * 0.06)})`;
+          }
+          return '#e8dfc8';
+        })
+        .attr('stroke', '#9a8f7a').attr('stroke-width', 0.5)
+        .style('cursor', 'pointer')
+        .on('click', function(event, d) {
+          const props = d.properties || {};
+          const enName = props.NAME_1 || props.name || props.NAME || '';
+          const jpName = CN_JP_MAP[enName] || enName;
+          const gridItem = [...document.querySelectorAll('.visit-item')].find(el => el.textContent.startsWith(jpName));
+          if (gridItem) {
+            toggleVisit(key, jpName, gridItem);
+            const yr = visitData[key]?.[jpName];
+            d3.select(this).attr('fill', yr !== undefined
+              ? `rgba(139,44,100,${Math.max(0.4, 1-(currentYear-(yr||currentYear))*0.06)})`
+              : '#e8dfc8');
+          }
+        });
+    } catch(e) {
+      console.error('中国地図エラー:', e);
+      mapEl.innerHTML = MAP_SVG['china'];
+      applyMapColors('china', visited, currentYear);
+    }
+  }
+}
+ 
+function applyMapColors(key, visited, currentYear) {
+  const mapEl = document.getElementById('visitMap');
+  mapEl.querySelectorAll('path[data-name]').forEach(path => {
+    const name = path.getAttribute('data-name');
+    const year = visited[name];
+    if (year !== undefined) {
+      const age = currentYear - (year || currentYear);
+      path.style.fill = `rgba(139,44,100,${Math.max(0.4, 1 - age * 0.06)})`;
+    }
+  });
 }
  
 function renderVisitHistory(key) {
