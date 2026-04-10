@@ -403,7 +403,7 @@
  
   .item-body { flex: 1; min-width: 0; }
   .item-text {
-    font-size: 17px;
+    font-size: 19px;
     line-height: 1.4;
     font-family: 'Zen Kaku Gothic New', sans-serif;
     font-weight: 700;
@@ -520,8 +520,8 @@
     border-radius: 4px;
     color: var(--faded);
     cursor: pointer;
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 14px;
+    padding: 4px 8px;
     line-height: 1;
     transition: all 0.15s;
     flex-shrink: 0;
@@ -534,8 +534,8 @@
     border-radius: 4px;
     color: var(--faded);
     cursor: pointer;
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 14px;
+    padding: 4px 8px;
     line-height: 1;
     transition: all 0.15s;
     flex-shrink: 0;
@@ -548,8 +548,8 @@
     border-radius: 4px;
     color: var(--faded);
     cursor: pointer;
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 14px;
+    padding: 4px 8px;
     line-height: 1;
     transition: all 0.15s;
     flex-shrink: 0;
@@ -1496,11 +1496,9 @@ function buildItemHTML(item) {
         <button class="item-edit-save" onclick="saveEdit(${item._i})">保存</button>
         <button class="item-edit-cancel" onclick="cancelEdit(${item._i})">取消</button>
       </div>
-      <div class="item-badges">
+      <div class="change-row" ${item.done ? 'style="display:none"' : ''}>
         <span class="cat-tag">${item.cat}</span>
         <span class="badge badge-score score-${item.score}" title="重要度×緊急度">スコア ${item.score}</span>
-      </div>
-      <div class="change-row" ${item.done ? 'style="display:none"' : ''}>
         <div class="change-group">
           <span class="change-group-label">緊急度</span>
           <button class="urg-change-btn${item.urg==='高'?' active-高':''}" data-v="高" onclick="changeUrg(${item._i},'高')">高(3)</button>
