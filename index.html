@@ -1635,7 +1635,7 @@ async function loadFromFirebase() {
     const itemsData = await itemsRes.json();
     const trashData = await trashRes.json();
     return {
-      items: (itemsData && Array.isArray(itemsData) && itemsData.length >= 10)
+      items: (itemsData && Array.isArray(itemsData) && itemsData.length > 0)
         ? itemsData.map(i => ({...i, urg: i.urg || '中'}))
         : null,
       trash: (trashData && Array.isArray(trashData)) ? trashData : []
@@ -1732,8 +1732,8 @@ window.onload = async function() {
       setSyncStatus('synced');
       startPolling();
     } else {
-      // 初回：デフォルトデータをFirebaseに書き込む
-      await saveToFirebase();
+      // Firebaseにデータがない場合のみデフォルトデータを書き込む
+      // 既存データは絶対に上書きしない
       setSyncStatus('synced');
       startPolling();
     }
