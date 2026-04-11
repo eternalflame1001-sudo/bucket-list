@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>バケットリスト</title>
+<title>Bucket List</title>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1797,7 +1797,7 @@ function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => {
     b.classList.remove('active');
-    if (b.getAttribute('onclick') === `setMode('${mode}')`) b.classList.add('active');
+    if (b.getAttribute('onclick') === "setMode('" + mode + "')") b.classList.add('active');
   });
   const mainEl = document.querySelector('main');
   const visitPanel = document.getElementById('visitPanel');
@@ -1807,6 +1807,10 @@ function setMode(mode) {
   } else {
     mainEl.style.display = 'none';
     visitPanel.style.display = 'block';
+    // グリッドと地図をリセット
+    document.getElementById('visitGrid').innerHTML = '';
+    document.getElementById('visitHistory').innerHTML = '';
+    document.getElementById('visitMap').innerHTML = '<svg id="worldD3svg" style="width:100%;height:auto;display:block;"></svg>';
     renderVisit(mode);
   }
 }
@@ -1999,17 +2003,18 @@ function renderVisit(mode) {
         if (isVisited && year) { const age = currentYear-year; const op = Math.max(0.4,1-age*0.06); btnStyle = `background:rgba(139,44,100,${op});border-color:rgba(139,44,100,${op});color:white;`; }
         const yearLabel = isVisited && year ? `<span class="visit-year">${year}</span>` : '';
         const starDisp = onsen.starStr ? `<span style="font-size:9px;display:block;">${onsen.starStr}</span>` : '';
+        const safeDayBath = onsen.dayBath ? onsen.dayBath.split("'").join("&#39;") : '';
         html += `<div class="onsen-item-wrap">
           <div class="visit-item onsen-btn${isVisited?' visited':''}" data-vkey="${onsen.key}" style="${btnStyle}" onclick="toggleVisitAndMap('${key}','${onsen.key}',this)">
             <span style="font-size:9px;opacity:0.75;display:block;">${onsen.pref}</span>${onsen.name}${starDisp}${yearLabel}
           </div>
-          ${onsen.dayBath?`<button class="onsen-detail-btn" onclick="toggleOnsenDetail(this,'${onsen.dayBath.replace(/'/g,"\\'")}')">🛁</button>`:''}
+          ${onsen.dayBath?`<button class="onsen-detail-btn" data-bath="${safeDayBath}" onclick="toggleOnsenDetail(this)">🛁</button>`:''}
         </div>`;
       });
       html += `</div></div>`;
     });
     gridEl.innerHTML = html;
-  } else {
+  } else if (mode === 'japan' || mode === 'china') {
     gridEl.innerHTML = list.map(name => {
       const year = visited[name];
       const isVisited = year !== undefined;
