@@ -799,6 +799,7 @@
   /* モードタブ */
   .mode-tabs {
     display: flex;
+    justify-content: center;
     overflow-x: auto;
     scrollbar-width: none;
     background: var(--ink);
@@ -888,7 +889,7 @@
 
 <!-- モード切替タブ -->
 <div class="mode-tabs">
-  <button class="mode-btn active" onclick="setMode('bucket')">📚 バケットリスト</button>
+  <button class="mode-btn active" onclick="setMode('bucket')">📚 Bucket List</button>
   <button class="mode-btn" onclick="setMode('onsen')">♨️ 温泉</button>
   <button class="mode-btn" onclick="setMode('japan')">🗾 都道府県</button>
   <button class="mode-btn" onclick="setMode('china')">🇨🇳 中国</button>
@@ -1965,7 +1966,8 @@ function renderVisit(mode) {
   document.getElementById('visitFill').style.width = pct + '%';
   document.getElementById('mapOverlay').innerHTML = `${count}/${total}<br>${pct}%`;
 
-  // グリッド表示
+  // グリッド表示（まずクリア）
+  gridEl.innerHTML = '';
   if (mode === 'world') {
     let html = '';
     Object.entries(WORLD_CONTINENTS).forEach(([continent, countries]) => {
