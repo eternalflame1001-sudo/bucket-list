@@ -2006,7 +2006,9 @@ function renderVisit(mode) {
   renderMapD3(key, visited, currentYear2);
 }
 
-function toggleOnsenDetail(btn, dayBath) {
+function toggleOnsenDetail(btn) {
+  const dayBath = btn.getAttribute('data-bath') || '';
+  const name = btn.getAttribute('data-name') || '';
   const wrap = btn.closest('.onsen-item-wrap');
   let popup = wrap.querySelector('.onsen-detail-popup');
   if (popup) { popup.remove(); btn.textContent='🛁'; return; }
@@ -2152,7 +2154,7 @@ async function renderMapD3(key, visited, currentYear) {
       } else { features = japanData.features||[]; }
       function getJpName(d) {
         const p = d.properties||{};
-        if (p.nam_ja) return JP_KANJI_MAP_GLOBAL[p.nam_ja]||p.nam_ja.replace(/[都道府県]$/,'');
+        if (p.nam_ja) return JP_KANJI_MAP_GLOBAL[p.nam_ja]||p.nam_ja.replace('都','').replace('道','').replace('府','').replace('県','');
         return '';
       }
       svg.selectAll('path').data(features).join('path')
