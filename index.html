@@ -907,9 +907,8 @@
       <div id="visitFill" style="height:100%;background:linear-gradient(90deg,#8b2c6a,#c9a227);border-radius:2px;transition:width 0.5s;width:0%;"></div>
     </div>
     <div id="visitGrid" class="visit-grid" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;"></div>
-    <div id="visitMap" style="margin-bottom:12px;position:relative;">
-      <div id="mapOverlay" style="position:absolute;top:8px;right:8px;background:rgba(26,18,9,0.75);color:var(--gold);font-family:'Shippori Mincho',serif;font-size:13px;padding:6px 10px;border-radius:4px;text-align:center;line-height:1.4;z-index:10;"></div>
-    </div>
+    <div id="visitMap" style="margin-bottom:12px;position:relative;"></div>
+    <div id="mapOverlay" style="text-align:right;font-family:'Shippori Mincho',serif;font-size:12px;color:var(--faded);margin-bottom:4px;"></div>
     <div id="visitHistory"></div>
   </div>
 </div>
@@ -1611,11 +1610,9 @@ function buildItemHTML(item) {
         <button class="item-edit-save" onclick="saveEdit(${item._i})">保存</button>
         <button class="item-edit-cancel" onclick="cancelEdit(${item._i})">取消</button>
       </div>
-      <div class="item-badges">
-        <span class="cat-tag">${item.cat}</span>
-        <span class="badge badge-score score-${item.score}" title="重要度×緊急度・最高９">${'０１２３４５６７８９'[item.score]}</span>
-      </div>
       <div class="change-row" ${item.done ? 'style="display:none"' : ''}>
+        <span class="cat-tag" style="flex-shrink:0;">${item.cat}</span>
+        <span class="badge badge-score score-${item.score}" title="重要度×緊急度・最高９" style="flex-shrink:0;">${'０１２３４５６７８９'[item.score]}</span>
         <div class="change-group">
           <span class="change-group-label">緊急度</span>
           <button class="urg-change-btn${item.urg==='高'?' active-高':''}" data-v="高" onclick="changeUrg(${item._i},'高')">高</button>
