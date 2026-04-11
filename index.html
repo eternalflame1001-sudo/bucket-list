@@ -894,8 +894,6 @@
 <div class="mode-tabs">
   <button class="mode-btn active" onclick="setMode('bucket')">📚 Bucket List</button>
   <button class="mode-btn" onclick="setMode('onsen')">🚗 国内</button>
-  <button class="mode-btn" onclick="setMode('gourmet')">🍽 グルメ</button>
-  <button class="mode-btn" onclick="setMode('ramen')">🍜 ラーメン</button>
   <button class="mode-btn" onclick="setMode('japan')">🗾 都道府県</button>
   <button class="mode-btn" onclick="setMode('china')">🇨🇳 中国</button>
   <button class="mode-btn" onclick="setMode('world')">🌍 世界</button>
@@ -907,10 +905,9 @@
     <div id="visitTitle" style="font-family:'Shippori Mincho',serif;font-size:16px;font-weight:700;margin-bottom:6px;"></div>
     <!-- 地図レイヤータブ（温泉・グルメ共通） -->
     <div id="mapLayerTabs" style="display:none;gap:4px;margin-bottom:8px;flex-wrap:wrap;">
-      <button class="map-layer-btn active" data-layer="all" onclick="toggleMapLayer('all',this)">🗾 全て</button>
-      <button class="map-layer-btn" data-layer="onsen" onclick="toggleMapLayer('onsen',this)">♨️ 温泉</button>
-      <button class="map-layer-btn" data-layer="gourmet" onclick="toggleMapLayer('gourmet',this)">🍽 グルメ</button>
-      <button class="map-layer-btn" data-layer="ramen" onclick="toggleMapLayer('ramen',this)">🍜 ラーメン</button>
+      <button class="map-layer-btn" data-sub="onsen" onclick="setSubMode('onsen',this)">♨️ 温泉</button>
+      <button class="map-layer-btn" data-sub="gourmet" onclick="setSubMode('gourmet',this)">🍽 グルメ</button>
+      <button class="map-layer-btn" data-sub="ramen" onclick="setSubMode('ramen',this)">🍜 ラーメン</button>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
       <span id="visitStats" style="font-size:12px;color:var(--faded);"></span>
@@ -1755,6 +1752,14 @@ async function saveVisit() {
 
 
 
+function setSubMode(mode, btn) {
+  // サブタブのアクティブ切替
+  document.querySelectorAll('[data-sub]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentMode = mode;
+  renderVisit(mode);
+}
+
 function setMode(mode) {
   currentMode = mode;
   // アクティブタブ切替
@@ -1771,9 +1776,19 @@ function setMode(mode) {
   }
   mainEl.style.display = 'none';
   visitPanel.style.display = 'block';
-  // 国内系モードではレイヤータブ表示
+  // 国内系モードではサブタブ表示・温泉をデフォルト選択
   const layerTabs = document.getElementById('mapLayerTabs');
-  if (layerTabs) layerTabs.style.display = (mode === 'onsen' || mode === 'gourmet' || mode === 'ramen') ? 'flex' : 'none';
+  if (mode === 'onsen') {
+    if (layerTabs) {
+      layerTabs.style.display = 'flex';
+      // 温泉をデフォルト選択
+      document.querySelectorAll('[data-sub]').forEach(b => b.classList.remove('active'));
+      const onsenBtn = document.querySelector('[data-sub="onsen"]');
+      if (onsenBtn) onsenBtn.classList.add('active');
+    }
+  } else {
+    if (layerTabs) layerTabs.style.display = 'none';
+  }
   renderVisit(mode);
 }
 
@@ -1915,46 +1930,46 @@ const ONSEN_DATA = [
 const ONSEN_LIST = ONSEN_DATA.map(o => o.key);
 
 const RAMEN_DATA = [
-  {key:"札幌味噌ラーメン",pref:"北海道",city:"札幌市",food:"札幌味噌",shop:"すみれ",coords:[141.35,43.06]},
-  {key:"旭川醤油ラーメン",pref:"北海道",city:"旭川市",food:"旭川醤油",shop:"蜂屋",coords:[142.37,43.77]},
-  {key:"函館塩ラーメン",pref:"北海道",city:"函館市",food:"函館塩",shop:"あじさい",coords:[140.73,41.77]},
-  {key:"室蘭カレーラーメン",pref:"北海道",city:"室蘭市",food:"室蘭カレー",shop:"味の大王",coords:[140.97,42.32]},
-  {key:"津軽煮干しラーメン",pref:"青森県",city:"青森市",food:"津軽煮干し",shop:"たかはし中華そば店",coords:[140.74,40.82]},
-  {key:"味噌カレー牛乳ラーメン",pref:"青森県",city:"青森市",food:"味噌カレー牛乳",shop:"味の札幌 大西",coords:[140.74,40.83]},
-  {key:"赤湯からみそラーメン",pref:"山形県",city:"南陽市",food:"赤湯からみそ",shop:"龍上海",coords:[140.17,38.05]},
-  {key:"酒田ワンタン麺",pref:"山形県",city:"酒田市",food:"酒田ワンタン麺",shop:"満月",coords:[139.83,38.92]},
-  {key:"山形冷やしラーメン",pref:"山形県",city:"山形市",food:"山形冷やし",shop:"栄屋本店",coords:[140.35,38.25]},
-  {key:"米沢ラーメン",pref:"山形県",city:"米沢市",food:"米沢ラーメン",shop:"そばの店 ひらま",coords:[140.12,37.92]},
-  {key:"喜多方ラーメン",pref:"福島県",city:"喜多方市",food:"喜多方",shop:"坂内食堂",coords:[139.88,37.65]},
-  {key:"白河ラーメン",pref:"福島県",city:"白河市",food:"白河ラーメン",shop:"とら食堂",coords:[140.18,37.13]},
-  {key:"佐野ラーメン",pref:"栃木県",city:"佐野市",food:"佐野",shop:"日向屋",coords:[139.58,36.32]},
-  {key:"スタミナラーメン",pref:"茨城県",city:"水戸市",food:"スタミナラーメン",shop:"がむしゃ",coords:[140.45,36.37]},
-  {key:"藤岡ラーメン",pref:"群馬県",city:"藤岡市",food:"藤岡ラーメン",shop:"みやご食堂",coords:[139.07,36.25]},
-  {key:"勝浦タンタンメン",pref:"千葉県",city:"勝浦市",food:"勝浦タンタン",shop:"江ざわ",coords:[140.13,35.15]},
-  {key:"竹岡式ラーメン",pref:"千葉県",city:"富津市",food:"竹岡式",shop:"梅乃家",coords:[139.87,35.27]},
-  {key:"アリランラーメン",pref:"千葉県",city:"夷隅郡",food:"アリラン",shop:"八平の食堂",coords:[140.27,35.27]},
-  {key:"八王子ラーメン",pref:"東京都",city:"八王子市",food:"八王子ラーメン",shop:"吾衛門",coords:[139.32,35.65]},
-  {key:"横浜家系ラーメン",pref:"神奈川県",city:"横浜市",food:"横浜家系",shop:"吉村家",coords:[139.65,35.45]},
-  {key:"サンマーメン",pref:"神奈川県",city:"横浜市",food:"サンマーメン",shop:"玉泉亭",coords:[139.65,35.44]},
-  {key:"燕三条背脂ラーメン",pref:"新潟県",city:"燕市",food:"燕三条背脂",shop:"杭州飯店",coords:[138.88,37.67]},
-  {key:"長岡生姜醤油ラーメン",pref:"新潟県",city:"長岡市",food:"長岡生姜醤油",shop:"青島食堂",coords:[138.85,37.45]},
-  {key:"新潟濃厚味噌ラーメン",pref:"新潟県",city:"新潟市",food:"新潟濃厚味噌",shop:"こまどり",coords:[139.05,37.92]},
-  {key:"富山ブラックラーメン",pref:"富山県",city:"富山市",food:"富山ブラック",shop:"西町大喜",coords:[137.22,36.70]},
-  {key:"高山ラーメン",pref:"岐阜県",city:"高山市",food:"高山ラーメン",shop:"角や",coords:[137.25,36.15]},
-  {key:"台湾ラーメン",pref:"愛知県",city:"名古屋市",food:"台湾ラーメン",shop:"味仙",coords:[136.90,35.17]},
-  {key:"天理ラーメン",pref:"奈良県",city:"天理市",food:"天理ラーメン",shop:"彩華ラーメン",coords:[135.83,34.60]},
-  {key:"京都ラーメン",pref:"京都府",city:"京都市",food:"京都ラーメン",shop:"新福菜館",coords:[135.77,34.98]},
-  {key:"和歌山ラーメン",pref:"和歌山県",city:"和歌山市",food:"和歌山ラーメン",shop:"井出商店",coords:[135.17,34.22]},
-  {key:"播州ラーメン",pref:"兵庫県",city:"西脇市",food:"播州ラーメン",shop:"西脇大橋ラーメン",coords:[134.97,34.98]},
-  {key:"鳥取牛骨ラーメン",pref:"鳥取県",city:"鳥取市",food:"鳥取牛骨",shop:"香味徳",coords:[134.23,35.50]},
-  {key:"笠岡ラーメン",pref:"岡山県",city:"笠岡市",food:"笠岡ラーメン",shop:"坂本",coords:[133.50,34.50]},
-  {key:"尾道ラーメン",pref:"広島県",city:"尾道市",food:"尾道ラーメン",shop:"朱",coords:[133.20,34.40]},
-  {key:"徳島ラーメン",pref:"徳島県",city:"徳島市",food:"徳島ラーメン",shop:"いのたに",coords:[134.55,34.07]},
-  {key:"鍋焼きラーメン",pref:"高知県",city:"須崎市",food:"鍋焼きラーメン",shop:"橋本食堂",coords:[133.28,33.40]},
-  {key:"博多ラーメン",pref:"福岡県",city:"福岡市",food:"博多ラーメン",shop:"一風堂",coords:[130.40,33.58]},
-  {key:"久留米ラーメン",pref:"福岡県",city:"久留米市",food:"久留米ラーメン",shop:"清陽軒",coords:[130.52,33.32]},
-  {key:"熊本ラーメン",pref:"熊本県",city:"熊本市",food:"熊本ラーメン",shop:"こむらさき",coords:[130.70,32.80]},
-  {key:"鹿児島ラーメン",pref:"鹿児島県",city:"鹿児島市",food:"鹿児島ラーメン",shop:"くろいわ",coords:[130.55,31.60]},
+  {key:"札幌味噌ラーメン",desc:"濃厚味噌とラードの膜、黄色いちぢれ麺の王道。",pref:"北海道",city:"札幌市",food:"札幌味噌",shop:"すみれ",coords:[141.35,43.06]},
+  {key:"旭川醤油ラーメン",desc:"魚介×豚骨のダブルスープに焦がしラードのコク。",pref:"北海道",city:"旭川市",food:"旭川醤油",shop:"蜂屋",coords:[142.37,43.77]},
+  {key:"函館塩ラーメン",desc:"透明感あふれる澄んだ塩味。函館の歴史の味。",pref:"北海道",city:"函館市",food:"函館塩",shop:"あじさい",coords:[140.73,41.77]},
+  {key:"室蘭カレーラーメン",desc:"濃厚でスパイシーなカレー味。北海道第4の勢力。",pref:"北海道",city:"室蘭市",food:"室蘭カレー",shop:"味の大王",coords:[140.97,42.32]},
+  {key:"津軽煮干しラーメン",desc:"煮干しの旨味が凝縮された、酸味とコクのあるスープ。",pref:"青森県",city:"青森市",food:"津軽煮干し",shop:"たかはし中華そば店",coords:[140.74,40.82]},
+  {key:"味噌カレー牛乳ラーメン",desc:"味噌、カレー、牛乳、バターが融合した驚きの旨さ。",pref:"青森県",city:"青森市",food:"味噌カレー牛乳",shop:"味の札幌 大西",coords:[140.74,40.83]},
+  {key:"赤湯からみそラーメン",desc:"刺激的な辛味噌を溶かして食べる、山形の代名詞。",pref:"山形県",city:"南陽市",food:"赤湯からみそ",shop:"龍上海",coords:[140.17,38.05]},
+  {key:"酒田ワンタン麺",desc:"極薄のふわふわワンタンと、上品な魚介ダシ。",pref:"山形県",city:"酒田市",food:"酒田ワンタン麺",shop:"満月",coords:[139.83,38.92]},
+  {key:"山形冷やしラーメン",desc:"蕎麦屋発祥。氷が浮いても脂が固まらない工夫。",pref:"山形県",city:"山形市",food:"山形冷やし",shop:"栄屋本店",coords:[140.35,38.25]},
+  {key:"米沢ラーメン",desc:"超極細の手揉みちぢれ麺と、あっさり醤油。",pref:"山形県",city:"米沢市",food:"米沢ラーメン",shop:"そばの店 ひらま",coords:[140.12,37.92]},
+  {key:"喜多方ラーメン",desc:"日本三大ラーメン。平打ち多加水麺の食感が魅力。",pref:"福島県",city:"喜多方市",food:"喜多方",shop:"坂内食堂",coords:[139.88,37.65]},
+  {key:"白河ラーメン",desc:"手打ち麺と、炭火焼きチャーシューの薫香。",pref:"福島県",city:"白河市",food:"白河ラーメン",shop:"とら食堂",coords:[140.18,37.13]},
+  {key:"佐野ラーメン",desc:"青竹打ちの不揃いな麺が、透明なスープに合う。",pref:"栃木県",city:"佐野市",food:"佐野",shop:"日向屋",coords:[139.58,36.32]},
+  {key:"スタミナラーメン",desc:"レバーやカボチャが入った甘辛い餡が熱々。",pref:"茨城県",city:"水戸市",food:"スタミナラーメン",shop:"がむしゃ",coords:[140.45,36.37]},
+  {key:"藤岡ラーメン",desc:"強いコシの極太手打ち麺が特徴。",pref:"群馬県",city:"藤岡市",food:"藤岡ラーメン",shop:"みやご食堂",coords:[139.07,36.25]},
+  {key:"勝浦タンタンメン",desc:"ラー油と玉ねぎが主役。ゴマを使わないタンタン。",pref:"千葉県",city:"勝浦市",food:"勝浦タンタン",shop:"江ざわ",coords:[140.13,35.15]},
+  {key:"竹岡式ラーメン",desc:"チャーシューの煮汁をお湯で割る、漁師町の味。",pref:"千葉県",city:"富津市",food:"竹岡式",shop:"梅乃家",coords:[139.87,35.27]},
+  {key:"アリランラーメン",desc:"ニンニク・ニラ・玉ねぎが強烈な秘境ラーメン。",pref:"千葉県",city:"夷隅郡",food:"アリラン",shop:"八平の食堂",coords:[140.27,35.27]},
+  {key:"八王子ラーメン",desc:"醤油ベースのスープに、シャキシャキの刻み玉ねぎ。",pref:"東京都",city:"八王子市",food:"八王子ラーメン",shop:"吾衛門",coords:[139.32,35.65]},
+  {key:"横浜家系ラーメン",desc:"濃厚豚骨醤油、鶏油、ほうれん草。ガツンとくる。",pref:"神奈川県",city:"横浜市",food:"横浜家系",shop:"吉村家",coords:[139.65,35.45]},
+  {key:"サンマーメン",desc:"横浜発祥。醤油スープにモヤシ主体のあんかけ。",pref:"神奈川県",city:"横浜市",food:"サンマーメン",shop:"玉泉亭",coords:[139.65,35.44]},
+  {key:"燕三条背脂ラーメン",desc:"煮干しスープを覆う大量の背脂と極太麺。",pref:"新潟県",city:"燕市",food:"燕三条背脂",shop:"杭州飯店",coords:[138.88,37.67]},
+  {key:"長岡生姜醤油ラーメン",desc:"濃口醤油に生姜を効かせた、体が温まる雪国の味。",pref:"新潟県",city:"長岡市",food:"長岡生姜醤油",shop:"青島食堂",coords:[138.85,37.45]},
+  {key:"新潟濃厚味噌ラーメン",desc:"割りスープで自分好みの濃さに薄めて食べるスタイル。",pref:"新潟県",city:"新潟市",food:"新潟濃厚味噌",shop:"こまどり",coords:[139.05,37.92]},
+  {key:"富山ブラックラーメン",desc:"労働者のための、真っ黒で塩辛い「おかず」スープ。",pref:"富山県",city:"富山市",food:"富山ブラック",shop:"西町大喜",coords:[137.22,36.70]},
+  {key:"高山ラーメン",desc:"鶏ガラベースのあっさり醤油。スープを一緒に煮出す。",pref:"岐阜県",city:"高山市",food:"高山ラーメン",shop:"角や",coords:[137.25,36.15]},
+  {key:"台湾ラーメン",desc:"名古屋発祥。激辛ミンチとニンニクが癖になる。",pref:"愛知県",city:"名古屋市",food:"台湾ラーメン",shop:"味仙",coords:[136.90,35.17]},
+  {key:"天理ラーメン",desc:"白菜たっぷりのニンニクが効いた醤油ベース。",pref:"奈良県",city:"天理市",food:"天理ラーメン",shop:"彩華ラーメン",coords:[135.83,34.60]},
+  {key:"京都ラーメン",desc:"見た目は真っ黒、味は香ばしくコクのある醤油。",pref:"京都府",city:"京都市",food:"京都ラーメン",shop:"新福菜館",coords:[135.77,34.98]},
+  {key:"和歌山ラーメン",desc:"濃厚な豚骨醤油。早寿司と一緒に食べるのが流儀。",pref:"和歌山県",city:"和歌山市",food:"和歌山ラーメン",shop:"井出商店",coords:[135.17,34.22]},
+  {key:"播州ラーメン",desc:"醤油ベースで、甘みが強い独特のスープが特徴。",pref:"兵庫県",city:"西脇市",food:"播州ラーメン",shop:"西脇大橋ラーメン",coords:[134.97,34.98]},
+  {key:"鳥取牛骨ラーメン",desc:"牛骨特有の甘みと香ばしさがある、希少な一杯。",pref:"鳥取県",city:"鳥取市",food:"鳥取牛骨",shop:"香味徳",coords:[134.23,35.50]},
+  {key:"笠岡ラーメン",desc:"親鳥の「煮鶏」を載せる、鶏100%の醤油味。",pref:"岡山県",city:"笠岡市",food:"笠岡ラーメン",shop:"坂本",coords:[133.50,34.50]},
+  {key:"尾道ラーメン",desc:"鶏ガラ醤油に浮く、大粒の背脂ミンチが決め手。",pref:"広島県",city:"尾道市",food:"尾道ラーメン",shop:"朱",coords:[133.20,34.40]},
+  {key:"徳島ラーメン",desc:"甘辛い豚バラ肉と生卵。ご飯との相性が最高。",pref:"徳島県",city:"徳島市",food:"徳島ラーメン",shop:"いのたに",coords:[134.55,34.07]},
+  {key:"鍋焼きラーメン",desc:"須崎市名物。土鍋で提供される鶏ガラ醤油味。",pref:"高知県",city:"須崎市",food:"鍋焼きラーメン",shop:"橋本食堂",coords:[133.28,33.40]},
+  {key:"博多ラーメン",desc:"極細麺の替え玉文化。全国で最も有名な豚骨。",pref:"福岡県",city:"福岡市",food:"博多ラーメン",shop:"一風堂",coords:[130.40,33.58]},
+  {key:"久留米ラーメン",desc:"豚骨発祥の地。濃厚でコクのある「呼び戻し」。",pref:"福岡県",city:"久留米市",food:"久留米ラーメン",shop:"清陽軒",coords:[130.52,33.32]},
+  {key:"熊本ラーメン",desc:"マー油（焦がしニンニク油）の香ばしさが特徴。",pref:"熊本県",city:"熊本市",food:"熊本ラーメン",shop:"こむらさき",coords:[130.70,32.80]},
+  {key:"鹿児島ラーメン",desc:"鶏ガラと豚骨。漬物がセットで出てくる優しい味。",pref:"鹿児島県",city:"鹿児島市",food:"鹿児島ラーメン",shop:"くろいわ",coords:[130.55,31.60]},
 ];
 
 
@@ -2005,7 +2020,7 @@ const GOURMET_DATA = [
   {key:"新潟へぎそば",pref:"新潟県",city:"十日町市",food:"へぎそば",shop:"小嶋屋総本店",coords:[138.75,37.13]},
   {key:"新潟タレかつ丼",pref:"新潟県",city:"新潟市",food:"タレかつ丼",shop:"とんかつ太郎",coords:[139.05,37.92]},
   {key:"新潟笹だんご",pref:"新潟県",city:"新潟市",food:"笹だんご",shop:"田中屋本店",coords:[139.06,37.93]},
-  {key:"富山ブラックラーメン",pref:"富山県",city:"富山市",food:"富山ブラックラーメン",shop:"西町大喜",coords:[137.22,36.70]},
+  {key:"富山ブラックラーメン",desc:"労働者のための、真っ黒で塩辛い「おかず」スープ。",pref:"富山県",city:"富山市",food:"富山ブラックラーメン",shop:"西町大喜",coords:[137.22,36.70]},
   {key:"富山白えび",pref:"富山県",city:"富山市",food:"白えび料理",shop:"白えび亭",coords:[137.23,36.71]},
   {key:"富山ます寿し",pref:"富山県",city:"富山市",food:"ます寿し",shop:"ますのすし本舗 源",coords:[137.21,36.69]},
   {key:"石川金沢カレー",pref:"石川県",city:"金沢市",food:"金沢カレー",shop:"カレーのチャンピオン",coords:[136.63,36.57]},
@@ -2048,11 +2063,11 @@ const GOURMET_DATA = [
   {key:"奈良柿の葉ずし",pref:"奈良県",city:"吉野町",food:"柿の葉ずし",shop:"柿の葉すし本舗たなか",coords:[135.87,34.40]},
   {key:"奈良三輪そうめん",pref:"奈良県",city:"桜井市",food:"三輪そうめん",shop:"池利",coords:[135.85,34.52]},
   {key:"奈良茶粥",pref:"奈良県",city:"奈良市",food:"茶粥",shop:"塔の茶屋",coords:[135.83,34.68]},
-  {key:"和歌山ラーメン",pref:"和歌山県",city:"和歌山市",food:"和歌山ラーメン",shop:"井出商店",coords:[135.17,34.22]},
+  {key:"和歌山ラーメン",desc:"濃厚な豚骨醤油。早寿司と一緒に食べるのが流儀。",pref:"和歌山県",city:"和歌山市",food:"和歌山ラーメン",shop:"井出商店",coords:[135.17,34.22]},
   {key:"和歌山めはり寿司",pref:"和歌山県",city:"新宮市",food:"めはり寿司",shop:"総本家めはりや",coords:[135.98,33.72]},
   {key:"和歌山梅干し",pref:"和歌山県",city:"みなべ町",food:"紀州梅干し",shop:"中田食品",coords:[135.33,33.77]},
   {key:"鳥取松葉がに",pref:"鳥取県",city:"鳥取市",food:"松葉がに",shop:"かに吉",coords:[134.23,35.50]},
-  {key:"鳥取牛骨ラーメン",pref:"鳥取県",city:"米子市",food:"鳥取牛骨ラーメン",shop:"香味徳",coords:[133.33,35.43]},
+  {key:"鳥取牛骨ラーメン",desc:"牛骨特有の甘みと香ばしさがある、希少な一杯。",pref:"鳥取県",city:"米子市",food:"鳥取牛骨ラーメン",shop:"香味徳",coords:[133.33,35.43]},
   {key:"鳥取大山どり",pref:"鳥取県",city:"鳥取市",food:"大山どり料理",shop:"強小亭",coords:[134.24,35.51]},
   {key:"島根出雲そば",pref:"島根県",city:"出雲市",food:"出雲そば",shop:"羽根屋",coords:[132.77,35.37]},
   {key:"島根しじみ汁",pref:"島根県",city:"松江市",food:"しじみ汁",shop:"しじみ茶屋",coords:[133.05,35.47]},
@@ -2066,7 +2081,7 @@ const GOURMET_DATA = [
   {key:"山口ふぐ",pref:"山口県",city:"下関市",food:"ふぐ料理",shop:"春帆楼",coords:[130.95,33.95]},
   {key:"山口瓦そば",pref:"山口県",city:"下関市",food:"瓦そば",shop:"元祖瓦そば たかせ",coords:[130.96,33.96]},
   {key:"山口バリそば",pref:"山口県",city:"下関市",food:"バリそば",shop:"春来軒",coords:[130.94,33.94]},
-  {key:"徳島ラーメン",pref:"徳島県",city:"徳島市",food:"徳島ラーメン",shop:"中華そば いのたに",coords:[134.55,34.07]},
+  {key:"徳島ラーメン",desc:"甘辛い豚バラ肉と生卵。ご飯との相性が最高。",pref:"徳島県",city:"徳島市",food:"徳島ラーメン",shop:"中華そば いのたに",coords:[134.55,34.07]},
   {key:"徳島阿波尾鶏",pref:"徳島県",city:"徳島市",food:"阿波尾鶏",shop:"一鴻",coords:[134.56,34.08]},
   {key:"徳島すだち",pref:"徳島県",city:"徳島市",food:"すだち料理",shop:"割烹 濱伊",coords:[134.54,34.06]},
   {key:"香川讃岐うどん",pref:"香川県",city:"綾川町",food:"讃岐うどん",shop:"山越うどん",coords:[133.90,34.22]},
@@ -2110,7 +2125,7 @@ const GOURMET_DATA = [
 
 // 温泉座標データ [経度, 緯度]
 const ONSEN_COORDS = {
-  '北海道登別温泉':[141.10,42.43],'北海道湯の川温泉':[141.76,41.80],
+  '北海道登別温泉':[141.10,42.43],'北海道湯の川温泉':[141.68,41.78],
   '北海道定山渓温泉':[141.10,42.98],'北海道ニセコ温泉':[140.69,42.80],
   '北海道網走温泉':[144.27,43.97],'北海道美幌峠温泉':[144.07,43.83],
   '北海道阿寒湖温泉':[144.10,43.45],'北海道屈斜路温泉':[144.35,43.60],
@@ -2173,25 +2188,20 @@ function renderVisitGrid(mode) {
   const visited = visitData[mode] || {};
   const currentYear = new Date().getFullYear();
   const count = Object.keys(visited).length;
-  const list = mode==='japan' ? JAPAN_PREFS : mode==='onsen' ? ONSEN_LIST : mode==='china' ? CHINA_REGIONS : WORLD_COUNTRIES;
+  let list;
+  if (mode==='japan') list = JAPAN_PREFS;
+  else if (mode==='onsen') list = ONSEN_LIST;
+  else if (mode==='china') list = CHINA_REGIONS;
+  else if (mode==='gourmet') list = GOURMET_DATA.map(g=>g.key);
+  else if (mode==='ramen') list = RAMEN_DATA.map(r=>r.key);
+  else list = WORLD_COUNTRIES;
   const total = list.length;
   const pct = total ? Math.round(count/total*100) : 0;
   document.getElementById('visitStats').textContent = `訪問済み ${count} / ${total}ヶ所　達成率 ${pct}%`;
   document.getElementById('visitFill').style.width = pct + '%';
   document.getElementById('mapOverlay').innerHTML = `${count}/${total}<br>${pct}%`;
-  // 地図の色を更新
-  reapplyMapColors(mode, visited, currentYear);
-  // 温泉ドットを更新
-  if (mode === 'onsen') {
-    const svg = d3.select('#worldD3svg');
-    const mapEl = document.getElementById('visitMap');
-    if (mapEl && !svg.empty()) {
-      const w = mapEl.offsetWidth || 340;
-      const h = Math.round(w*0.85);
-      const projection = d3.geoMercator().center([136.5,37.5]).scale(w*2.0).translate([w/2,h/2]).clipExtent([[0,0],[w,h]]);
-      drawOnsenDots(svg, projection, visited);
-    }
-  }
+  // ドットを更新
+  redrawDots();
   // 履歴も更新
   renderVisitHistory(mode);
 }
@@ -2285,7 +2295,7 @@ function renderVisit(mode) {
         const isVisited = year !== undefined;
         let style = isVisited ? `background:rgba(46,204,113,0.2);border-color:rgba(46,204,113,0.6);color:#1a7a40;` : '';
         const yearLabel = isVisited && year ? `<span class="visit-year">${year}</span>` : '';
-        html += `<div class="visit-item${isVisited?' visited':''}" data-vkey="${g.key}" style="${style}" onclick="toggleVisitAndMap('${key}','${g.key}',this)"><span style="font-size:9px;opacity:0.75;display:block;">${g.pref}</span><span style="font-size:10px;font-weight:700;">${g.food}</span>${yearLabel}</div>`;
+        html += `<div class="visit-item${isVisited?' visited':''}" data-vkey="${g.key}" style="${style}" onclick="toggleVisitAndMap('${key}','${g.key}',this)"><span style="font-size:9px;opacity:0.75;display:block;">${g.pref}</span><span style="font-size:10px;font-weight:700;">${g.food}</span><span style="font-size:9px;opacity:0.65;display:block;">${g.shop}</span>${yearLabel}</div>`;
       });
       html += `</div></div>`;
     });
@@ -2314,7 +2324,7 @@ function renderVisit(mode) {
         const isVisited = year !== undefined;
         let style = isVisited ? `background:rgba(243,156,18,0.2);border-color:rgba(243,156,18,0.6);color:#d35400;` : '';
         const yearLabel = isVisited && year ? `<span class="visit-year">${year}</span>` : '';
-        html += `<div class="visit-item${isVisited?' visited':''}" data-vkey="${r.key}" style="${style}" onclick="toggleVisitAndMap('${key}','${r.key}',this)"><span style="font-size:9px;opacity:0.75;display:block;">${r.city}</span><span style="font-size:10px;font-weight:700;">${r.food}</span>${yearLabel}</div>`;
+        html += `<div class="onsen-item-wrap"><div class="visit-item onsen-btn${isVisited?' visited':''}" data-vkey="${r.key}" style="${style}" onclick="toggleVisitAndMap('${key}','${r.key}',this)"><span style="font-size:9px;opacity:0.75;display:block;">${r.city}</span><span style="font-size:10px;font-weight:700;">${r.food}</span><span style="font-size:9px;opacity:0.65;display:block;">${r.shop}</span>${yearLabel}</div><button class="onsen-detail-btn" data-bath="${r.food}｜${r.shop}｜${r.desc||''}" onclick="toggleOnsenDetail(this)">🍜</button></div>`;
       });
       html += `</div></div>`;
     });
@@ -2345,15 +2355,24 @@ function renderVisit(mode) {
 
 function toggleOnsenDetail(btn) {
   const dayBath = btn.getAttribute('data-bath') || '';
-  const name = btn.getAttribute('data-name') || '';
   const wrap = btn.closest('.onsen-item-wrap');
   let popup = wrap.querySelector('.onsen-detail-popup');
-  if (popup) { popup.remove(); btn.textContent='🛁'; return; }
+  if (popup) { popup.remove(); btn.textContent = btn.classList.contains('onsen-detail-btn') && dayBath.includes('｜') ? '🍜' : '🛁'; return; }
   popup = document.createElement('div');
   popup.className = 'onsen-detail-popup';
-  popup.innerHTML = `<strong>🛁 日帰り入浴できる宿</strong>${dayBath}`;
+  // ラーメン詳細（｜区切り）か温泉日帰り入浴か判定
+  if (dayBath.includes('｜')) {
+    const parts = dayBath.split('｜');
+    const food = parts[0] || '';
+    const shop = parts[1] || '';
+    const desc = parts[2] || '';
+    popup.innerHTML = `<strong>🍜 ${food}</strong><div style="margin-top:4px;font-size:11px;">代表店：${shop}</div>${desc ? `<div style="margin-top:4px;font-size:11px;color:#666;">${desc}</div>` : ''}`;
+    btn.textContent = '✕';
+  } else {
+    popup.innerHTML = `<strong>🛁 日帰り入浴できる宿</strong>${dayBath}`;
+    btn.textContent = '✕';
+  }
   wrap.appendChild(popup);
-  btn.textContent = '✕';
 }
 
 function toggleVisitAndMap(key, name, el) {
