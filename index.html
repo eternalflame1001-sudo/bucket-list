@@ -1280,13 +1280,13 @@ let pollTimer = null;
 async function loadFromFirebase() {
   try {
     const [itemsRes, trashRes] = await Promise.all([
-      fetch(DB_URL + '/bucketList.json'),
-      fetch(DB_URL + '/trashList.json')
+      fetch(DB_URL + '/bucketList.json', {cache:'no-store'}),
+      fetch(DB_URL + '/trashList.json', {cache:'no-store'})
     ]);
     const itemsData = await itemsRes.json();
     const trashData = await trashRes.json();
     return {
-      items: (itemsData && Array.isArray(itemsData) && itemsData.length >= 10)
+      items: (itemsData && Array.isArray(itemsData) && itemsData.length > 0)
         ? itemsData.map(i => ({...i, urg: i.urg || '中'}))
         : null,
       trash: (trashData && Array.isArray(trashData)) ? trashData : []
@@ -1795,6 +1795,7 @@ async function saveVisit() {
 
 function setMode(mode) {
   currentMode = mode;
+  // アクティブタブ切替
   document.querySelectorAll('.mode-btn').forEach(b => {
     b.classList.remove('active');
     if (b.getAttribute('onclick') === "setMode('" + mode + "')") b.classList.add('active');
@@ -1804,18 +1805,13 @@ function setMode(mode) {
   if (mode === 'bucket') {
     mainEl.style.display = '';
     visitPanel.style.display = 'none';
-  } else {
-    mainEl.style.display = 'none';
-    visitPanel.style.display = 'block';
-    renderVisit(mode);
-    // 地図を描画（非同期）
-    const visited = visitData[mode] || {};
-    const currentYear = new Date().getFullYear();
-    const mapEl = document.getElementById('visitMap');
-    mapEl.innerHTML = '<svg id="worldD3svg" style="width:100%;height:auto;display:block;"></svg>';
-    renderMapD3(mode, visited, currentYear);
+    return;
   }
+  mainEl.style.display = 'none';
+  visitPanel.style.display = 'block';
+  renderVisit(mode);
 }
+
 
 // 都道府県リスト
 const JAPAN_PREFS = ['北海道','青森','岩手','宮城','秋田','山形','福島','茨城','栃木','群馬','埼玉','千葉','東京','神奈川','新潟','富山','石川','福井','山梨','長野','岐阜','静岡','愛知','三重','滋賀','京都','大阪','兵庫','奈良','和歌山','鳥取','島根','岡山','広島','山口','徳島','香川','愛媛','高知','福岡','佐賀','長崎','熊本','大分','宮崎','鹿児島','沖縄'];
@@ -2044,6 +2040,14 @@ function renderVisit(mode) {
     }).join('');
   }
   renderVisitHistory(key);
+  // 地図描画（完全独立・エラーがタブ切替に影響しない）
+  const mapEl = document.getElementById('visitMap');
+  if (mapEl) {
+    mapEl.innerHTML = '<svg id="worldD3svg" style="width:100%;height:auto;display:block;"></svg>';
+    window.setTimeout(function() {
+      renderMapD3(key, visited, currentYear).catch(function(e){ console.warn('地図:', e); });
+    }, 50);
+  }
 }
 
 function toggleOnsenDetail(btn) {
@@ -2143,6 +2147,7 @@ const JP_KANJI_MAP_GLOBAL = {
 };
 
 async function renderMapD3(key, visited, currentYear) {
+  try {
   const mapEl = document.getElementById('visitMap');
   if (!mapEl) return;
   const w = mapEl.offsetWidth || 340;
@@ -2264,6 +2269,7 @@ async function renderMapD3(key, visited, currentYear) {
       setTimeout(()=>reapplyMapColors(key,visited,currentYear),150);
     } catch(e) { console.error('中国地図エラー:',e); }
   }
+  } catch(e) { console.warn('地図描画エラー:', e); }
 }
 
 function reapplyMapColors(key, visited, currentYear) {
