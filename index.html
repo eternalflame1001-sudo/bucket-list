@@ -841,6 +841,10 @@ position: relative;
 #visitMap path:hover { opacity: 0.8; }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+
 </head>
 <body>
 <div id="syncStatus">
@@ -1986,6 +1990,11 @@ return `<div class="visit-item${isVisited?' visited':''}" data-vkey="${name}" ${
 }).join(’’);
 }
 renderVisitHistory(key);
+// D3地図を描画
+const mapEl = document.getElementById(‘visitMap’);
+const currentYear2 = new Date().getFullYear();
+mapEl.innerHTML = ‘<svg id="worldD3svg" style="width:100%;height:auto;display:block;"></svg>’;
+renderMapD3(key, visited, currentYear2);
 }
 
 function toggleOnsenDetail(btn, dayBath) {
@@ -2053,6 +2062,173 @@ renderVisit(currentMode);
 }
 
 function cancelYear() { document.getElementById(‘yearDialog’).style.display=‘none’; }
+
+// 国コードマッピング
+const COUNTRY_CODE_MAP = {
+‘日本’:‘392’,‘韓国’:‘410’,‘中国’:‘156’,‘台湾’:‘158’,‘香港’:‘344’,‘マカオ’:‘446’,‘モンゴル’:‘496’,
+‘ベトナム’:‘704’,‘タイ’:‘764’,‘カンボジア’:‘116’,‘ラオス’:‘418’,‘ミャンマー’:‘104’,‘マレーシア’:‘458’,‘シンガポール’:‘702’,‘インドネシア’:‘360’,‘フィリピン’:‘608’,‘ブルネイ’:‘096’,‘東ティモール’:‘626’,
+‘インド’:‘356’,‘パキスタン’:‘586’,‘バングラデシュ’:‘050’,‘スリランカ’:‘144’,‘ネパール’:‘524’,‘ブータン’:‘064’,‘モルディブ’:‘462’,‘アフガニスタン’:‘004’,‘イラン’:‘364’,‘イラク’:‘368’,‘サウジアラビア’:‘682’,‘UAE’:‘784’,‘カタール’:‘634’,‘クウェート’:‘414’,‘バーレーン’:‘048’,‘オマーン’:‘512’,‘イエメン’:‘887’,‘ヨルダン’:‘400’,‘レバノン’:‘422’,‘シリア’:‘760’,‘イスラエル’:‘376’,‘トルコ’:‘792’,
+‘カザフスタン’:‘398’,‘ウズベキスタン’:‘860’,‘キルギス’:‘417’,‘タジキスタン’:‘762’,‘トルクメニスタン’:‘795’,‘アゼルバイジャン’:‘031’,‘グルジア’:‘268’,‘アルメニア’:‘051’,
+‘ロシア’:‘643’,‘ウクライナ’:‘804’,‘ベラルーシ’:‘112’,‘モルドバ’:‘498’,‘ポーランド’:‘616’,‘チェコ’:‘203’,‘スロバキア’:‘703’,‘ハンガリー’:‘348’,‘オーストリア’:‘040’,‘ドイツ’:‘276’,‘スイス’:‘756’,‘リヒテンシュタイン’:‘438’,‘フランス’:‘250’,‘ベルギー’:‘056’,‘オランダ’:‘528’,‘ルクセンブルク’:‘442’,‘デンマーク’:‘208’,‘スウェーデン’:‘752’,‘ノルウェー’:‘578’,‘フィンランド’:‘246’,‘アイスランド’:‘352’,‘英国’:‘826’,‘アイルランド’:‘372’,‘スペイン’:‘724’,‘ポルトガル’:‘620’,‘イタリア’:‘380’,‘バチカン’:‘336’,‘サンマリノ’:‘674’,‘モナコ’:‘492’,‘ギリシャ’:‘300’,‘マルタ’:‘470’,‘スロベニア’:‘705’,‘クロアチア’:‘191’,‘ボスニア・ヘルツェゴビナ’:‘070’,‘セルビア’:‘688’,‘モンテネグロ’:‘499’,‘北マケドニア’:‘807’,‘アルバニア’:‘008’,‘コソボ’:‘383’,‘ルーマニア’:‘642’,‘ブルガリア’:‘100’,‘エストニア’:‘233’,‘ラトビア’:‘428’,‘リトアニア’:‘440’,‘アンドラ’:‘020’,
+‘モロッコ’:‘504’,‘アルジェリア’:‘012’,‘チュニジア’:‘788’,‘リビア’:‘434’,‘エジプト’:‘818’,‘スーダン’:‘729’,‘南スーダン’:‘728’,‘エチオピア’:‘231’,‘エリトリア’:‘232’,‘ジブチ’:‘262’,‘ソマリア’:‘706’,‘ケニア’:‘404’,‘タンザニア’:‘834’,‘ウガンダ’:‘800’,‘ルワンダ’:‘646’,‘ブルンジ’:‘108’,‘コンゴ民主共和国’:‘180’,‘コンゴ共和国’:‘178’,‘中央アフリカ’:‘140’,‘カメルーン’:‘120’,‘ナイジェリア’:‘566’,‘ガーナ’:‘288’,‘コートジボワール’:‘384’,‘セネガル’:‘686’,‘マリ’:‘466’,‘ブルキナファソ’:‘854’,‘ニジェール’:‘562’,‘チャド’:‘148’,‘ガボン’:‘266’,‘赤道ギニア’:‘226’,‘サントメ・プリンシペ’:‘678’,‘カーボベルデ’:‘132’,‘モーリタニア’:‘478’,‘ギニア’:‘324’,‘ギニアビサウ’:‘624’,‘シエラレオネ’:‘694’,‘リベリア’:‘430’,‘トーゴ’:‘768’,‘ベナン’:‘204’,‘ガンビア’:‘270’,‘南アフリカ’:‘710’,‘ナミビア’:‘516’,‘ボツワナ’:‘072’,‘ジンバブエ’:‘716’,‘ザンビア’:‘894’,‘モザンビーク’:‘508’,‘マラウイ’:‘454’,‘アンゴラ’:‘024’,‘マダガスカル’:‘450’,‘コモロ’:‘174’,‘セーシェル’:‘690’,‘モーリシャス’:‘480’,‘レソト’:‘426’,‘エスワティニ’:‘748’,
+‘カナダ’:‘124’,‘アメリカ’:‘840’,‘メキシコ’:‘484’,‘グアテマラ’:‘320’,‘ベリーズ’:‘084’,‘ホンジュラス’:‘340’,‘エルサルバドル’:‘222’,‘ニカラグア’:‘558’,‘コスタリカ’:‘188’,‘パナマ’:‘591’,‘キューバ’:‘192’,‘ジャマイカ’:‘388’,‘ハイチ’:‘332’,‘ドミニカ共和国’:‘214’,‘トリニダード・トバゴ’:‘780’,‘バルバドス’:‘052’,
+‘コロンビア’:‘170’,‘ベネズエラ’:‘862’,‘ガイアナ’:‘328’,‘スリナム’:‘740’,‘ブラジル’:‘076’,‘エクアドル’:‘218’,‘ペルー’:‘604’,‘ボリビア’:‘068’,‘チリ’:‘152’,‘アルゼンチン’:‘032’,‘ウルグアイ’:‘858’,‘パラグアイ’:‘600’,
+‘オーストラリア’:‘036’,‘ニュージーランド’:‘554’,‘パプアニューギニア’:‘598’,‘フィジー’:‘242’,‘ソロモン諸島’:‘090’,‘バヌアツ’:‘548’,‘サモア’:‘882’,‘トンガ’:‘776’,‘キリバス’:‘296’,‘ミクロネシア’:‘583’,‘マーシャル諸島’:‘584’,‘パラオ’:‘585’,‘ナウル’:‘520’,‘ツバル’:‘798’
+};
+const CODE_COUNTRY_MAP = {};
+Object.entries(COUNTRY_CODE_MAP).forEach(([n,c])=>CODE_COUNTRY_MAP[c]=n);
+
+const JP_KANJI_MAP_GLOBAL = {
+‘北海道’:‘北海道’,‘青森県’:‘青森’,‘岩手県’:‘岩手’,‘宮城県’:‘宮城’,‘秋田県’:‘秋田’,
+‘山形県’:‘山形’,‘福島県’:‘福島’,‘茨城県’:‘茨城’,‘栃木県’:‘栃木’,‘群馬県’:‘群馬’,
+‘埼玉県’:‘埼玉’,‘千葉県’:‘千葉’,‘東京都’:‘東京’,‘神奈川県’:‘神奈川’,‘新潟県’:‘新潟’,
+‘富山県’:‘富山’,‘石川県’:‘石川’,‘福井県’:‘福井’,‘山梨県’:‘山梨’,‘長野県’:‘長野’,
+‘岐阜県’:‘岐阜’,‘静岡県’:‘静岡’,‘愛知県’:‘愛知’,‘三重県’:‘三重’,‘滋賀県’:‘滋賀’,
+‘京都府’:‘京都’,‘大阪府’:‘大阪’,‘兵庫県’:‘兵庫’,‘奈良県’:‘奈良’,‘和歌山県’:‘和歌山’,
+‘鳥取県’:‘鳥取’,‘島根県’:‘島根’,‘岡山県’:‘岡山’,‘広島県’:‘広島’,‘山口県’:‘山口’,
+‘徳島県’:‘徳島’,‘香川県’:‘香川’,‘愛媛県’:‘愛媛’,‘高知県’:‘高知’,‘福岡県’:‘福岡’,
+‘佐賀県’:‘佐賀’,‘長崎県’:‘長崎’,‘熊本県’:‘熊本’,‘大分県’:‘大分’,‘宮崎県’:‘宮崎’,
+‘鹿児島県’:‘鹿児島’,‘沖縄県’:‘沖縄’
+};
+
+async function renderMapD3(key, visited, currentYear) {
+const mapEl = document.getElementById(‘visitMap’);
+if (!mapEl) return;
+const w = mapEl.offsetWidth || 340;
+
+if (key === ‘world’) {
+const h = Math.round(w * 0.5);
+const svg = d3.select(’#worldD3svg’).attr(‘viewBox’, `0 0 ${w} ${h}`);
+svg.selectAll(’*’).remove();
+const projection = d3.geoNaturalEarth1().rotate([-150,0]).scale(w*0.17).translate([w/2,h/2]);
+const pathGen = d3.geoPath().projection(projection);
+try {
+const world = await d3.json(‘https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json’);
+const countries = topojson.feature(world, world.objects.countries);
+svg.selectAll(‘path’).data(countries.features).join(‘path’)
+.attr(‘d’, pathGen)
+.attr(‘data-code’, d => String(d.id))
+.style(‘fill’, d => {
+const name = CODE_COUNTRY_MAP[String(d.id)];
+if (name && visited[name] !== undefined) {
+const age = currentYear-(visited[name]||currentYear);
+return `rgba(139,44,100,${Math.max(0.4,1-age*0.06)})`;
+}
+return ‘#e8dfc8’;
+})
+.attr(‘stroke’,’#9a8f7a’).attr(‘stroke-width’,0.4).style(‘cursor’,‘pointer’)
+.on(‘click’, function(event,d) {
+const name = CODE_COUNTRY_MAP[String(d.id)];
+if (!name) return;
+const el = document.querySelector(`.visit-item[data-vkey="${name}"]`)||document.createElement(‘div’);
+toggleVisit(key, name, el);
+const yr = visitData[key]?.[name];
+d3.select(this).style(‘fill’, yr!==undefined ? `rgba(139,44,100,${Math.max(0.4,1-(currentYear-(yr||currentYear))*0.06)})` : ‘#e8dfc8’);
+});
+setTimeout(()=>reapplyMapColors(key,visited,currentYear),150);
+} catch(e) { console.error(‘世界地図エラー:’,e); }
+
+} else if (key === ‘japan’ || key === ‘onsen’) {
+const h = Math.round(w*0.85);
+const svg = d3.select(’#worldD3svg’).attr(‘viewBox’,`0 0 ${w} ${h}`);
+svg.selectAll(’*’).remove();
+const projection = d3.geoMercator().center([136.5,37.5]).scale(w*2.0).translate([w/2,h/2]).clipExtent([[0,0],[w,h]]);
+const pathGen = d3.geoPath().projection(projection);
+try {
+const japanData = await d3.json(‘https://eternalflame1001-sudo.github.io/bucket-list/japan.json’);
+let features;
+if (japanData.type===‘Topology’) {
+const prefKey = Object.keys(japanData.objects)[0];
+features = topojson.feature(japanData, japanData.objects[prefKey]).features;
+} else { features = japanData.features||[]; }
+function getJpName(d) {
+const p = d.properties||{};
+if (p.nam_ja) return JP_KANJI_MAP_GLOBAL[p.nam_ja]||p.nam_ja.replace(/[都道府県]$/,’’);
+return ‘’;
+}
+svg.selectAll(‘path’).data(features).join(‘path’)
+.attr(‘d’, pathGen)
+.attr(‘data-pref’, d => getJpName(d))
+.style(‘fill’, d => {
+const name = getJpName(d);
+if (name && visited[name]!==undefined) {
+const age = currentYear-(visited[name]||currentYear);
+return `rgba(139,44,100,${Math.max(0.4,1-age*0.06)})`;
+}
+return ‘#e8dfc8’;
+})
+.attr(‘stroke’,’#9a8f7a’).attr(‘stroke-width’,0.5).style(‘cursor’,‘pointer’)
+.on(‘click’, function(event,d) {
+const name = getJpName(d);
+if (!name) return;
+const el = document.querySelector(`.visit-item[data-vkey="${name}"]`)||document.createElement(‘div’);
+toggleVisit(key, name, el);
+const yr = visitData[key]?.[name];
+d3.select(this).style(‘fill’, yr!==undefined ? `rgba(139,44,100,${Math.max(0.4,1-(currentYear-(yr||currentYear))*0.06)})` : ‘#e8dfc8’);
+});
+setTimeout(()=>reapplyMapColors(key,visited,currentYear),150);
+} catch(e) { console.error(‘日本地図エラー:’,e); }
+
+} else if (key === ‘china’) {
+const h = Math.round(w*0.8);
+const svg = d3.select(’#worldD3svg’).attr(‘viewBox’,`0 0 ${w} ${h}`);
+svg.selectAll(’*’).remove();
+const projection = d3.geoMercator().center([104,35]).scale(w*0.9).translate([w/2,h/2]);
+const pathGen = d3.geoPath().projection(projection);
+try {
+const chinaData = await d3.json(‘https://eternalflame1001-sudo.github.io/bucket-list/china.json’);
+const cnFeatures = chinaData.features||[];
+const CN_JP_MAP = {
+‘北京市’:‘北京市’,‘天津市’:‘天津市’,‘上海市’:‘上海市’,‘重庆市’:‘重慶市’,
+‘河北省’:‘河北省’,‘山西省’:‘山西省’,‘辽宁省’:‘遼寧省’,‘吉林省’:‘吉林省’,
+‘黑龙江省’:‘黒竜江省’,‘江苏省’:‘江蘇省’,‘浙江省’:‘浙江省’,‘安徽省’:‘安徽省’,
+‘福建省’:‘福建省’,‘江西省’:‘江西省’,‘山东省’:‘山東省’,‘河南省’:‘河南省’,
+‘湖北省’:‘湖北省’,‘湖南省’:‘湖南省’,‘广东省’:‘広東省’,‘海南省’:‘海南省’,
+‘四川省’:‘四川省’,‘贵州省’:‘貴州省’,‘云南省’:‘雲南省’,‘陕西省’:‘陝西省’,
+‘甘肃省’:‘甘粛省’,‘青海省’:‘青海省’,‘内蒙古自治区’:‘内モンゴル自治区’,
+‘广西壮族自治区’:‘広西チワン族自治区’,‘西藏自治区’:‘チベット自治区’,
+‘宁夏回族自治区’:‘寧夏回族自治区’,‘新疆维吾尔自治区’:‘新疆ウイグル自治区’,
+‘香港特别行政区’:‘香港’,‘澳门特别行政区’:‘マカオ’,‘台湾省’:‘台湾’
+};
+svg.selectAll(‘path’).data(cnFeatures).join(‘path’)
+.attr(‘d’, pathGen)
+.attr(‘data-province’, d => CN_JP_MAP[(d.properties||{}).name||’’]||(d.properties||{}).name||’’)
+.style(‘fill’, d => {
+const jpName = CN_JP_MAP[(d.properties||{}).name||’’];
+if (jpName && visited[jpName]!==undefined) {
+const age = currentYear-(visited[jpName]||currentYear);
+return `rgba(139,44,100,${Math.max(0.4,1-age*0.06)})`;
+}
+return ‘#e8dfc8’;
+})
+.attr(‘stroke’,’#9a8f7a’).attr(‘stroke-width’,0.5).style(‘cursor’,‘pointer’)
+.on(‘click’, function(event,d) {
+const jpName = CN_JP_MAP[(d.properties||{}).name||’’];
+if (!jpName) return;
+const el = document.querySelector(`.visit-item[data-vkey="${jpName}"]`)||document.createElement(‘div’);
+toggleVisit(key, jpName, el);
+const yr = visitData[key]?.[jpName];
+d3.select(this).style(‘fill’, yr!==undefined ? `rgba(139,44,100,${Math.max(0.4,1-(currentYear-(yr||currentYear))*0.06)})` : ‘#e8dfc8’);
+});
+setTimeout(()=>reapplyMapColors(key,visited,currentYear),150);
+} catch(e) { console.error(‘中国地図エラー:’,e); }
+}
+}
+
+function reapplyMapColors(key, visited, currentYear) {
+Object.entries(visited||{}).forEach(([name,year])=>{
+const age = currentYear-(year||currentYear);
+const fill = `rgba(139,44,100,${Math.max(0.4,1-age*0.06)})`;
+if (key===‘world’) {
+const code = COUNTRY_CODE_MAP[name];
+if (code) d3.select(`#worldD3svg path[data-code="${code}"]`).style(‘fill’,fill);
+} else if (key===‘japan’||key===‘onsen’) {
+d3.selectAll(`#worldD3svg path[data-pref="${name}"]`).style(‘fill’,fill);
+} else if (key===‘china’) {
+d3.selectAll(`#worldD3svg path[data-province="${name}"]`).style(‘fill’,fill);
+}
+});
+}
 
 function renderVisitHistory(key) {
 const historyEl = document.getElementById(‘visitHistory’);
