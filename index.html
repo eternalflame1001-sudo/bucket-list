@@ -132,12 +132,12 @@
   .header-cat-item {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 4px 6px;
+    gap: 1px;
+    padding: 3px 4px;
     border-right: 1px solid var(--aged);
-    white-space: nowrap;
   }
   .header-cat-item:last-child { border-right: none; }
   .header-cat-total {
@@ -300,9 +300,8 @@
   }
   .filter-tabs::-webkit-scrollbar { display: none; }
   .tab {
-    padding: 10px 16px;
-    font-size: 12px;
-    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    font-size: 18px;
     cursor: pointer;
     border: none;
     background: none;
@@ -312,7 +311,28 @@
     border-bottom: 2px solid transparent;
     margin-bottom: -1.5px;
     transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
   }
+  .tab-pct {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    line-height: 1.2;
+    min-height: 11px;
+    font-family: 'Shippori Mincho', serif;
+  }
+  .tab-count {
+    font-size: 9px;
+    color: var(--faded);
+    line-height: 1.2;
+    min-height: 11px;
+    font-family: 'Shippori Mincho', serif;
+  }
+  .tab.active .tab-pct { color: var(--accent); font-weight: 700; }
+  .tab.active .tab-count { color: var(--accent); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
   .tab:hover:not(.active) { color: var(--ink); }
   .tab-trash { color: #9a8f7a; }
@@ -661,29 +681,7 @@
     transition: all 0.15s;
   }
   .item-edit-cancel:hover { color: var(--ink); border-color: var(--ink); }
-
-  /* Progress */
-  .progress-section { margin-bottom: 24px; }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--faded);
-    margin-bottom: 6px;
-  }
-  .progress-bar {
-    height: 4px;
-    background: var(--aged);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--sage), var(--gold));
-    border-radius: 2px;
-    transition: width 0.5s ease;
-  }
+.progress-section { margin-bottom: 24px; }
 
   /* Empty state */
   .empty {
@@ -937,7 +935,7 @@
 
 
 <main>
-  <!-- Progress -->
+
   <!-- Add form -->
   <div class="add-section">
     <div class="add-row">
@@ -971,14 +969,14 @@
 
   <!-- Filter tabs -->
   <div class="filter-tabs">
-    <button class="tab active" onclick="setFilter('全て', this)">全て</button>
-    <button class="tab" onclick="setFilter('海外旅行', this)">✈️ 海外</button>
-    <button class="tab" onclick="setFilter('国内旅行', this)">🗾 国内</button>
-    <button class="tab" onclick="setFilter('食・グルメ', this)">🍜 グルメ</button>
-    <button class="tab" onclick="setFilter('スキル・学習', this)">📚 学習</button>
-    <button class="tab" onclick="setFilter('人生の目標', this)">⭐ 目標</button>
-    <button class="tab" onclick="setFilter('達成済み', this)">✅ 達成</button>
-    <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)">🗑️ <span id="trashCount"></span></button>
+    <button class="tab active" onclick="setFilter('全て', this)" id="tab-全て"><span class="tab-pct"></span>🗂️<span class="tab-count"></span></button>
+    <button class="tab" onclick="setFilter('海外旅行', this)" id="tab-海外旅行"><span class="tab-pct"></span>✈️<span class="tab-count"></span></button>
+    <button class="tab" onclick="setFilter('国内旅行', this)" id="tab-国内旅行"><span class="tab-pct"></span>🗾<span class="tab-count"></span></button>
+    <button class="tab" onclick="setFilter('食・グルメ', this)" id="tab-食グルメ"><span class="tab-pct"></span>🍜<span class="tab-count"></span></button>
+    <button class="tab" onclick="setFilter('スキル・学習', this)" id="tab-スキル学習"><span class="tab-pct"></span>📚<span class="tab-count"></span></button>
+    <button class="tab" onclick="setFilter('人生の目標', this)" id="tab-人生の目標"><span class="tab-pct"></span>⭐<span class="tab-count"></span></button>
+    <button class="tab" onclick="setFilter('達成済み', this)" id="tab-達成済み"><span class="tab-pct"></span>✅<span class="tab-count"></span></button>
+    <button class="tab tab-trash" onclick="setFilter('ゴミ箱', this)">🗑️<span id="trashCount"></span></button>
   </div>
 
   <!-- Items -->
@@ -1539,7 +1537,27 @@ function updateStats() {
     { key: '人生の目標',  label: '⭐ 人生の目標',  color: '#8b2c0a' },
   ];
 
-  // フィルタータブ下の一覧は削除済み
+  // フィルタータブの%と数を更新
+  const tabCats = [
+    { filter: '全て',     id: 'tab-全て',     items: items },
+    { filter: '海外旅行', id: 'tab-海外旅行', items: items.filter(x=>x.cat==='海外旅行') },
+    { filter: '国内旅行', id: 'tab-国内旅行', items: items.filter(x=>x.cat==='国内旅行') },
+    { filter: '食・グルメ',id:'tab-食グルメ', items: items.filter(x=>x.cat==='食・グルメ') },
+    { filter: 'スキル・学習',id:'tab-スキル学習',items: items.filter(x=>x.cat==='スキル・学習') },
+    { filter: '人生の目標',id:'tab-人生の目標',items: items.filter(x=>x.cat==='人生の目標') },
+    { filter: '達成済み', id: 'tab-達成済み', items: items.filter(x=>x.done) },
+  ];
+  tabCats.forEach(tc => {
+    const btn = document.getElementById(tc.id);
+    if (!btn) return;
+    const total = tc.items.length;
+    const done = tc.items.filter(x=>x.done).length;
+    const pct = total ? Math.round(done/total*100) : 0;
+    const pctEl = btn.querySelector('.tab-pct');
+    const countEl = btn.querySelector('.tab-count');
+    if (pctEl) pctEl.textContent = total ? pct+'%' : '';
+    if (countEl) countEl.textContent = tc.filter==='達成済み' ? done+'件' : (total ? done+'/'+total : '');
+  });
 
   // ヘッダーのコンパクト版
   const headerEl = document.getElementById('headerCatStats');
@@ -1551,15 +1569,15 @@ function updateStats() {
       const ct = ci.length, cd = ci.filter(x => x.done).length;
       const cp = ct ? Math.round(cd / ct * 100) : 0;
       return `<div class="header-cat-item">
+        <span class="header-cat-pct">${cp}%</span>
         <span class="header-cat-icon">${icons[c.key]}</span>
         <span class="header-cat-fraction">${cd}/${ct}</span>
-        <span class="header-cat-pct">${cp}%</span>
       </div>`;
     }).join('') +
     `<div class="header-cat-item header-cat-total">
+      <span class="header-cat-pct">${items.length ? Math.round(items.filter(x=>x.done).length/items.length*100) : 0}%</span>
       <span class="header-cat-icon" style="color:#5a7a5a;">✓</span>
       <span class="header-cat-fraction">${items.filter(x=>x.done).length}/${items.length}</span>
-      <span class="header-cat-pct">${items.length ? Math.round(items.filter(x=>x.done).length/items.length*100) : 0}%</span>
     </div>` +
     `</div>`;
 }
