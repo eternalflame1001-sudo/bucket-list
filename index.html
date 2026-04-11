@@ -359,10 +359,10 @@
     border: 1px solid var(--aged);
     border-left: 3px solid var(--aged);
     border-radius: 2px;
-    padding: 14px 16px;
+    padding: 10px 10px 10px 12px;
     display: flex;
-    align-items: center;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 8px;
     box-shadow: 0 1px 4px var(--shadow);
     transition: box-shadow 0.3s, background 0.5s, opacity 0.5s, border-left-color 0.5s;
   }
@@ -403,10 +403,13 @@
 
   .item-body { flex: 1; min-width: 0; }
   .item-text {
-    font-size: 17px;
-    line-height: 1.4;
+    font-size: 15px;
+    line-height: 1.5;
     font-family: 'Zen Kaku Gothic New', sans-serif;
     font-weight: 700;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    min-width: 0;
   }
   .item-meta {
     display: flex;
@@ -520,11 +523,16 @@
     border-radius: 4px;
     color: var(--faded);
     cursor: pointer;
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 16px;
+    padding: 4px 8px;
     line-height: 1;
     transition: all 0.15s;
     flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .delete-btn:hover { color: white; background: var(--accent); border-color: var(--accent); }
 
@@ -534,11 +542,16 @@
     border-radius: 4px;
     color: var(--faded);
     cursor: pointer;
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 16px;
+    padding: 4px 8px;
     line-height: 1;
     transition: all 0.15s;
     flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .edit-btn:hover { color: white; background: var(--gold); border-color: var(--gold); }
 
@@ -548,11 +561,16 @@
     border-radius: 4px;
     color: var(--faded);
     cursor: pointer;
-    font-size: 20px;
-    padding: 6px 10px;
+    font-size: 16px;
+    padding: 4px 8px;
     line-height: 1;
     transition: all 0.15s;
     flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .detail-btn:hover { color: white; background: #3a6ea5; border-color: #3a6ea5; }
   .detail-btn.active { color: white; background: #3a6ea5; border-color: #3a6ea5; }
@@ -1602,15 +1620,15 @@ function buildItemHTML(item) {
       <div class="change-row" ${item.done ? 'style="display:none"' : ''}>
         <div class="change-group">
           <span class="change-group-label">緊急度</span>
-          <button class="urg-change-btn${item.urg==='高'?' active-高':''}" data-v="高" onclick="changeUrg(${item._i},'高')">高(3)</button>
-          <button class="urg-change-btn${item.urg==='中'?' active-中':''}" data-v="中" onclick="changeUrg(${item._i},'中')">中(2)</button>
-          <button class="urg-change-btn${item.urg==='低'?' active-低':''}" data-v="低" onclick="changeUrg(${item._i},'低')">低(1)</button>
+          <button class="urg-change-btn${item.urg==='高'?' active-高':''}" data-v="高" onclick="changeUrg(${item._i},'高')">高</button>
+          <button class="urg-change-btn${item.urg==='中'?' active-中':''}" data-v="中" onclick="changeUrg(${item._i},'中')">中</button>
+          <button class="urg-change-btn${item.urg==='低'?' active-低':''}" data-v="低" onclick="changeUrg(${item._i},'低')">低</button>
         </div>
         <div class="change-group">
           <span class="change-group-label">重要度</span>
-          <button class="prio-change-btn${item.prio==='高'?' active-高':''}" data-v="高" onclick="changePrio(${item._i},'高')">高(3)</button>
-          <button class="prio-change-btn${item.prio==='中'?' active-中':''}" data-v="中" onclick="changePrio(${item._i},'中')">中(2)</button>
-          <button class="prio-change-btn${item.prio==='低'?' active-低':''}" data-v="低" onclick="changePrio(${item._i},'低')">低(1)</button>
+          <button class="prio-change-btn${item.prio==='高'?' active-高':''}" data-v="高" onclick="changePrio(${item._i},'高')">高</button>
+          <button class="prio-change-btn${item.prio==='中'?' active-中':''}" data-v="中" onclick="changePrio(${item._i},'中')">中</button>
+          <button class="prio-change-btn${item.prio==='低'?' active-低':''}" data-v="低" onclick="changePrio(${item._i},'低')">低</button>
         </div>
       </div>
       <div class="item-memo-row${item.memo ? ' open' : ''}" id="memo-row-${item._i}">
@@ -1618,9 +1636,11 @@ function buildItemHTML(item) {
           onblur="saveMemo(${item._i})">${item.memo || ''}</textarea>
       </div>
     </div>
-    <button class="detail-btn${item.memo ? ' active' : ''}" onclick="toggleMemo(${item._i})" title="詳細">📝</button>
-    <button class="edit-btn" onclick="editItem(${item._i})" title="編集">✎</button>
-    <button class="delete-btn" onclick="remove(${item._i})" title="削除">×</button>
+    <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+      <button class="detail-btn${item.memo ? ' active' : ''}" onclick="toggleMemo(${item._i})" title="詳細">📝</button>
+      <button class="edit-btn" onclick="editItem(${item._i})" title="編集">✎</button>
+      <button class="delete-btn" onclick="remove(${item._i})" title="削除">×</button>
+    </div>
   </div>`;
 }
 
