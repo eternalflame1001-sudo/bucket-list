@@ -1541,12 +1541,11 @@ function updateItemContent(el, item) {
   el.dataset.cat = item.cat;
   // バッジ更新
   el.querySelector('.item-text').textContent = item.text;
-  el.querySelector('.badge-urg').className    = `badge badge-urg badge-urg-${item.urg}`;
-  el.querySelector('.badge-urg').textContent  = `緊急度 ${item.urg}`;
-  el.querySelector('.badge-prio').className   = `badge badge-prio badge-prio-${item.prio}`;
-  el.querySelector('.badge-prio').textContent = `重要度 ${item.prio}`;
-  el.querySelector('.badge-score').className  = `badge badge-score score-${item.score}`;
-  el.querySelector('.badge-score').textContent= `スコア ${item.score}`;
+  const scoreEl = el.querySelector('.badge-score');
+  if (scoreEl) {
+    scoreEl.className = `badge badge-score score-${item.score}`;
+    scoreEl.textContent = '０１２３４５６７８９'[item.score];
+  }
   // 変更ボタンのactive状態
   ['高','中','低'].forEach(v => {
     const ub = el.querySelector(`.urg-change-btn[data-v="${v}"]`);
@@ -1614,9 +1613,7 @@ function buildItemHTML(item) {
       </div>
       <div class="item-badges">
         <span class="cat-tag">${item.cat}</span>
-        <span class="badge badge-urg badge-urg-${item.urg}">緊急度 ${item.urg}</span>
-        <span class="badge badge-prio badge-prio-${item.prio}">重要度 ${item.prio}</span>
-        <span class="badge badge-score score-${item.score}" title="重要度×緊急度">スコア ${item.score}</span>
+        <span class="badge badge-score score-${item.score}" title="重要度×緊急度・最高９">${'０１２３４５６７８９'[item.score]}</span>
       </div>
       <div class="change-row" ${item.done ? 'style="display:none"' : ''}>
         <div class="change-group">
@@ -1794,7 +1791,6 @@ async function saveVisit() {
 
 
 function setMode(mode) {
-  console.log('setMode called:', mode);
   currentMode = mode;
   // アクティブタブ切替
   document.querySelectorAll('.mode-btn').forEach(b => {
