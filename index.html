@@ -1794,6 +1794,7 @@ async function saveVisit() {
 
 
 function setMode(mode) {
+  console.log('setMode called:', mode);
   currentMode = mode;
   // アクティブタブ切替
   document.querySelectorAll('.mode-btn').forEach(b => {
