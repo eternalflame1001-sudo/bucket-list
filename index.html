@@ -800,15 +800,15 @@
     justify-content: center;
     overflow-x: auto;
     scrollbar-width: none;
-    background: var(--ink);
-    border-bottom: 2px solid var(--gold);
+    background: var(--paper);
+    border-bottom: 2px solid var(--aged);
     padding: 0 8px;
   }
   .mode-tabs::-webkit-scrollbar { display: none; }
   .mode-btn {
     background: none;
     border: none;
-    color: rgba(245,240,232,0.5);
+    color: var(--faded);
     padding: 10px 12px;
     font-size: 12px;
     font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -818,8 +818,8 @@
     margin-bottom: -2px;
     transition: all 0.2s;
   }
-  .mode-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .mode-btn:hover:not(.active) { color: var(--paper); }
+  .mode-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+  .mode-btn:hover:not(.active) { color: var(--ink); }
   /* 訪問記録 */
   .visit-item {
     padding: 6px 10px;
