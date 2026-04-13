@@ -1262,8 +1262,8 @@ let pollTimer = null;
 async function loadFromFirebase() {
   try {
     const [itemsRes, trashRes] = await Promise.all([
-      fetch(DB_URL + USER_PATH + '/bucketList.json', {cache:'no-store'}),
-      fetch(DB_URL + USER_PATH + '/trashList.json', {cache:'no-store'})
+      fetch(DB_URL + '/bucketList.json', {cache:'no-store'}),
+      fetch(DB_URL + '/trashList.json', {cache:'no-store'})
     ]);
     const itemsData = await itemsRes.json();
     const trashData = await trashRes.json();
@@ -1282,12 +1282,12 @@ async function loadFromFirebase() {
 async function saveToFirebase() {
   try {
     await Promise.all([
-      fetch(DB_URL + USER_PATH + '/bucketList.json', {
+      fetch(DB_URL + '/bucketList.json', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(items)
       }),
-      fetch(DB_URL + USER_PATH + '/trashList.json', {
+      fetch(DB_URL + '/trashList.json', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(trash)
@@ -1773,7 +1773,7 @@ const DB_VISIT_URL = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.
 
 async function loadVisitFromFirebase() {
   try {
-    const res = await fetch(DB_VISIT_URL + USER_PATH + '/visitData.json', {cache:'no-store'});
+    const res = await fetch(DB_VISIT_URL + '/visitData.json', {cache:'no-store'});
     const data = await res.json();
     if (data && typeof data === 'object') visitData = data;
   } catch(e) { console.error('visitData読み込みエラー:', e); }
@@ -1781,7 +1781,7 @@ async function loadVisitFromFirebase() {
 
 async function saveVisit() {
   try {
-    await fetch(DB_VISIT_URL + USER_PATH + '/visitData.json', {
+    await fetch(DB_VISIT_URL + '/visitData.json', {
       method: 'PUT', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(visitData)
     });
