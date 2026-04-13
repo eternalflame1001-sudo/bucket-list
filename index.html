@@ -871,6 +871,7 @@
 <header>
   <h1>Bucket List</h1>
   <div class="header-desc">死ぬまでにやりたいこと、行きたい場所、なりたい自分</div>
+  <div id="userIndicator" style="margin-top:8px;font-size:11px;letter-spacing:0.15em;color:rgba(245,240,232,0.5);"></div>
 </header>
 
 <div class="stats-bar">
@@ -1231,6 +1232,25 @@ const DATA_VERSION = 'v7_new23';
 // ===== Firebase REST API =====
 const DB_URL = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.firebasedatabase.app";
 
+// URLパラメータでユーザーを判定
+const URL_PARAMS = new URLSearchParams(window.location.search);
+const CURRENT_USER = URL_PARAMS.get('user') || 'hideki'; // デフォルトはhideki
+const USER_PATH = '/users/' + CURRENT_USER; // /users/hideki or /users/friend
+
+// ヘッダーにユーザー名表示
+document.addEventListener('DOMContentLoaded', function() {
+  const el = document.getElementById('userIndicator');
+  if (el) {
+    if (CURRENT_USER === 'hideki') {
+      el.textContent = '👤 Hideki のリスト';
+    } else if (CURRENT_USER === 'friend') {
+      el.textContent = '👤 Friend のリスト';
+    } else {
+      el.textContent = '👤 ' + CURRENT_USER + ' のリスト';
+    }
+  }
+});
+
 let items = [];
 let trash = [];
 let currentFilter = '全て';
@@ -1242,8 +1262,8 @@ let pollTimer = null;
 async function loadFromFirebase() {
   try {
     const [itemsRes, trashRes] = await Promise.all([
-      fetch(DB_URL + '/bucketList.json', {cache:'no-store'}),
-      fetch(DB_URL + '/trashList.json', {cache:'no-store'})
+      fetch(DB_URL + USER_PATH + '/bucketList.json', {cache:'no-store'}),
+      fetch(DB_URL + USER_PATH + '/trashList.json', {cache:'no-store'})
     ]);
     const itemsData = await itemsRes.json();
     const trashData = await trashRes.json();
@@ -1262,12 +1282,12 @@ async function loadFromFirebase() {
 async function saveToFirebase() {
   try {
     await Promise.all([
-      fetch(DB_URL + '/bucketList.json', {
+      fetch(DB_URL + USER_PATH + '/bucketList.json', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(items)
       }),
-      fetch(DB_URL + '/trashList.json', {
+      fetch(DB_URL + USER_PATH + '/trashList.json', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(trash)
@@ -1753,7 +1773,7 @@ const DB_VISIT_URL = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.
 
 async function loadVisitFromFirebase() {
   try {
-    const res = await fetch(DB_VISIT_URL + '/visitData.json', {cache:'no-store'});
+    const res = await fetch(DB_VISIT_URL + USER_PATH + '/visitData.json', {cache:'no-store'});
     const data = await res.json();
     if (data && typeof data === 'object') visitData = data;
   } catch(e) { console.error('visitData読み込みエラー:', e); }
@@ -1761,7 +1781,7 @@ async function loadVisitFromFirebase() {
 
 async function saveVisit() {
   try {
-    await fetch(DB_VISIT_URL + '/visitData.json', {
+    await fetch(DB_VISIT_URL + USER_PATH + '/visitData.json', {
       method: 'PUT', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(visitData)
     });
