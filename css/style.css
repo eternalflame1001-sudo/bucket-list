@@ -1,1 +1,204 @@
+/* ==========================================
+   style.css — Bucket List App
+   ========================================== */
 
+:root {
+  --bg:       #0d0d0d;
+  --bg2:      #1a1a1a;
+  --bg3:      #242424;
+  --accent:   #f0a500;
+  --accent2:  #e05c00;
+  --text:     #f0ede8;
+  --text2:    #888;
+  --done:     #3a3a3a;
+  --radius:   12px;
+  --font-jp:  'Zen Kaku Gothic New', sans-serif;
+  --font-en:  'Bebas Neue', cursive;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-jp);
+  font-size: 15px;
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+/* ヘッダー */
+#app-header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid #333;
+}
+.header-title {
+  font-family: var(--font-en);
+  font-size: 26px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  flex: 1;
+}
+.header-stats { color: var(--text2); font-size: 13px; }
+.icon-btn {
+  background: var(--accent); color: #000;
+  border: none; border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 22px; font-weight: bold;
+  cursor: pointer; line-height: 1;
+}
+
+/* タブ */
+#tab-nav {
+  display: flex;
+  background: var(--bg2);
+  border-bottom: 1px solid #333;
+}
+.tab {
+  flex: 1; padding: 10px 4px;
+  background: none; border: none;
+  color: var(--text2); font-family: var(--font-jp);
+  font-size: 13px; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .2s;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* フィルターバー */
+#filter-bar {
+  display: flex; gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border-bottom: 1px solid #333;
+}
+#filter-bar input, #filter-bar select {
+  background: var(--bg3); color: var(--text);
+  border: 1px solid #444; border-radius: 8px;
+  padding: 6px 10px; font-size: 13px;
+  font-family: var(--font-jp);
+}
+#search-input { flex: 2; }
+#filter-bar select { flex: 1; }
+
+/* コンテンツ */
+#main-content { padding: 10px 12px 80px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* リストアイテム */
+ul { list-style: none; }
+.item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 10px;
+  margin-bottom: 6px;
+  background: var(--bg2);
+  border-radius: var(--radius);
+  border-left: 3px solid transparent;
+  transition: opacity .2s;
+}
+.item.done {
+  opacity: .5;
+  border-left-color: #555;
+  text-decoration: line-through;
+}
+.item-check { font-size: 20px; cursor: pointer; flex-shrink: 0; padding-top: 1px; }
+.item-body { flex: 1; min-width: 0; }
+.item-title { font-weight: 700; line-height: 1.4; word-break: break-all; }
+.item-cat  { font-size: 11px; color: var(--accent); margin-top: 3px; }
+.item-memo { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+.item-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+.item-actions button {
+  background: none; border: none;
+  font-size: 16px; cursor: pointer; padding: 2px;
+}
+.empty { text-align: center; color: var(--text2); padding: 40px 0; }
+
+/* モーダル */
+#modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7);
+  display: flex; align-items: flex-end;
+}
+#modal-overlay.hidden { display: none; }
+#modal {
+  width: 100%; background: var(--bg2);
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 40px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+#modal h2 { font-family: var(--font-en); font-size: 22px; color: var(--accent); letter-spacing: 2px; }
+#modal input, #modal select, #modal textarea {
+  width: 100%; background: var(--bg3); color: var(--text);
+  border: 1px solid #444; border-radius: 10px;
+  padding: 12px; font-size: 15px; font-family: var(--font-jp);
+}
+#modal textarea { resize: none; }
+.modal-btns { display: flex; gap: 10px; margin-top: 4px; }
+.modal-btns button {
+  flex: 1; padding: 14px;
+  border: none; border-radius: 10px;
+  font-size: 15px; font-family: var(--font-jp);
+  font-weight: 700; cursor: pointer;
+}
+#modal-cancel { background: var(--bg3); color: var(--text2); }
+#modal-save.primary { background: var(--accent); color: #000; }
+
+/* ローディング */
+#loading {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center;
+}
+#loading.hidden { display: none; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid #333;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* トースト */
+#toast {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px; border-radius: 24px;
+  font-size: 14px; font-weight: 700;
+  z-index: 400; white-space: nowrap;
+  animation: fadeIn .2s ease;
+}
+#toast.hidden { display: none; }
+.toast-ok    { background: var(--accent); color: #000; }
+.toast-error { background: #c0392b; color: #fff; }
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } }
+
+/* モーダル行レイアウト */
+.modal-row {
+  display: flex; gap: 12px;
+}
+.modal-row label {
+  flex: 1; display: flex; flex-direction: column;
+  gap: 6px; font-size: 13px; color: var(--text2);
+}
+.modal-row select {
+  width: 100%; background: var(--bg3); color: var(--text);
+  border: 1px solid #444; border-radius: 10px;
+  padding: 10px; font-size: 14px; font-family: var(--font-jp);
+}
+
+/* バッジ */
+.item-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.item-badge {
+  font-size: 10px; padding: 2px 7px;
+  border-radius: 10px; font-weight: 700;
+}
+.prio-高 { background: #c0392b22; color: #e74c3c; border: 1px solid #e74c3c66; }
+.prio-中 { background: #f39c1222; color: #f39c12; border: 1px solid #f39c1266; }
+.prio-低 { background: #2ecc7122; color: #2ecc71; border: 1px solid #2ecc7166; }
+.urg-高  { background: #9b59b622; color: #9b59b6; border: 1px solid #9b59b666; }
+.urg-中  { background: #3498db22; color: #3498db; border: 1px solid #3498db66; }
+.urg-低  { background: #7f8c8d22; color: #95a5a6;
