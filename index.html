@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 </head>
 <body>
 
@@ -40,6 +42,7 @@
 </div>
 
 <main id="main-content">
+  <!-- BucketList タブ -->
   <section id="tab-bucket" class="tab-content active">
     <div id="add-form">
       <div class="add-row">
@@ -73,23 +76,37 @@
     <ul id="bucket-list"></ul>
   </section>
 
+  <!-- Japan タブ -->
   <section id="tab-japan" class="tab-content">
-    <nav class="sub-tab-nav">
-      <button class="sub-tab active" data-sub="japan-list">🗾 Japan List</button>
-      <button class="sub-tab" data-sub="japan-pref">📐 都道府県</button>
-    </nav>
-    <div id="japan-list" class="sub-tab-content active">
-      <div class="coming-soon">🇯🇵<br>Japan List<br><small>準備中</small></div>
-    </div>
-    <div id="japan-pref" class="sub-tab-content">
-      <div class="coming-soon">📐<br>都道府県<br><small>準備中</small></div>
+    <div class="map-tab-inner">
+      <div class="map-header-bar">
+        <h2 class="map-title">🇯🇵 日本</h2>
+        <div class="map-stats-line" id="japan-map-stats">—</div>
+      </div>
+      <div id="japan-btn-container"></div>
     </div>
   </section>
+
+  <!-- China タブ -->
   <section id="tab-china" class="tab-content">
-    <div class="coming-soon">🇨🇳<br>China<br><small>準備中</small></div>
+    <div class="map-tab-inner">
+      <div class="map-header-bar">
+        <h2 class="map-title">🇨🇳 中国</h2>
+        <div class="map-stats-line" id="china-map-stats">—</div>
+      </div>
+      <div id="china-btn-container"></div>
+    </div>
   </section>
+
+  <!-- World タブ -->
   <section id="tab-world" class="tab-content">
-    <div class="coming-soon">🌍<br>World<br><small>準備中</small></div>
+    <div class="map-tab-inner">
+      <div class="map-header-bar">
+        <h2 class="map-title">🌍 World</h2>
+        <div class="map-stats-line" id="world-map-stats">—</div>
+      </div>
+      <div id="world-btn-container"></div>
+    </div>
   </section>
 </main>
 
@@ -129,11 +146,25 @@
   </div>
 </div>
 
+<!-- 年号入力ダイアログ -->
+<div id="year-dialog-overlay" class="hidden">
+  <div id="year-dialog">
+    <h3 id="year-dialog-title">地名</h3>
+    <p class="year-dialog-sub">訪問年を入力 (1975〜今年)</p>
+    <input type="number" id="year-dialog-input" placeholder="2025" min="1975" max="2099">
+    <div class="year-dialog-btns">
+      <button id="year-dialog-cancel" class="btn-cancel">キャンセル</button>
+      <button id="year-dialog-save" class="btn-save">保存</button>
+    </div>
+  </div>
+</div>
+
 <div id="loading" class="hidden"><div class="spinner"></div></div>
 <div id="toast" class="hidden"></div>
 <div id="sync-badge"><span id="sync-dot"></span>リアルタイム同期中</div>
 
 <script src="js/firebase.js"></script>
+<script src="js/map.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
