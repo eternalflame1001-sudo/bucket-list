@@ -1,7 +1,7 @@
 // app.js — UI・メイン処理
 
-const CAT_ICONS = { "海外旅行":"🌍","国内旅行":"🗾","食":"🍜","人生の目標":"⭐","スキル・学習":"✏️" };
-const CAT_KEYS  = ["海外旅行","国内旅行","食","人生の目標","スキル・学習"];
+const CAT_ICONS = { "海外旅行":"🌍","国内旅行":"🗾","人生の目標":"⭐","スキル・学習":"✏️" };
+const CAT_KEYS  = ["海外旅行","国内旅行","人生の目標","スキル・学習"];
 const SCORE_MAP = { "高":3,"中":2,"低":1 };
 
 let state = {
@@ -18,6 +18,7 @@ function score(item) { return (SCORE_MAP[item.urg]||1) * (SCORE_MAP[item.prio]||
 function toZen(n)    { return String(n).replace(/[0-9]/g, c => String.fromCharCode(c.charCodeAt(0)+0xFEE0)); }
 function esc(str)    { return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function showLoading(show) { $("loading").classList.toggle("hidden", !show); }
+window.toast = function(msg, type="ok") {};
 function toast(msg, type="ok") {
   const el = $("toast"); el.textContent = msg;
   el.className = `toast-${type}`; el.classList.remove("hidden");
@@ -36,6 +37,7 @@ async function init() {
     state.bucket = b || {};
     state.trash  = t || {};
     state.visit  = v || {};
+    window.appState = state;
     updateStats();
     renderBucket();
   } catch(e) { toast("データ読み込みエラー", "error"); }
@@ -338,6 +340,11 @@ document.querySelectorAll(".tab").forEach(btn => {
     document.querySelectorAll(".tab-content").forEach(s => s.classList.remove("active"));
     btn.classList.add("active");
     state.tab = btn.dataset.tab;
+    // フィルターバーはbucketタブのみ表示
+    document.getElementById("cat-filter-bar").classList.toggle("hidden", state.tab !== "bucket");
+    if (['japan','china','world'].includes(state.tab)) {
+      setTimeout(() => window.onMapTabActivate?.(state.tab), 50);
+    }
     $(`tab-${state.tab}`).classList.add("active");
   });
 });
