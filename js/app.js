@@ -61,12 +61,14 @@ function updateStats() {
   $("cfrac-all").textContent = `${done}/${total}`;
 
   // 各カテゴリ
-  CAT_KEYS.forEach((cat, i) => {
+  CAT_KEYS.forEach((cat) => {
     const items = all.filter(v => v.cat === cat);
     const d = items.filter(v => v.done).length;
     const pct = items.length ? Math.round(d/items.length*100) : 0;
-    $(`cpct-${i}`).textContent  = pct + "%";
-    $(`cfrac-${i}`).textContent = `${d}/${items.length}`;
+    const pe = $(`cpct-${cat}`);
+    const fe = $(`cfrac-${cat}`);
+    if (pe) pe.textContent = pct + "%";
+    if (fe) fe.textContent = `${d}/${items.length}`;
   });
 
   // 達成
@@ -377,6 +379,7 @@ function startListener() {
       renderBucket();
     }
   });
+
 }
 
 init();
