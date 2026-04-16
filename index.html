@@ -1,76 +1,108 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Bucket List</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- ヘッダー -->
-
   <header id="app-header">
-    <div class="header-title">BUCKET LIST</div>
+    <h1>Bucket List</h1>
+    <p class="header-sub">死ぬまでにやりたいこと、行きたい場所、なりたい自分</p>
     <div class="header-stats">
-      <span id="stat-done">0</span>/<span id="stat-total">0</span>
+      <div class="stat"><span id="stat-total">0</span><small>合　計</small></div>
+      <div class="stat accent"><span id="stat-done">0</span><small>達　成</small></div>
+      <div class="stat"><span id="stat-remain">0</span><small>残　り</small></div>
     </div>
-    <button class="icon-btn" id="btn-add" title="追加">＋</button>
   </header>
 
   <!-- タブナビ -->
-
   <nav id="tab-nav">
-    <button class="tab active" data-tab="list">リスト</button>
-    <button class="tab" data-tab="visit">訪問記録</button>
-    <button class="tab" data-tab="trash">ゴミ箱</button>
+    <button class="tab active" data-tab="bucket">📚 Bucket List</button>
+    <button class="tab" data-tab="japan">🇯🇵 Japan</button>
+    <button class="tab" data-tab="pref">📐 都道府県</button>
+    <button class="tab" data-tab="china">🇨🇳 China</button>
+    <button class="tab" data-tab="world">🌍 World</button>
   </nav>
 
-  <!-- 検索・フィルター -->
-
-  <div id="filter-bar">
-    <input type="search" id="search-input" placeholder="🔍 検索...">
-    <select id="category-filter"><option value="">すべて</option></select>
-    <select id="status-filter">
-      <option value="">すべて</option>
-      <option value="todo">未達成</option>
-      <option value="done">達成済</option>
-    </select>
-  </div>
-
   <!-- メインコンテンツ -->
-
   <main id="main-content">
-    <section id="tab-list" class="tab-content active">
+
+    <!-- Bucket List タブ -->
+    <section id="tab-bucket" class="tab-content active">
+      <!-- 追加フォーム -->
+      <div id="add-form">
+        <div class="add-title">＋ 新しい夢を追加</div>
+        <div class="add-row">
+          <input type="text" id="add-input" placeholder="やりたいことを入力...">
+          <button id="btn-add">追加</button>
+        </div>
+        <select id="add-cat"></select>
+        <div class="add-priority">
+          <span class="prio-label">緊急度</span>
+          <button class="prio-btn active" data-type="urg" data-val="高">高</button>
+          <button class="prio-btn" data-type="urg" data-val="中">中</button>
+          <button class="prio-btn" data-type="urg" data-val="低">低</button>
+          <span class="prio-label">重要度</span>
+          <button class="prio-btn active" data-type="prio" data-val="高">高</button>
+          <button class="prio-btn" data-type="prio" data-val="中">中</button>
+          <button class="prio-btn" data-type="prio" data-val="低">低</button>
+        </div>
+      </div>
+      <!-- フィルター -->
+      <div id="filter-bar">
+        <input type="search" id="search-input" placeholder="🔍 検索...">
+        <select id="status-filter">
+          <option value="">すべて</option>
+          <option value="todo">未達成</option>
+          <option value="done">達成済</option>
+        </select>
+      </div>
       <ul id="bucket-list"></ul>
     </section>
-    <section id="tab-visit" class="tab-content">
-      <ul id="visit-list"></ul>
+
+    <!-- Japan タブ -->
+    <section id="tab-japan" class="tab-content">
+      <div class="coming-soon">🇯🇵<br>Japan<br><small>準備中</small></div>
     </section>
-    <section id="tab-trash" class="tab-content">
-      <ul id="trash-list"></ul>
+
+    <!-- 都道府県 タブ -->
+    <section id="tab-pref" class="tab-content">
+      <div class="coming-soon">📐<br>都道府県<br><small>準備中</small></div>
     </section>
+
+    <!-- China タブ -->
+    <section id="tab-china" class="tab-content">
+      <div class="coming-soon">🇨🇳<br>China<br><small>準備中</small></div>
+    </section>
+
+    <!-- World タブ -->
+    <section id="tab-world" class="tab-content">
+      <div class="coming-soon">🌍<br>World<br><small>準備中</small></div>
+    </section>
+
   </main>
 
-  <!-- 追加・編集モーダル -->
-
+  <!-- 編集モーダル -->
   <div id="modal-overlay" class="hidden">
     <div id="modal">
-      <h2 id="modal-title">アイテム追加</h2>
+      <h2 id="modal-title">編集</h2>
       <input type="text" id="modal-input-text" placeholder="タイトル" maxlength="100">
       <select id="modal-input-cat"></select>
       <div class="modal-row">
-        <label>優先度
-          <select id="modal-input-prio">
-            <option>低</option><option selected>中</option><option>高</option>
-          </select>
-        </label>
         <label>緊急度
           <select id="modal-input-urg">
-            <option>低</option><option selected>中</option><option>高</option>
+            <option>高</option><option selected>中</option><option>低</option>
+          </select>
+        </label>
+        <label>重要度
+          <select id="modal-input-prio">
+            <option>高</option><option selected>中</option><option>低</option>
           </select>
         </label>
       </div>
@@ -82,16 +114,11 @@
   </div>
 
   <!-- ローディング -->
-
   <div id="loading" class="hidden"><div class="spinner"></div></div>
-
-  <!-- トースト通知 -->
-
+  <!-- トースト -->
   <div id="toast" class="hidden"></div>
 
   <script src="js/firebase.js"></script>
-
   <script src="js/app.js"></script>
-
 </body>
 </html>
