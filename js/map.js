@@ -104,6 +104,22 @@ function renderButtons(container, groups, visitData, type) {
 }
 
 // ==========================================
+// ② SVG地図描画共通ズームヘルパー
+// ==========================================
+function attachMapZoom(container, maxScale) {
+  const svgEl = container.querySelector('svg');
+  const gEl   = container.querySelector('svg > g');
+  if (!svgEl || !gEl) return;
+  const zoom = d3.zoom()
+    .scaleExtent([1, maxScale])
+    .on('zoom', e => { gEl.setAttribute('transform', e.transform); });
+  d3.select(svgEl).call(zoom);
+  svgEl.addEventListener('dblclick', () => {
+    d3.select(svgEl).transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+  });
+}
+
+// ==========================================
 // ② SVG地図描画（Japanのみ）
 // ==========================================
 let _japanTopo = null;
@@ -139,7 +155,7 @@ async function renderJapanMap(visitData) {
   // 沖縄インセット（左上）
   const inW = Math.round(W * 0.27);
   const inH = Math.round(inW * 0.95);
-  const inX = 8, inY = 8;
+  const inX = 8, inY = Math.round(H * 0.18);
   const okFC = { type: "FeatureCollection", features: okFeats };
   const okProj = d3.geoMercator().fitExtent([[inX+5, inY+5], [inX+inW-5, inY+inH-5]], okFC);
   const okPG = d3.geoPath().projection(okProj);
@@ -160,12 +176,16 @@ async function renderJapanMap(visitData) {
     </path>`;
   };
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<g>`; // ズーム対象：本州・北海道・四国・九州
   mainFeats.forEach(f => { svg += featPath(f, pathGen); });
-  // 沖縄インセット枠
+  svg += `</g>`;
+  // 沖縄インセット（ズーム対象外・固定）
   svg += `<rect x="${inX}" y="${inY}" width="${inW}" height="${inH}"
     fill="#f5f0e8" stroke="#999" stroke-width="1" rx="3"/>`;
+  svg += `<g>`; // 沖縄グループ（固定）
   okFeats.forEach(f => { svg += featPath(f, okPG); });
+  svg += `</g>`;
   svg += `</svg>`;
   container.innerHTML = svg;
 
@@ -179,6 +199,7 @@ async function renderJapanMap(visitData) {
     path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
     path.addEventListener("mouseleave", () => path.style.opacity = "1");
   });
+  attachMapZoom(container, 15);
 }
 
 // ==========================================
@@ -203,7 +224,7 @@ async function renderChinaMap(visitData) {
   const H = Math.round(W * 0.9);
   const projection = d3.geoMercator().fitExtent([[10, 10], [W-10, H-10]], { type:"FeatureCollection", features });
   const pathGen = d3.geoPath().projection(projection);
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g>`;
   features.forEach(feat => {
     const props = feat.properties;
     const key = props.nam_ja || props.name || '';
@@ -218,7 +239,7 @@ async function renderChinaMap(visitData) {
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
-  svg += `</svg>`;
+  svg += `</g></svg>`;
   container.innerHTML = svg;
   container.querySelectorAll(".svg-pref").forEach(path => {
     path.addEventListener("click", () => {
@@ -231,6 +252,7 @@ async function renderChinaMap(visitData) {
     path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
     path.addEventListener("mouseleave", () => path.style.opacity = "1");
   });
+  attachMapZoom(container, 10);
 }
 
 // ==========================================
@@ -264,7 +286,7 @@ async function renderWorldMap(visitData) {
     .rotate([-150, 0])
     .fitExtent([[10, 10], [W-10, H-10]], noAntarctica);
   const pathGen = d3.geoPath().projection(projection);
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g>`;
   features.forEach(feat => {
     const key = feat.properties.nam_ja || feat.properties.name || '';
     const val = visitData[key];
@@ -278,7 +300,7 @@ async function renderWorldMap(visitData) {
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
-  svg += `</svg>`;
+  svg += `</g></svg>`;
   container.innerHTML = svg;
   container.querySelectorAll(".svg-pref").forEach(path => {
     path.addEventListener("click", () => {
@@ -291,6 +313,7 @@ async function renderWorldMap(visitData) {
     path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
     path.addEventListener("mouseleave", () => path.style.opacity = "1");
   });
+  attachMapZoom(container, 8);
 }
 
 // ==========================================
