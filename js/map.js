@@ -4,8 +4,7 @@
 // ==========================================
 
 const JAPAN_REGIONS = [
-  { label: "北海道", prefs: ["北海道"] },
-  { label: "東北", prefs: ["青森県","岩手県","宮城県","秋田県","山形県","福島県"] },
+  { label: "北海道・東北", prefs: ["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県"] },
   { label: "関東", prefs: ["茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県"] },
   { label: "中部", prefs: ["新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県"] },
   { label: "近畿", prefs: ["三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県"] },
@@ -52,7 +51,7 @@ function yearToColor(year) {
   const b = Math.round(200 - t * 94);
   return `rgb(${r},${g},${b})`;
 }
-function prefShort(name) { return name.replace(/[都道府県]$/, ""); }
+function prefShort(name) { return name.replace(/[都府県]$/, ""); }
 
 // ==========================================
 // ① ボタングリッド描画
@@ -125,8 +124,10 @@ async function renderJapanMap(visitData) {
   const objKey = Object.keys(_japanTopo.objects)[0];
   const features = topojson.feature(_japanTopo, _japanTopo.objects[objKey]).features;
   const W = container.clientWidth || 370;
-  const H = Math.round(W * 1.05);
-  const projection = d3.geoMercator().fitSize([W, H], { type: "FeatureCollection", features });
+  const H = Math.round(W * 1.4);
+  // 日本全体（沖縄含む）をフィットして拡大
+  const allJapan = { type: "FeatureCollection", features };
+  const projection = d3.geoMercator().fitExtent([[10, 10], [W-10, H-10]], allJapan);
   const pathGen = d3.geoPath().projection(projection);
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
@@ -179,8 +180,8 @@ async function renderChinaMap(visitData) {
   const objKey = Object.keys(_chinaTopo.objects)[0];
   const features = topojson.feature(_chinaTopo, _chinaTopo.objects[objKey]).features;
   const W = container.clientWidth || 370;
-  const H = Math.round(W * 0.75);
-  const projection = d3.geoMercator().fitSize([W, H], { type:"FeatureCollection", features });
+  const H = Math.round(W * 0.9);
+  const projection = d3.geoMercator().fitExtent([[10, 10], [W-10, H-10]], { type:"FeatureCollection", features });
   const pathGen = d3.geoPath().projection(projection);
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
   features.forEach(feat => {
@@ -230,8 +231,20 @@ async function renderWorldMap(visitData) {
   }
   const features = topojson.feature(_worldTopo, _worldTopo.objects.countries).features;
   const W = container.clientWidth || 370;
-  const H = Math.round(W * 0.55);
-  const projection = d3.geoNaturalEarth1().fitSize([W, H], { type:"FeatureCollection", features });
+  const H = Math.round(W * 0.65);
+  // 南極除外でズーム
+  const noAntarctica = {
+    type: "FeatureCollection",
+    features: features.filter(f => {
+      const n = f.properties.nam_ja || f.properties.name || '';
+      return n !== '南極' && n !== 'Antarctica';
+    })
+  };
+  // 中心経度150度（日本が中央寄り、アメリカが右）
+  const projection = d3.geoMercator()
+    .center([150, 30])
+    .scale(W / (2.2 * Math.PI))
+    .translate([W / 2, H / 2]);
   const pathGen = d3.geoPath().projection(projection);
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
   features.forEach(feat => {
