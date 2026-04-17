@@ -241,7 +241,7 @@ async function renderWorldMap(visitData) {
     })
   };
   const projection = d3.geoMercator()
-    .rotate([150, 0])
+    .rotate([-150, 0])
     .fitExtent([[10, 10], [W-10, H-10]], noAntarctica);
   const pathGen = d3.geoPath().projection(projection);
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
