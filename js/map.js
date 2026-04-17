@@ -104,6 +104,70 @@ function renderButtons(container, groups, visitData, type) {
 }
 
 // ==========================================
+// ② 世界遺産データ & 星描画ヘルパー
+// ==========================================
+let _heritageData = null;
+async function loadHeritage() {
+  if (_heritageData) return _heritageData;
+  try {
+    const r = await fetch('./heritage.json');
+    _heritageData = await r.json();
+  } catch(e) { _heritageData = []; }
+  return _heritageData;
+}
+
+function starPoints(cx, cy, r) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const angle = (i * 36 - 90) * Math.PI / 180;
+    const rad = i % 2 === 0 ? r : r * 0.42;
+    pts.push(`${(cx + rad * Math.cos(angle)).toFixed(2)},${(cy + rad * Math.sin(angle)).toFixed(2)}`);
+  }
+  return pts.join(' ');
+}
+
+function heritageStarsSVG(sites, projection, hv, r) {
+  let out = '';
+  for (const s of sites) {
+    if (s.lat == null || s.lon == null) continue;
+    const pt = projection([s.lon, s.lat]);
+    if (!pt || isNaN(pt[0])) continue;
+    const [x, y] = pt;
+    const visited = hv && hv[String(s.id)];
+    const fill   = visited ? '#FFD700' : 'rgba(255,220,0,0.15)';
+    const stroke = visited ? '#b8860b' : '#cc9900';
+    const sw     = visited ? 1.5 : 1.2;
+    out += `<polygon points="${starPoints(x, y, r)}"
+      fill="${fill}" stroke="${stroke}" stroke-width="${sw}"
+      class="heritage-star" data-id="${s.id}" data-name-ja="${s.name_ja}"
+      data-year="${s.year}" data-cat="${s.cat_ja}" style="cursor:pointer">
+      <title>★ ${s.name_ja}（${s.year}年・${s.cat_ja}）</title>
+    </polygon>`;
+  }
+  return out;
+}
+
+function attachHeritageClicks(container, tabType) {
+  container.querySelectorAll('.heritage-star').forEach(el => {
+    el.addEventListener('click', async e => {
+      e.stopPropagation();
+      const id  = el.dataset.id;
+      const name = el.dataset.nameJa;
+      const hv   = window.appState?.visit?.heritage || {};
+      const val  = hv[id];
+      if (val) {
+        if (!confirm(`「${name}」の訪問記録を削除しますか？`)) return;
+        await saveVisit('heritage', id, null);
+      } else {
+        const curYear = new Date().getFullYear();
+        await openYearDialog('heritage', name, curYear);
+      }
+      refreshTab(tabType);
+    });
+  });
+}
+
+// ==========================================
 // ② SVG地図描画共通ズームヘルパー
 // ==========================================
 function attachMapZoom(container, maxScale) {
@@ -176,15 +240,24 @@ async function renderJapanMap(visitData) {
     </path>`;
   };
 
+  const heritage = await loadHeritage();
+  const hv = window.appState?.visit?.heritage || {};
+  const jpSites = heritage.filter(s => {
+    const iso = Array.isArray(s.iso) ? s.iso : [s.iso];
+    return iso.includes('jp') && s.lat != null;
+  });
+
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg">`;
-  svg += `<g>`; // ズーム対象：本州・北海道・四国・九州
+  svg += `<g>`; // ズーム対象：本州・北海道・四国・九州 + 星
   mainFeats.forEach(f => { svg += featPath(f, pathGen); });
+  svg += heritageStarsSVG(jpSites, projection, hv, 7);
   svg += `</g>`;
   // 沖縄インセット（ズーム対象外・固定）
   svg += `<rect x="${inX}" y="${inY}" width="${inW}" height="${inH}"
     fill="#f5f0e8" stroke="#999" stroke-width="1" rx="3"/>`;
   svg += `<g>`; // 沖縄グループ（固定）
   okFeats.forEach(f => { svg += featPath(f, okPG); });
+  svg += heritageStarsSVG(jpSites, okProj, hv, 4);
   svg += `</g>`;
   svg += `</svg>`;
   container.innerHTML = svg;
@@ -199,6 +272,7 @@ async function renderJapanMap(visitData) {
     path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
     path.addEventListener("mouseleave", () => path.style.opacity = "1");
   });
+  attachHeritageClicks(container, 'japan');
   attachMapZoom(container, 15);
 }
 
@@ -224,6 +298,13 @@ async function renderChinaMap(visitData) {
   const H = Math.round(W * 0.9);
   const projection = d3.geoMercator().fitExtent([[10, 10], [W-10, H-10]], { type:"FeatureCollection", features });
   const pathGen = d3.geoPath().projection(projection);
+  const heritage = await loadHeritage();
+  const hv = window.appState?.visit?.heritage || {};
+  const cnSites = heritage.filter(s => {
+    const iso = Array.isArray(s.iso) ? s.iso : [s.iso];
+    return iso.includes('cn') && s.lat != null;
+  });
+
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g>`;
   features.forEach(feat => {
     const props = feat.properties;
@@ -239,6 +320,7 @@ async function renderChinaMap(visitData) {
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
+  svg += heritageStarsSVG(cnSites, projection, hv, 6);
   svg += `</g></svg>`;
   container.innerHTML = svg;
   container.querySelectorAll(".svg-pref").forEach(path => {
@@ -252,6 +334,7 @@ async function renderChinaMap(visitData) {
     path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
     path.addEventListener("mouseleave", () => path.style.opacity = "1");
   });
+  attachHeritageClicks(container, 'china');
   attachMapZoom(container, 10);
 }
 
@@ -286,6 +369,10 @@ async function renderWorldMap(visitData) {
     .rotate([-150, 0])
     .fitExtent([[10, 10], [W-10, H-10]], noAntarctica);
   const pathGen = d3.geoPath().projection(projection);
+  const heritage = await loadHeritage();
+  const hv = window.appState?.visit?.heritage || {};
+  const allSites = heritage.filter(s => s.lat != null);
+
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g>`;
   features.forEach(feat => {
     const key = feat.properties.nam_ja || feat.properties.name || '';
@@ -300,6 +387,7 @@ async function renderWorldMap(visitData) {
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
+  svg += heritageStarsSVG(allSites, pathGen.projection(), hv, 4);
   svg += `</g></svg>`;
   container.innerHTML = svg;
   container.querySelectorAll(".svg-pref").forEach(path => {
@@ -313,6 +401,7 @@ async function renderWorldMap(visitData) {
     path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
     path.addEventListener("mouseleave", () => path.style.opacity = "1");
   });
+  attachHeritageClicks(container, 'world');
   attachMapZoom(container, 8);
 }
 
