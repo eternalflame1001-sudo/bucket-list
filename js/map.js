@@ -125,13 +125,26 @@ async function renderJapanMap(visitData) {
   const features = topojson.feature(_japanTopo, _japanTopo.objects[objKey]).features;
   const W = container.clientWidth || 370;
   const H = Math.round(W * 1.4);
-  // 日本全体（沖縄含む）をフィットして拡大
-  const allJapan = { type: "FeatureCollection", features };
-  const projection = d3.geoMercator().fitExtent([[10, 10], [W-10, H-10]], allJapan);
+
+  // 沖縄を分離してメイン本州・四国・九州・北海道を拡大
+  const isOk = f => (f.properties.nam_ja || f.properties.name || '').includes('沖縄');
+  const mainFeats = features.filter(f => !isOk(f));
+  const okFeats   = features.filter(f =>  isOk(f));
+
+  // メイン投影（沖縄除外で拡大）
+  const mainFC = { type: "FeatureCollection", features: mainFeats };
+  const projection = d3.geoMercator().fitExtent([[10, 10], [W-10, H-10]], mainFC);
   const pathGen = d3.geoPath().projection(projection);
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
-  features.forEach(feat => {
+  // 沖縄インセット（左上）
+  const inW = Math.round(W * 0.27);
+  const inH = Math.round(inW * 0.95);
+  const inX = 8, inY = 8;
+  const okFC = { type: "FeatureCollection", features: okFeats };
+  const okProj = d3.geoMercator().fitExtent([[inX+5, inY+5], [inX+inW-5, inY+inH-5]], okFC);
+  const okPG = d3.geoPath().projection(okProj);
+
+  const featPath = (feat, pg) => {
     const props = feat.properties;
     const full = props.nam_ja || props.name_ja || props.NAME || props.name || props.N03_001 || '';
     const key = prefShort(full);
@@ -139,13 +152,20 @@ async function renderJapanMap(visitData) {
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
     const fill = visited ? yearToColor(year) : "#e8e4dc";
-    const d = pathGen(feat);
-    if (!d) return;
-    svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.8" class="svg-pref"
+    const d = pg(feat);
+    if (!d) return '';
+    return `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.8" class="svg-pref"
       data-name="${key}" style="cursor:pointer">
       <title>${full}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
-  });
+  };
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  mainFeats.forEach(f => { svg += featPath(f, pathGen); });
+  // 沖縄インセット枠
+  svg += `<rect x="${inX}" y="${inY}" width="${inW}" height="${inH}"
+    fill="#f5f0e8" stroke="#999" stroke-width="1" rx="3"/>`;
+  okFeats.forEach(f => { svg += featPath(f, okPG); });
   svg += `</svg>`;
   container.innerHTML = svg;
 
@@ -231,7 +251,7 @@ async function renderWorldMap(visitData) {
   }
   const features = topojson.feature(_worldTopo, _worldTopo.objects.countries).features;
   const W = container.clientWidth || 370;
-  const H = Math.round(W * 0.65);
+  const H = Math.round(W * 0.80);
   // 南極除外でズーム
   const noAntarctica = {
     type: "FeatureCollection",
