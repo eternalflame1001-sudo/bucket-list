@@ -87,7 +87,7 @@ function renderButtons(container, groups, visitData, type) {
       const year = (val === true) ? null : (val || null);
       const visited = !!val;
       const color = visited ? yearToColor(year) : "";
-      const disp = type === "japan" ? name.replace(/[都道府県]$/, "") : name;
+      const disp = type === "japan" ? name.replace(/[都府県]$/, "") : name;
       html += `<button class="visit-btn ${visited ? "visited" : ""}"
         data-name="${key}" data-type="${type}" data-visited="${visited}"
         ${visited ? `style="background:${color};border-color:${color}"` : ""}>
@@ -141,7 +141,7 @@ async function renderJapanMap(visitData) {
     const fill = visited ? yearToColor(year) : "#e8e4dc";
     const d = pathGen(feat);
     if (!d) return;
-    svg += `<path d="${d}" fill="${fill}" stroke="#fff" stroke-width="0.8" class="svg-pref"
+    svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.8" class="svg-pref"
       data-name="${key}" style="cursor:pointer">
       <title>${full}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
@@ -193,7 +193,7 @@ async function renderChinaMap(visitData) {
     const fill = visited ? yearToColor(year) : "#e8e4dc";
     const d = pathGen(feat);
     if (!d) return;
-    svg += `<path d="${d}" fill="${fill}" stroke="#fff" stroke-width="0.8" class="svg-pref"
+    svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.8" class="svg-pref"
       data-name="${key}" style="cursor:pointer">
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
@@ -240,11 +240,9 @@ async function renderWorldMap(visitData) {
       return n !== '南極' && n !== 'Antarctica';
     })
   };
-  // 中心経度150度（日本が中央寄り、アメリカが右）
   const projection = d3.geoMercator()
-    .center([150, 30])
-    .scale(W / (2.2 * Math.PI))
-    .translate([W / 2, H / 2]);
+    .rotate([150, 0])
+    .fitExtent([[10, 10], [W-10, H-10]], noAntarctica);
   const pathGen = d3.geoPath().projection(projection);
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
   features.forEach(feat => {
@@ -255,7 +253,7 @@ async function renderWorldMap(visitData) {
     const fill = visited ? yearToColor(year) : "#e8e4dc";
     const d = pathGen(feat);
     if (!d) return;
-    svg += `<path d="${d}" fill="${fill}" stroke="#fff" stroke-width="0.5" class="svg-pref"
+    svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.5" class="svg-pref"
       data-name="${key}" style="cursor:pointer">
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
