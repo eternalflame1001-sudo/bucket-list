@@ -737,9 +737,9 @@ async function renderHeritageList(scope) {
   if (scope === 'world') {
     const isoSet = new Set();
     heritage.forEach(s => (Array.isArray(s.iso) ? s.iso : [s.iso]).forEach(c => isoSet.add(c)));
-    isoOptions = [...isoSet].sort((a, b) => {
-      const na = ISO_JA[a] || a, nb = ISO_JA[b] || b;
-      return na.localeCompare(nb, 'ja');
+    isoOptions = [...isoSet].filter(c => typeof c === 'string').sort((a, b) => {
+      const na = String(ISO_JA[a] || a), nb = String(ISO_JA[b] || b);
+      return na.localeCompare(nb);
     });
   }
 
@@ -832,9 +832,11 @@ async function renderHeritageList(scope) {
         if (!countryMap[primary]) countryMap[primary] = [];
         countryMap[primary].push(s);
       });
-      const sortedCountries = Object.entries(countryMap).sort((a, b) =>
-        (ISO_JA[a[0]] || a[0]).localeCompare(ISO_JA[b[0]] || b[0], 'ja')
-      );
+      const sortedCountries = Object.entries(countryMap).sort((a, b) => {
+        const na = String(ISO_JA[a[0]] || a[0] || '');
+        const nb = String(ISO_JA[b[0]] || b[0] || '');
+        return na.localeCompare(nb);
+      });
       html += `<div class="heritage-country-section">`;
       sortedCountries.forEach(([iso, cSites]) => {
         const cName  = ISO_JA[iso] || iso.toUpperCase();
