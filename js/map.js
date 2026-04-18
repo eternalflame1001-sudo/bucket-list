@@ -721,8 +721,10 @@ async function renderHeritageList(scope) {
   if (!container) return;
   try {
   const heritage = await loadHeritage();
+  if (!heritage || !heritage.length) { container.innerHTML = '<div class="heritage-empty">データを読み込めませんでした</div>'; return; }
   const hv = window.appState?.visit?.heritage || {};
   const st = heritageState[scope];
+  if (!st) { container.innerHTML = '<div class="heritage-empty">不正なスコープです</div>'; return; }
 
   // スコープでフィルター
   let sites = heritage;
@@ -934,8 +936,8 @@ async function renderHeritageList(scope) {
       const name    = (s.name_ja && s.name_ja !== s.name) ? s.name_ja : (s.name || '');
       const catIcon = s.cat === 'N' ? '🌿' : s.cat === 'M' ? '🌟' : '🏛️';
       const catCls  = s.cat === 'N' ? 'cat-n' : s.cat === 'M' ? 'cat-m' : 'cat-c';
-      const isoArr  = Array.isArray(s.iso) ? s.iso : [s.iso];
-      const countryText = isoArr.map(c => ISO_JA[c] || c.toUpperCase()).join('・');
+      const isoArr  = Array.isArray(s.iso) ? s.iso : (s.iso ? [s.iso] : []);
+      const countryText = isoArr.filter(Boolean).map(c => ISO_JA[c] || String(c).toUpperCase()).join('・');
 
       html += `<div class="heritage-item${visited ? ' visited' : ''}"
         data-id="${s.id}" data-scope="${scope}" data-name="${encodeURIComponent(name)}">
