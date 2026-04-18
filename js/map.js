@@ -372,7 +372,7 @@ async function renderJapanMap(visitData) {
 // China 地図
 // ==========================================
 let _chinaTopo = null;
-async function renderChinaMap(visitData, containerId = "china-svg-container") {
+async function renderChinaMap(visitData, containerId = "china-svg-container", readOnly = false) {
   const container = document.getElementById(containerId);
   if (!container) return;
   if (!_chinaTopo) {
@@ -408,24 +408,26 @@ async function renderChinaMap(visitData, containerId = "china-svg-container") {
     const d = pathGen(feat);
     if (!d) return;
     svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.8" class="svg-pref"
-      data-name="${key}" style="cursor:pointer">
+      data-name="${key}" style="cursor:${readOnly ? 'default' : 'pointer'}">
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
   svg += heritageStarsSVG(cnSites, projection, hv, 6);
   svg += `</g></svg>`;
   container.innerHTML = svg;
-  container.querySelectorAll(".svg-pref").forEach(path => {
-    path.addEventListener("click", () => {
-      const name = path.dataset.name;
-      if (!name) return;
-      const val = (window.appState?.visit?.china || {})[name];
-      const curYear = (val && val !== true) ? val : new Date().getFullYear();
-      openYearDialog("china", name, curYear).then(() => refreshTab("china"));
+  if (!readOnly) {
+    container.querySelectorAll(".svg-pref").forEach(path => {
+      path.addEventListener("click", () => {
+        const name = path.dataset.name;
+        if (!name) return;
+        const val = (window.appState?.visit?.china || {})[name];
+        const curYear = (val && val !== true) ? val : new Date().getFullYear();
+        openYearDialog("china", name, curYear).then(() => refreshTab("china"));
+      });
+      path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
+      path.addEventListener("mouseleave", () => path.style.opacity = "1");
     });
-    path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
-    path.addEventListener("mouseleave", () => path.style.opacity = "1");
-  });
+  }
   attachHeritageClicks(container, 'china');
   attachMapZoom(container, 10);
 }
@@ -434,7 +436,7 @@ async function renderChinaMap(visitData, containerId = "china-svg-container") {
 // World 地図
 // ==========================================
 let _worldTopo = null;
-async function renderWorldMap(visitData, containerId = "world-svg-container") {
+async function renderWorldMap(visitData, containerId = "world-svg-container", readOnly = false) {
   const container = document.getElementById(containerId);
   if (!container) return;
   if (!_worldTopo) {
@@ -475,24 +477,26 @@ async function renderWorldMap(visitData, containerId = "world-svg-container") {
     const d = pathGen(feat);
     if (!d) return;
     svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.5" class="svg-pref"
-      data-name="${key}" style="cursor:pointer">
+      data-name="${key}" style="cursor:${readOnly ? 'default' : 'pointer'}">
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
   svg += heritageStarsSVG(allSites, pathGen.projection(), hv, 4);
   svg += `</g></svg>`;
   container.innerHTML = svg;
-  container.querySelectorAll(".svg-pref").forEach(path => {
-    path.addEventListener("click", () => {
-      const name = path.dataset.name;
-      if (!name) return;
-      const val = (window.appState?.visit?.world || {})[name];
-      const curYear = (val && val !== true) ? val : new Date().getFullYear();
-      openYearDialog("world", name, curYear).then(() => refreshTab("world"));
+  if (!readOnly) {
+    container.querySelectorAll(".svg-pref").forEach(path => {
+      path.addEventListener("click", () => {
+        const name = path.dataset.name;
+        if (!name) return;
+        const val = (window.appState?.visit?.world || {})[name];
+        const curYear = (val && val !== true) ? val : new Date().getFullYear();
+        openYearDialog("world", name, curYear).then(() => refreshTab("world"));
+      });
+      path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
+      path.addEventListener("mouseleave", () => path.style.opacity = "1");
     });
-    path.addEventListener("mouseenter", () => path.style.opacity = "0.7");
-    path.addEventListener("mouseleave", () => path.style.opacity = "1");
-  });
+  }
   attachHeritageClicks(container, 'world');
   attachMapZoom(container, 8);
 }
@@ -725,9 +729,9 @@ async function renderHeritageList(scope) {
   if (!container) return;
   // 地図を遺産タブにも表示
   if (scope === 'china') {
-    renderChinaMap(window.appState?.visit?.china || {}, 'china-heritage-svg-container');
+    renderChinaMap(window.appState?.visit?.china || {}, 'china-heritage-svg-container', true);
   } else if (scope === 'world') {
-    renderWorldMap(window.appState?.visit?.world || {}, 'world-heritage-svg-container');
+    renderWorldMap(window.appState?.visit?.world || {}, 'world-heritage-svg-container', true);
   }
   try {
   const heritage = await loadHeritage();
