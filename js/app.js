@@ -388,4 +388,12 @@ function startListener() {
 
 }
 
+// sub-tab-nav を sticky-nav の直下に固定
+function updateSubNavTop() {
+  const h = document.getElementById('sticky-nav')?.offsetHeight || 0;
+  document.documentElement.style.setProperty('--snav-h', h + 'px');
+}
+updateSubNavTop();
+window.addEventListener('resize', updateSubNavTop);
+
 init();

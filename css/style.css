@@ -86,7 +86,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .coming-soon { text-align: center; padding: 80px 20px; font-size: 32px; color: var(--text2); line-height: 1.8; }
 
 /* サブタブ */
-.sub-tab-nav { display: flex; background: var(--bg3); border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.sub-tab-nav { display: flex; background: var(--bg3); border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; position: sticky; top: var(--snav-h, 68px); z-index: 50; }
 .sub-tab-nav::-webkit-scrollbar { display: none; }
 .sub-tab { flex: 0 0 auto; padding: 10px 12px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
 .japan-sub-nav .sub-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 4px; }
