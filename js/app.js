@@ -344,6 +344,11 @@ document.querySelectorAll(".tab").forEach(btn => {
     state.tab = btn.dataset.tab;
     // フィルターバーはbucketタブのみ表示
     document.getElementById("cat-filter-bar").classList.toggle("hidden", state.tab !== "bucket");
+    // サブナビ表示切替
+    ["japan","china","world"].forEach(t => {
+      const nav = document.getElementById(t + "-sub-nav");
+      if (nav) nav.style.display = (state.tab === t) ? "flex" : "none";
+    });
     if (['japan','china','world'].includes(state.tab)) {
       setTimeout(() => window.onMapTabActivate?.(state.tab), 50);
     }
@@ -361,14 +366,19 @@ document.querySelectorAll(".cat-btn").forEach(btn => {
   });
 });
 
-// --- サブタブ（セクション内スコープ） ---
+// --- サブタブ（sticky-navスコープ） ---
 document.querySelectorAll(".sub-tab").forEach(btn => {
   btn.addEventListener("click", () => {
-    const section = btn.closest(".tab-content");
-    section.querySelectorAll(".sub-tab").forEach(b => b.classList.remove("active"));
-    section.querySelectorAll(".sub-tab-content").forEach(s => s.classList.remove("active"));
+    const group = btn.dataset.group;
+    const subNavEl = document.getElementById(group + "-sub-nav");
+    const sectionEl = document.getElementById("tab-" + group);
+    // サブナビのアクティブ切替
+    subNavEl?.querySelectorAll(".sub-tab").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    $(btn.dataset.sub).classList.add("active");
+    // コンテンツのアクティブ切替
+    sectionEl?.querySelectorAll(".sub-tab-content").forEach(s => s.classList.remove("active"));
+    $(btn.dataset.sub)?.classList.add("active");
+    // 世界遺産タブなら地図を描画
     const sub = btn.dataset.sub;
     if (sub.endsWith("-heritage")) {
       const scope = sub.replace("-heritage", "");
@@ -387,13 +397,5 @@ function startListener() {
   });
 
 }
-
-// sub-tab-nav を sticky-nav の直下に固定
-function updateSubNavTop() {
-  const h = document.getElementById('sticky-nav')?.offsetHeight || 0;
-  document.documentElement.style.setProperty('--snav-h', h + 'px');
-}
-updateSubNavTop();
-window.addEventListener('resize', updateSubNavTop);
 
 init();

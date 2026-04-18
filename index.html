@@ -39,6 +39,21 @@
     <div class="cat-btn" data-cat="__done__"><span class="cat-pct" id="cpct-done">0%</span><span class="cat-icon">✅</span><span class="cat-frac" id="cfrac-done">0/0</span></div>
     <div class="cat-btn" data-cat="__trash__"><span class="cat-pct">—</span><span class="cat-icon">🗑️</span><span class="cat-frac" id="cfrac-trash">0件</span></div>
   </div>
+  <div class="sub-tab-nav japan-sub-nav" id="japan-sub-nav" style="display:none">
+    <button class="sub-tab active" data-group="japan" data-sub="japan-main"><span class="stab-icon">🇯🇵</span><span class="stab-label">都道府県</span></button>
+    <button class="sub-tab" data-group="japan" data-sub="japan-heritage"><span class="stab-icon">⭐</span><span class="stab-label">世界遺産</span></button>
+    <button class="sub-tab" data-group="japan" data-sub="japan-onsen"><span class="stab-icon">♨️</span><span class="stab-label">温泉</span></button>
+    <button class="sub-tab" data-group="japan" data-sub="japan-gourmet"><span class="stab-icon">🍱</span><span class="stab-label">グルメ</span></button>
+    <button class="sub-tab" data-group="japan" data-sub="japan-ramen"><span class="stab-icon">🍜</span><span class="stab-label">ラーメン</span></button>
+  </div>
+  <div class="sub-tab-nav japan-sub-nav" id="china-sub-nav" style="display:none">
+    <button class="sub-tab active" data-group="china" data-sub="china-main"><span class="stab-icon">🇨🇳</span><span class="stab-label">省・自治区</span></button>
+    <button class="sub-tab" data-group="china" data-sub="china-heritage"><span class="stab-icon">⭐</span><span class="stab-label">世界遺産</span></button>
+  </div>
+  <div class="sub-tab-nav japan-sub-nav" id="world-sub-nav" style="display:none">
+    <button class="sub-tab active" data-group="world" data-sub="world-main"><span class="stab-icon">🌍</span><span class="stab-label">国</span></button>
+    <button class="sub-tab" data-group="world" data-sub="world-heritage"><span class="stab-icon">⭐</span><span class="stab-label">世界遺産</span></button>
+  </div>
 </div>
 
 <main id="main-content">
@@ -78,13 +93,6 @@
 
   <!-- Japan タブ -->
   <section id="tab-japan" class="tab-content">
-    <div class="sub-tab-nav japan-sub-nav">
-      <button class="sub-tab active" data-group="japan" data-sub="japan-main"><span class="stab-icon">🇯🇵</span><span class="stab-label">都道府県</span></button>
-      <button class="sub-tab" data-group="japan" data-sub="japan-heritage"><span class="stab-icon">⭐</span><span class="stab-label">世界遺産</span></button>
-      <button class="sub-tab" data-group="japan" data-sub="japan-onsen"><span class="stab-icon">♨️</span><span class="stab-label">温泉</span></button>
-      <button class="sub-tab" data-group="japan" data-sub="japan-gourmet"><span class="stab-icon">🍱</span><span class="stab-label">グルメ</span></button>
-      <button class="sub-tab" data-group="japan" data-sub="japan-ramen"><span class="stab-icon">🍜</span><span class="stab-label">ラーメン</span></button>
-    </div>
     <div id="japan-main" class="sub-tab-content active">
       <div class="map-tab-inner">
         <div class="map-header-bar">
@@ -140,10 +148,6 @@
 
   <!-- China タブ -->
   <section id="tab-china" class="tab-content">
-    <div class="sub-tab-nav japan-sub-nav">
-      <button class="sub-tab active" data-group="china" data-sub="china-main"><span class="stab-icon">🇨🇳</span><span class="stab-label">省・自治区</span></button>
-      <button class="sub-tab" data-group="china" data-sub="china-heritage"><span class="stab-icon">⭐</span><span class="stab-label">世界遺産</span></button>
-    </div>
     <div id="china-main" class="sub-tab-content active">
       <div class="map-tab-inner">
         <div class="map-header-bar">
@@ -181,10 +185,6 @@
 
   <!-- World タブ -->
   <section id="tab-world" class="tab-content">
-    <div class="sub-tab-nav japan-sub-nav">
-      <button class="sub-tab active" data-group="world" data-sub="world-main"><span class="stab-icon">🌍</span><span class="stab-label">国</span></button>
-      <button class="sub-tab" data-group="world" data-sub="world-heritage"><span class="stab-icon">⭐</span><span class="stab-label">世界遺産</span></button>
-    </div>
     <div id="world-main" class="sub-tab-content active">
       <div class="map-tab-inner">
         <div class="map-header-bar">
@@ -281,7 +281,7 @@
 
 <script src="js/firebase.js"></script>
 <script src="js/heritage-jp-cn.js"></script>
-<script src="js/map.js?v=20260418"></script>
-<script src="js/app.js"></script>
+<script src="js/map.js?v=20260419"></script>
+<script src="js/app.js?v=20260419"></script>
 </body>
 </html>
