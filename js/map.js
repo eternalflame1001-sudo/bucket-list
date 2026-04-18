@@ -73,7 +73,8 @@ const UNESCO_REGIONS = [
 
 // 世界遺産ボタン用短縮名
 function heritageShortName(s) {
-  const name = (s.name_ja && s.name_ja !== s.name) ? s.name_ja : s.name;
+  const name = (s.name_ja && s.name_ja !== s.name) ? s.name_ja : (s.name || '');
+  if (!name) return '?';
   let n = name;
   n = n.replace(/（[^）]*）/g, '').replace(/「[^」]*」/g, '');
   n = n.split('－')[0].split('、')[0].trim();
@@ -718,7 +719,7 @@ window.onMapTabActivate = function(type) {
 async function renderHeritageList(scope) {
   const container = document.getElementById(`${scope}-heritage-container`);
   if (!container) return;
-
+  try {
   const heritage = await loadHeritage();
   const hv = window.appState?.visit?.heritage || {};
   const st = heritageState[scope];
@@ -892,12 +893,13 @@ async function renderHeritageList(scope) {
 
   // World: 国セレクト
   if (scope === 'world') {
+    const isoCounts = {};
+    heritage.forEach(s => (Array.isArray(s.iso) ? s.iso : [s.iso]).forEach(c => { isoCounts[c] = (isoCounts[c] || 0) + 1; }));
     html += `<select class="heritage-iso-select" data-scope="${scope}">
       <option value="">🌍 全ての国 (${scopeTotal}件)</option>`;
     isoOptions.forEach(iso => {
       const name = ISO_JA[iso] || iso.toUpperCase();
-      const cnt = heritage.filter(s => (Array.isArray(s.iso) ? s.iso : [s.iso]).includes(iso)).length;
-      html += `<option value="${iso}"${st.iso === iso ? ' selected' : ''}>${name} (${cnt}件)</option>`;
+      html += `<option value="${iso}"${st.iso === iso ? ' selected' : ''}>${name} (${isoCounts[iso] || 0}件)</option>`;
     });
     html += `</select>`;
   }
@@ -915,14 +917,19 @@ async function renderHeritageList(scope) {
 
   // ---- 一覧 ----
   html += `<div class="heritage-list">`;
+  const noFilter = scope === 'world' && !st.region && !st.search && !st.cat && !st.iso;
   if (filtered.length === 0) {
     html += `<div class="heritage-empty">該当する世界遺産がありません</div>`;
+  } else if (noFilter) {
+    html += `<div class="heritage-empty">⬆️ 地域を選択するか、検索・フィルターで絞り込んでください</div>`;
   } else {
-    filtered.forEach(s => {
+    const MAX = 150;
+    const display = filtered.slice(0, MAX);
+    display.forEach(s => {
       const id      = String(s.id);
       const visited = !!hv[id];
       const visitYr = (hv[id] && hv[id] !== true) ? hv[id] : null;
-      const name    = (s.name_ja && s.name_ja !== s.name) ? s.name_ja : s.name;
+      const name    = (s.name_ja && s.name_ja !== s.name) ? s.name_ja : (s.name || '');
       const catIcon = s.cat === 'N' ? '🌿' : s.cat === 'M' ? '🌟' : '🏛️';
       const catCls  = s.cat === 'N' ? 'cat-n' : s.cat === 'M' ? 'cat-m' : 'cat-c';
       const isoArr  = Array.isArray(s.iso) ? s.iso : [s.iso];
@@ -942,6 +949,9 @@ async function renderHeritageList(scope) {
         </div>
       </div>`;
     });
+    if (filtered.length > MAX) {
+      html += `<div class="heritage-more">他 ${filtered.length - MAX}件 — 検索で絞り込んでください</div>`;
+    }
   }
   html += `</div>`;
 
@@ -1081,6 +1091,10 @@ async function renderHeritageList(scope) {
       }
     });
   });
+  } catch(e) {
+    container.innerHTML = `<div class="heritage-empty">⚠️ 表示エラー: ${e.message}</div>`;
+    console.error('renderHeritageList error:', e);
+  }
 }
 
 window.renderHeritageList = renderHeritageList;
