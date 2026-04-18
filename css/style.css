@@ -312,7 +312,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .heritage-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--card); cursor: pointer; transition: background .1s; -webkit-tap-highlight-color: transparent; }
 .heritage-item:active { background: var(--bg2); }
 .heritage-item.visited { background: #fffbf0; }
-.heritage-star-icon { font-size: 24px; flex-shrink: 0; color: #ddd; line-height: 1.2; }
+.heritage-star-icon { font-size: 24px; flex-shrink: 0; color: #ddd; line-height: 1.2; align-self: center; }
 .heritage-item.visited .heritage-star-icon { color: #FFD700; text-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .heritage-item-body { flex: 1; min-width: 0; }
 .heritage-item-name { font-size: 17px; font-weight: 700; line-height: 1.4; word-break: break-all; color: var(--text); }
@@ -351,5 +351,12 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .hcountry-stat em { color: var(--accent); font-style: normal; }
 .hcountry-arrow { font-size: 10px; color: var(--text2); }
 .hcountry-body { padding: 8px; background: var(--bg1,#fff); }
+
+/* ==========================================
+   グルメ・ラーメンタブ
+   ========================================== */
+.food-btn-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
+.food-btn { font-size: 12px !important; padding: 6px 3px !important; }
+.food-btn small { font-size: 11px !important; }
 
 /* 年号ダイアログ */

@@ -14,7 +14,7 @@ const $ = id => document.getElementById(id);
 const bucketUL = $("bucket-list");
 const searchEl = $("search-input");
 
-function score(item) { return (SCORE_MAP[item.urg]||1) * (SCORE_MAP[item.prio]||1); }
+function score(item) { return (SCORE_MAP[item.urg]||1) + (SCORE_MAP[item.prio]||1); }
 function toZen(n)    { return String(n).replace(/[0-9]/g, c => String.fromCharCode(c.charCodeAt(0)+0xFEE0)); }
 function esc(str)    { return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function showLoading(show) { $("loading").classList.toggle("hidden", !show); }
@@ -384,6 +384,9 @@ document.querySelectorAll(".sub-tab").forEach(btn => {
       const scope = sub.replace("-heritage", "");
       window.renderHeritageList?.(scope);
     }
+    // グルメ・ラーメンタブ
+    if (sub === "japan-gourmet") window.renderFoodTab?.("gourmet");
+    if (sub === "japan-ramen")   window.renderFoodTab?.("ramen");
   });
 });
 

@@ -662,6 +662,25 @@ async function openYearDialog(type, name, defaultYear, saveKey) {
 }
 
 // ==========================================
+// グルメ ↔ ラーメン 訪問同期マップ
+// ==========================================
+const GOURMET_RAMEN_SYNC = {
+  "福島喜多方ラーメン":  "喜多方ラーメン",
+  "栃木佐野ラーメン":    "佐野ラーメン",
+  "千葉勝浦タンタンメン":"勝浦タンタンメン",
+  "神奈川家系ラーメン":  "横浜家系ラーメン",
+  "富山ブラックラーメン":"富山ブラックラーメン",
+  "和歌山ラーメン":      "和歌山ラーメン",
+  "鳥取牛骨ラーメン":    "鳥取牛骨ラーメン",
+  "徳島ラーメン":        "徳島ラーメン",
+  "高知鍋焼きラーメン":  "鍋焼きラーメン",
+  "福岡博多ラーメン":    "博多ラーメン",
+};
+const RAMEN_GOURMET_SYNC = Object.fromEntries(
+  Object.entries(GOURMET_RAMEN_SYNC).map(([g, r]) => [r, g])
+);
+
+// ==========================================
 // Firebase保存
 // ==========================================
 async function saveVisit(type, name, value) {
@@ -675,6 +694,20 @@ async function saveVisit(type, name, value) {
     } else {
       await FB.patch(`${FB.endpoints.visit}/${type}`, { [name]: value });
       window.appState.visit[type][name] = value;
+    }
+    // グルメ ↔ ラーメン 同店同期
+    const partnerType = type === "gourmet" ? "ramen" : type === "ramen" ? "gourmet" : null;
+    const syncMap = type === "gourmet" ? GOURMET_RAMEN_SYNC : RAMEN_GOURMET_SYNC;
+    const partnerKey = partnerType && syncMap[name];
+    if (partnerType && partnerKey) {
+      if (!window.appState.visit[partnerType]) window.appState.visit[partnerType] = {};
+      if (value === null) {
+        await FB.delete(`${FB.endpoints.visit}/${partnerType}/${partnerKey}`);
+        delete window.appState.visit[partnerType][partnerKey];
+      } else {
+        await FB.patch(`${FB.endpoints.visit}/${partnerType}`, { [partnerKey]: value });
+        window.appState.visit[partnerType][partnerKey] = value;
+      }
     }
     if (typeof toast === "function") toast("保存しました ✓");
   } catch(e) {
@@ -1123,3 +1156,109 @@ async function renderHeritageList(scope) {
 }
 
 window.renderHeritageList = renderHeritageList;
+
+// ==========================================
+// グルメ・ラーメン タブ描画
+// ==========================================
+const FOOD_PREF_REGION = {
+  '北海道':'🌸 北海道・東北','青森県':'🌸 北海道・東北','岩手県':'🌸 北海道・東北',
+  '宮城県':'🌸 北海道・東北','秋田県':'🌸 北海道・東北','山形県':'🌸 北海道・東北','福島県':'🌸 北海道・東北',
+  '茨城県':'🌿 関東','栃木県':'🌿 関東','群馬県':'🌿 関東','埼玉県':'🌿 関東',
+  '千葉県':'🌿 関東','東京都':'🌿 関東','神奈川県':'🌿 関東',
+  '新潟県':'🍁 中部','富山県':'🍁 中部','石川県':'🍁 中部','福井県':'🍁 中部',
+  '山梨県':'🍁 中部','長野県':'🍁 中部','岐阜県':'🍁 中部','静岡県':'🍁 中部','愛知県':'🍁 中部',
+  '三重県':'🏯 近畿','滋賀県':'🏯 近畿','京都府':'🏯 近畿','大阪府':'🏯 近畿',
+  '兵庫県':'🏯 近畿','奈良県':'🏯 近畿','和歌山県':'🏯 近畿',
+  '鳥取県':'⛩️ 中国・四国','島根県':'⛩️ 中国・四国','岡山県':'⛩️ 中国・四国',
+  '広島県':'⛩️ 中国・四国','山口県':'⛩️ 中国・四国','徳島県':'⛩️ 中国・四国',
+  '香川県':'⛩️ 中国・四国','愛媛県':'⛩️ 中国・四国','高知県':'⛩️ 中国・四国',
+  '福岡県':'🌺 九州・沖縄','佐賀県':'🌺 九州・沖縄','長崎県':'🌺 九州・沖縄',
+  '熊本県':'🌺 九州・沖縄','大分県':'🌺 九州・沖縄','宮崎県':'🌺 九州・沖縄',
+  '鹿児島県':'🌺 九州・沖縄','沖縄県':'🌺 九州・沖縄',
+};
+const FOOD_REGION_ORDER = ['🌸 北海道・東北','🌿 関東','🍁 中部','🏯 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
+
+function renderFoodTab(dataType) {
+  const DATA = dataType === "gourmet" ? (typeof GOURMET_DATA !== "undefined" ? GOURMET_DATA : [])
+                                      : (typeof RAMEN_DATA   !== "undefined" ? RAMEN_DATA   : []);
+  const containerId = `japan-${dataType}-container`;
+  const container = document.getElementById(containerId);
+  if (!container || !DATA.length) return;
+
+  const visitData = window.appState?.visit?.[dataType] || {};
+
+  // 地域グループ化
+  const regionMap = {};
+  DATA.forEach(item => {
+    const region = FOOD_PREF_REGION[item.pref] || '🌸 北海道・東北';
+    if (!regionMap[region]) regionMap[region] = [];
+    regionMap[region].push(item);
+  });
+
+  const visitedTotal = DATA.filter(item => !!visitData[item.key]).length;
+  const total = DATA.length;
+  const pct = total ? Math.round(visitedTotal / total * 100) : 0;
+  const label = dataType === "gourmet" ? "🍽 グルメ" : "🍜 ラーメン";
+
+  let html = `<div class="map-header-bar">
+    <h2 class="map-title">${label}</h2>
+    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span> / ${total} <span class="mstat-pct">${pct}%</span></div>
+  </div>`;
+
+  FOOD_REGION_ORDER.forEach(region => {
+    const items = regionMap[region];
+    if (!items) return;
+    const gVisited = items.filter(item => !!visitData[item.key]).length;
+    const gTotal = items.length;
+    const gPct = gTotal ? Math.round(gVisited / gTotal * 100) : 0;
+    html += `<div class="visit-group">
+      <div class="visit-group-label">
+        <span class="group-label-text">${region}</span>
+        <span class="group-label-stat">${gVisited}/${gTotal} <em>${gPct}%</em></span>
+      </div>
+      <div class="visit-btn-grid food-btn-grid">`;
+    items.forEach(item => {
+      const val = visitData[item.key];
+      const year = (val === true) ? null : (val || null);
+      const visited = !!val;
+      const color = visited ? yearToColor(year) : "";
+      html += `<button class="visit-btn food-btn ${visited ? "visited" : ""}"
+        data-key="${item.key}" data-type="${dataType}" data-visited="${visited}" data-food="${item.food}"
+        ${visited ? `style="background:${color};border-color:${color}"` : ""}>
+        ${item.food}${year ? `<small>${year}</small>` : visited ? `<small>✓</small>` : ""}
+      </button>`;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll(".food-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const key     = btn.dataset.key;
+      const type    = btn.dataset.type;
+      const visited = btn.dataset.visited === "true";
+      const disp    = btn.dataset.food;
+      if (visited) {
+        if (confirm(`「${disp}」の食事記録を削除しますか？`)) {
+          await saveVisit(type, key, null);
+          renderFoodTab(type);
+          // 同期先も再描画
+          const partnerType = type === "gourmet" ? "ramen" : "gourmet";
+          if (document.getElementById(`japan-${partnerType}`)?.classList.contains("active")) {
+            renderFoodTab(partnerType);
+          }
+        }
+      } else {
+        await openYearDialog(type, disp, new Date().getFullYear(), key);
+        renderFoodTab(type);
+        const partnerType = type === "gourmet" ? "ramen" : "gourmet";
+        if (document.getElementById(`japan-${partnerType}`)?.classList.contains("active")) {
+          renderFoodTab(partnerType);
+        }
+      }
+    });
+  });
+}
+
+window.renderFoodTab = renderFoodTab;
