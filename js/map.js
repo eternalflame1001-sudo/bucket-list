@@ -559,7 +559,7 @@ async function onBtnClick(btn, type) {
 // ==========================================
 // 年号ダイアログ
 // ==========================================
-async function openYearDialog(type, name, defaultYear) {
+async function openYearDialog(type, name, defaultYear, saveKey) {
   return new Promise(resolve => {
     const overlay  = document.getElementById("year-dialog-overlay");
     const titleEl  = document.getElementById("year-dialog-title");
@@ -623,7 +623,7 @@ async function openYearDialog(type, name, defaultYear) {
     btnSave.onclick = async () => {
       const yr = getSelectedYear();
       done();
-      await saveVisit(type, name, yr);
+      await saveVisit(type, saveKey || name, yr);
       resolve();
     };
     btnCancel.onclick = () => { done(); resolve(); };
@@ -863,6 +863,52 @@ async function renderHeritageList(scope) {
   }
   html += `</div>`;
 
+  // ---- 訪問履歴セクション ----
+  const heritageById = {};
+  sites.forEach(s => { heritageById[String(s.id)] = s; });
+  const visitedEntries = Object.entries(hv)
+    .filter(([k, v]) => v && heritageById[k])
+    .map(([k, v]) => ({ id: k, year: (v === true || !v) ? null : v, site: heritageById[k] }))
+    .sort((a, b) => (b.year || 0) - (a.year || 0));
+
+  if (visitedEntries.length > 0) {
+    const byYear = {};
+    const noYear = [];
+    visitedEntries.forEach(e => {
+      if (e.year) {
+        if (!byYear[e.year]) byYear[e.year] = [];
+        byYear[e.year].push(e);
+      } else {
+        noYear.push(e);
+      }
+    });
+    html += `<div class="heritage-history-section">
+      <div class="heritage-history-title">訪問履歴 (${visitedEntries.length}件)</div>`;
+    Object.keys(byYear).map(Number).sort((a, b) => b - a).forEach(yr => {
+      html += `<div class="history-year-group"><div class="history-year-label">${yr}年</div><div class="history-places">`;
+      byYear[yr].forEach(e => {
+        const n = (e.site.name_ja && e.site.name_ja !== e.site.name) ? e.site.name_ja : e.site.name;
+        html += `<button class="history-place-btn heritage-history-btn"
+          data-hid="${e.id}" data-scope="${scope}"
+          data-hname="${encodeURIComponent(n)}"
+          data-year="${yr}">${esc(n)}</button>`;
+      });
+      html += `</div></div>`;
+    });
+    if (noYear.length > 0) {
+      html += `<div class="history-year-group"><div class="history-year-label">年不明</div><div class="history-places">`;
+      noYear.forEach(e => {
+        const n = (e.site.name_ja && e.site.name_ja !== e.site.name) ? e.site.name_ja : e.site.name;
+        html += `<button class="history-place-btn heritage-history-btn"
+          data-hid="${e.id}" data-scope="${scope}"
+          data-hname="${encodeURIComponent(n)}"
+          data-year="">${esc(n)}</button>`;
+      });
+      html += `</div></div>`;
+    }
+    html += `</div>`;
+  }
+
   container.innerHTML = html;
 
   // ---- イベント ----
@@ -896,7 +942,7 @@ async function renderHeritageList(scope) {
         if (!confirm(`「${name}」の訪問記録を削除しますか？`)) return;
         await saveVisit('heritage', id, null);
       } else {
-        await openYearDialog('heritage', name, new Date().getFullYear());
+        await openYearDialog('heritage', name, new Date().getFullYear(), id);
       }
       renderHeritageList(scope);
     });
@@ -912,9 +958,26 @@ async function renderHeritageList(scope) {
         if (!confirm(`「${name}」の訪問記録を削除しますか？`)) return;
         await saveVisit('heritage', id, null);
       } else {
-        await openYearDialog('heritage', name, new Date().getFullYear());
+        await openYearDialog('heritage', name, new Date().getFullYear(), id);
       }
       renderHeritageList(scope);
+    });
+  });
+
+  // 履歴ボタンクリック
+  container.querySelectorAll('.heritage-history-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id   = btn.dataset.hid;
+      const name = decodeURIComponent(btn.dataset.hname);
+      const hv   = window.appState?.visit?.heritage || {};
+      const curYear = (hv[id] && hv[id] !== true) ? hv[id] : new Date().getFullYear();
+      if (confirm(`「${name}」の訪問記録を削除しますか？`)) {
+        await saveVisit('heritage', id, null);
+        renderHeritageList(scope);
+      } else {
+        await openYearDialog('heritage', name, curYear, id);
+        renderHeritageList(scope);
+      }
     });
   });
 }
