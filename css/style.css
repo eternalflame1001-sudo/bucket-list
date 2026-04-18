@@ -31,7 +31,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-jp); f
 
 /* タブ */
 #tab-nav { display: flex; justify-content: space-around; border-bottom: 1px solid var(--border); }
-.tab { flex: 1; padding: 8px 2px 6px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 18px; font-weight: 700; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.tab { flex: 1; padding: 8px 2px 6px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 18px; font-weight: 700; cursor: pointer; border-bottom: 7px solid transparent; transition: all .2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1px; }
 .tab .tab-icon { font-size: 28px; line-height: 1; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
@@ -88,7 +88,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 /* サブタブ */
 .sub-tab-nav { display: flex; background: var(--bg3); border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .sub-tab-nav::-webkit-scrollbar { display: none; }
-.sub-tab { flex: 0 0 auto; padding: 10px 12px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+.sub-tab { flex: 0 0 auto; padding: 10px 12px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 13px; cursor: pointer; border-bottom: 7px solid transparent; transition: all .2s; white-space: nowrap; }
 .japan-sub-nav .sub-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 4px; }
 .japan-sub-nav .stab-icon { font-size: 24px; line-height: 1; }
 .japan-sub-nav .stab-label { font-size: 14px; font-weight: 700; line-height: 1; }
@@ -316,7 +316,9 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .heritage-item.visited .heritage-star-icon { color: #FFD700; text-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .heritage-item-body { flex: 1; min-width: 0; }
 .heritage-item-name { font-size: 14px; font-weight: 700; line-height: 1.4; word-break: break-all; color: var(--text); }
+.heritage-item-desc { font-size: 12px; color: #c07000; margin-top: 2px; line-height: 1.4; font-weight: 500; }
 .heritage-item-meta { display: flex; align-items: center; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+.heritage-criteria { font-size: 11px; color: var(--text2); font-family: var(--font-en); }
 .heritage-cat-badge { font-size: 11px; padding: 1px 6px; border-radius: 8px; font-weight: 700; }
 .cat-c { background: #e8f0ff; color: #2a4a9a; }
 .cat-n { background: #e8f5e9; color: #2e7d32; }
