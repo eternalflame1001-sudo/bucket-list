@@ -343,14 +343,14 @@ async function renderJapanMap(visitData, containerId = "japan-svg-container", re
   svg += `<defs><clipPath id="${clipId}"><rect x="${inX}" y="${inY}" width="${inW}" height="${inH}"/></clipPath></defs>`;
   svg += `<g>`; // ズーム対象：本州・北海道・四国・九州 + 星
   mainFeats.forEach(f => { svg += featPath(f, pathGen); });
-  svg += heritageStarsSVG(jpSites, projection, hv, 7);
+  if (readOnly) svg += heritageStarsSVG(jpSites, projection, hv, 7);
   svg += `</g>`;
   // 沖縄インセット（ズーム対象外・固定）
   svg += `<rect x="${inX}" y="${inY}" width="${inW}" height="${inH}"
     fill="#f5f0e8" stroke="#999" stroke-width="1" rx="3"/>`;
   svg += `<g clip-path="url(#${clipId})">`; // 沖縄グループ（固定・クリップあり）
   okFeats.forEach(f => { svg += featPath(f, okPG); });
-  svg += heritageStarsSVG(okSites, okProj, hv, 4);
+  if (readOnly) svg += heritageStarsSVG(okSites, okProj, hv, 4);
   svg += `</g>`;
   svg += `</svg>`;
   container.innerHTML = svg;
@@ -415,7 +415,7 @@ async function renderChinaMap(visitData, containerId = "china-svg-container", re
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
-  svg += heritageStarsSVG(cnSites, projection, hv, 6);
+  if (readOnly) svg += heritageStarsSVG(cnSites, projection, hv, 6);
   svg += `</g></svg>`;
   container.innerHTML = svg;
   if (!readOnly) {
@@ -484,7 +484,7 @@ async function renderWorldMap(visitData, containerId = "world-svg-container", re
       <title>${key}${year ? " "+year+"年" : visited ? " 訪問済" : " 未訪問"}</title>
     </path>`;
   });
-  svg += heritageStarsSVG(allSites, pathGen.projection(), hv, 4);
+  if (readOnly) svg += heritageStarsSVG(allSites, pathGen.projection(), hv, 4);
   svg += `</g></svg>`;
   container.innerHTML = svg;
   if (!readOnly) {
