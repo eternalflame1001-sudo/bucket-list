@@ -324,5 +324,21 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .heritage-history-section { margin-top: 24px; padding: 0 4px; }
 .heritage-history-title { font-size: 13px; font-weight: 700; color: var(--text2); border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 8px; }
 .heritage-history-btn { font-size: 12px; max-width: none; white-space: normal; text-align: left; }
+/* 地域ナビ */
+.heritage-region-nav { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 4px 4px; }
+.hreg-btn { padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg2); font-size: 12px; cursor: pointer; white-space: nowrap; }
+.hreg-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+/* 国アコーディオン */
+.heritage-country-section { padding: 4px 4px 0; }
+.heritage-country-group { margin-bottom: 6px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.hcountry-header { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 12px; background: var(--bg2); border: none; cursor: pointer; font-size: 13px; text-align: left; transition: background .15s; }
+.hcountry-header:hover { background: var(--bg3,#ddd); }
+.hcountry-header.expanded { background: #e8f0fe; }
+.hcountry-flag { font-size: 20px; line-height: 1; }
+.hcountry-name { flex: 1; font-weight: 600; }
+.hcountry-stat { font-size: 11px; color: var(--text2); }
+.hcountry-stat em { color: var(--accent); font-style: normal; }
+.hcountry-arrow { font-size: 10px; color: var(--text2); }
+.hcountry-body { padding: 8px; background: var(--bg1,#fff); }
 
 /* 年号ダイアログ */

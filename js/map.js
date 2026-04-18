@@ -50,8 +50,26 @@ const ISO_JA = {
 const heritageState = {
   japan: { cat: '', search: '' },
   china: { cat: '', search: '' },
-  world: { cat: '', search: '', iso: '' }
+  world: { cat: '', search: '', iso: '', region: '', expanded: new Set() }
 };
+
+// ISO → 国旗絵文字
+function isoFlag(iso) {
+  if (!iso || iso.length !== 2) return '🌐';
+  return iso.toUpperCase().split('').map(c => String.fromCodePoint(c.charCodeAt(0) + 127397)).join('');
+}
+
+// UNESCO地域グループ
+const UNESCO_REGIONS = [
+  { key:'asia',     label:'アジア・太平洋', icon:'🌏',
+    isos: new Set(['jp','cn','kr','in','au','nz','id','ph','vn','th','my','sg','kh','la','mn','np','pk','bt','lk','bd','af','kz','kg','tj','tm','uz','fj','pg','vu','ws','mv','ge','am','az','mo']) },
+  { key:'mena',     label:'中東・アフリカ', icon:'🌍',
+    isos: new Set(['eg','ma','tn','dz','ly','sa','jo','iq','sy','lb','ye','om','qa','kw','bh','ae','mr','ir','et','ke','tz','za','gh','cm','sn','ml','ng','ci','bj','bf','er','dj','cd','cg','cf','ga','mg','mw','mz','na','zm','zw','rw','gm','gn','gq','lr','sl','td','ne','tg','ao','mu','sc','cv','ss','sz','ug','ls','sd']) },
+  { key:'americas', label:'南北アメリカ',   icon:'🌎',
+    isos: new Set(['us','ca','mx','pe','br','ar','co','cu','bo','ec','cl','cr','gt','hn','ni','pa','sv','uy','ve','py','sr','bz','ht','do']) },
+  { key:'europe',   label:'欧州',           icon:'🏰',
+    isos: new Set(['fr','it','de','gb','es','pt','gr','ru','pl','cz','be','se','ch','nl','no','dk','fi','at','hu','ro','bg','hr','si','sk','lt','lv','lu','ee','ie','is','mc','sm','li','ad','mt','cy','al','ba','me','mk','rs','ua','by','md','tr']) }
+];
 
 // 世界遺産ボタン用短縮名
 function heritageShortName(s) {
@@ -793,6 +811,70 @@ async function renderHeritageList(scope) {
     html += `</div>`;
   }
 
+  // ---- World: 地域ナビ + 国別ボタングリッド ----
+  if (scope === 'world') {
+    html += `<div class="heritage-region-nav">
+      <button class="hreg-btn${!st.region ? ' active' : ''}" data-region="">🌐 全地域</button>`;
+    UNESCO_REGIONS.forEach(r => {
+      html += `<button class="hreg-btn${st.region === r.key ? ' active' : ''}" data-region="${r.key}">${r.icon} ${r.label}</button>`;
+    });
+    html += `</div>`;
+
+    if (st.region) {
+      const region = UNESCO_REGIONS.find(r => r.key === st.region);
+      // この地域の国→サイト一覧を作る
+      const countryMap = {};
+      heritage.forEach(s => {
+        const isoArr = Array.isArray(s.iso) ? s.iso : [s.iso];
+        const primary = isoArr.find(c => region.isos.has(c));
+        if (!primary) return;
+        if (!countryMap[primary]) countryMap[primary] = [];
+        countryMap[primary].push(s);
+      });
+      const sortedCountries = Object.entries(countryMap).sort((a, b) =>
+        (ISO_JA[a[0]] || a[0]).localeCompare(ISO_JA[b[0]] || b[0], 'ja')
+      );
+      html += `<div class="heritage-country-section">`;
+      sortedCountries.forEach(([iso, cSites]) => {
+        const cName  = ISO_JA[iso] || iso.toUpperCase();
+        const flag   = isoFlag(iso);
+        const cVisited = cSites.filter(s => hv[String(s.id)]).length;
+        const cTotal   = cSites.length;
+        const pct      = cTotal ? Math.round(cVisited / cTotal * 100) : 0;
+        const expanded = st.expanded.has(iso);
+        cSites.sort((a, b) => a.year - b.year);
+        html += `<div class="heritage-country-group">
+          <button class="hcountry-header${expanded ? ' expanded' : ''}" data-iso="${iso}">
+            <span class="hcountry-flag">${flag}</span>
+            <span class="hcountry-name">${cName}</span>
+            <span class="hcountry-stat">${cVisited}/${cTotal} <em>${pct}%</em></span>
+            <span class="hcountry-arrow">${expanded ? '▲' : '▼'}</span>
+          </button>`;
+        if (expanded) {
+          html += `<div class="hcountry-body"><div class="visit-btn-grid heritage-btn-grid">`;
+          cSites.forEach(s => {
+            const id      = String(s.id);
+            const visited = !!hv[id];
+            const visitYr = (hv[id] && hv[id] !== true) ? hv[id] : null;
+            const color   = visited ? yearToColor(visitYr) : '';
+            const short   = heritageShortName(s);
+            const fullName = (s.name_ja && s.name_ja !== s.name) ? s.name_ja : s.name;
+            html += `<button class="visit-btn heritage-btn${visited ? ' visited' : ''}"
+              data-hid="${s.id}" data-hscope="${scope}"
+              data-hname="${encodeURIComponent(fullName)}"
+              ${visited ? `style="background:${color};border-color:${color}"` : ''}
+              title="${fullName}（${s.year}年）">
+              ${esc(short)}${visitYr ? `<small>${visitYr}</small>` : visited ? `<small>✓</small>` : ''}
+            </button>`;
+          });
+          html += `</div></div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</div>`;
+    }
+  }
+
   // ---- カテゴリフィルターバー ----
   const cats = [
     { key:'', label:'全て',   icon:'📚' },
@@ -960,6 +1042,25 @@ async function renderHeritageList(scope) {
       } else {
         await openYearDialog('heritage', name, new Date().getFullYear(), id);
       }
+      renderHeritageList(scope);
+    });
+  });
+
+  // 地域ボタン（World）
+  container.querySelectorAll('.hreg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      heritageState[scope].region = btn.dataset.region;
+      heritageState[scope].expanded = new Set();
+      renderHeritageList(scope);
+    });
+  });
+
+  // 国アコーディオン（World）
+  container.querySelectorAll('.hcountry-header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const iso = btn.dataset.iso;
+      const exp = heritageState[scope].expanded;
+      if (exp.has(iso)) exp.delete(iso); else exp.add(iso);
       renderHeritageList(scope);
     });
   });
