@@ -377,7 +377,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
    温泉・グルメ・ラーメンタブ
    ========================================== */
 /* 温泉: 2列（名前が長め） */
-.onsen-btn-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 5px; }
+.onsen-btn-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; }
 .onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
 .onsen-btn small { font-size: 12px !important; }
 

@@ -1427,7 +1427,7 @@ function renderOnsenTab() {
         data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
         ${visited ? `style="background:${color};border-color:${color}"` : ""}>
         ${item.name}
-        <small>${visited ? (year ? year : "✓") : toOnsenStar(item.starStr)}</small>
+        <small>${toOnsenStar(item.starStr)}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
       </button>`;
     });
     html += `</div></div>`;
