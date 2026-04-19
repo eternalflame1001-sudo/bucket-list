@@ -372,7 +372,7 @@ async function renderJapanMap(visitData, containerId = "japan-svg-container", re
     return iso.includes('jp') && s.lat != null;
   });
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" overflow="hidden" style="touch-action:none" xmlns="http://www.w3.org/2000/svg">`;
   svg += `<g class="zoom-bg">`; // ズーム対象：全都道府県（沖縄含む）
   features.forEach(f => { svg += featPath(f, pathGen); });
   svg += `</g>`;
@@ -426,7 +426,7 @@ async function renderChinaMap(visitData, containerId = "china-svg-container", re
     return iso.includes('cn') && s.lat != null;
   });
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g class="zoom-bg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" overflow="hidden" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g class="zoom-bg">`;
   features.forEach(feat => {
     const props = feat.properties;
     const key = props.nam_ja || props.name || '';
@@ -497,7 +497,7 @@ async function renderWorldMap(visitData, containerId = "world-svg-container", re
   const hv = window.appState?.visit?.heritage || {};
   const allSites = heritage.filter(s => s.lat != null);
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g class="zoom-bg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" overflow="hidden" style="touch-action:none" xmlns="http://www.w3.org/2000/svg"><g class="zoom-bg">`;
   features.forEach(feat => {
     const key = feat.properties.nam_ja || feat.properties.name || '';
     const val = visitData[key];
@@ -1309,7 +1309,7 @@ async function renderFoodMapSVG(type, DATA, visitData, containerId, onVisitChang
     return item.coords || null;
   }
   const japanVisit = window.appState?.visit?.japan || {};
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" overflow="hidden" xmlns="http://www.w3.org/2000/svg">`;
 
   // 全都道府県（沖縄含む・ズーム対象）— 訪問済県に色付け
   svg += `<g class="zoom-bg">`;
@@ -1405,7 +1405,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
     return iso.includes('jp') && s.lat != null;
   });
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="touch-action:none" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" overflow="hidden" style="touch-action:none" xmlns="http://www.w3.org/2000/svg">`;
 
   // 都道府県（訪問色付き）
   svg += `<g class="zoom-bg">`;
