@@ -1215,6 +1215,105 @@ const FOOD_PREF_REGION = {
 };
 const FOOD_REGION_ORDER = ['🌸 北海道・東北','🌿 関東','🍁 中部','🏯 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
 
+// ==========================================
+// 地図マーカー描画（温泉・グルメ・ラーメン共通）
+// ==========================================
+function makeMarker(type, x, y, visited, name, year) {
+  const title = `${name}${year ? ' ' + year + '年' : visited ? ' 訪問済' : ' 未訪問'}`;
+  const xt = x.toFixed(1), yt = y.toFixed(1);
+  if (type === 'onsen') {
+    const fill = visited ? '#cc0000' : '#0055cc';
+    return `<text x="${xt}" y="${yt}" text-anchor="middle" dominant-baseline="middle"
+      fill="${fill}" font-size="10" style="user-select:none">♨<title>${title}</title></text>`;
+  }
+  const fill   = visited ? (type === 'gourmet' ? '#00aa00' : '#cc0000') : 'none';
+  const stroke = type === 'gourmet' ? '#00aa00' : '#cc0000';
+  return `<circle cx="${xt}" cy="${yt}" r="3.5" fill="${fill}" stroke="${stroke}" stroke-width="1.5">
+    <title>${title}</title></circle>`;
+}
+
+async function renderFoodMapSVG(type, DATA, visitData, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!_japanTopo) {
+    try {
+      const r = await fetch("./japan.json");
+      _japanTopo = await r.json();
+    } catch(e) {
+      container.innerHTML = '<div class="map-load-msg">地図データ読み込み失敗</div>';
+      return;
+    }
+  }
+
+  const objKey   = Object.keys(_japanTopo.objects)[0];
+  const features = topojson.feature(_japanTopo, _japanTopo.objects[objKey]).features;
+  const W = container.clientWidth || 370;
+  const H = Math.round(W * 1.4);
+
+  const isOkPref = f => (f.properties.nam_ja || f.properties.name || '').includes('沖縄');
+  const mainFeats = features.filter(f => !isOkPref(f));
+  const okFeats   = features.filter(f =>  isOkPref(f));
+
+  const projection = d3.geoMercator().fitExtent([[10, 10], [W - 10, H - 10]],
+    { type: "FeatureCollection", features: mainFeats });
+  const pathGen = d3.geoPath().projection(projection);
+
+  const inW = Math.round(W * 0.27);
+  const inH = Math.round(inW * 0.95);
+  const inX = 8, inY = Math.round(H * 0.18);
+  const okProj = d3.geoMercator().fitExtent(
+    [[inX + 5, inY + 5], [inX + inW - 5, inY + inH - 5]],
+    { type: "FeatureCollection", features: okFeats });
+  const okPG = d3.geoPath().projection(okProj);
+  const clipId = containerId.replace(/[^a-z0-9]/gi, '-') + '-ok';
+
+  function getCoords(item) {
+    if (type === 'onsen') {
+      return (typeof ONSEN_COORDS !== 'undefined' && ONSEN_COORDS[item.key]) ? ONSEN_COORDS[item.key] : null;
+    }
+    return item.coords || null;
+  }
+  const isOkinawa = ([lon, lat]) => lat < 27.5 && lon < 132;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<defs><clipPath id="${clipId}"><rect x="${inX}" y="${inY}" width="${inW}" height="${inH}"/></clipPath></defs>`;
+
+  // 本州・北海道・四国・九州
+  svg += `<g>`;
+  mainFeats.forEach(f => { const d = pathGen(f); if (d) svg += `<path d="${d}" fill="#e8e4dc" stroke="#555" stroke-width="0.8"/>`; });
+  DATA.forEach(item => {
+    const coords = getCoords(item);
+    if (!coords || isOkinawa(coords)) return;
+    const xy = projection(coords);
+    if (!xy) return;
+    const [x, y] = xy;
+    if (x < 0 || x > W || y < 0 || y > H) return;
+    const val = visitData[item.key];
+    const year = (val === true) ? null : (val || null);
+    svg += makeMarker(type, x, y, !!val, item.name || item.food || item.key, year);
+  });
+  svg += `</g>`;
+
+  // 沖縄インセット
+  svg += `<rect x="${inX}" y="${inY}" width="${inW}" height="${inH}" fill="#f5f0e8" stroke="#999" stroke-width="1" rx="3"/>`;
+  svg += `<g clip-path="url(#${clipId})">`;
+  okFeats.forEach(f => { const d = okPG(f); if (d) svg += `<path d="${d}" fill="#e8e4dc" stroke="#555" stroke-width="0.8"/>`; });
+  DATA.forEach(item => {
+    const coords = getCoords(item);
+    if (!coords || !isOkinawa(coords)) return;
+    const xy = okProj(coords);
+    if (!xy) return;
+    const [x, y] = xy;
+    const val = visitData[item.key];
+    const year = (val === true) ? null : (val || null);
+    svg += makeMarker(type, x, y, !!val, item.name || item.food || item.key, year);
+  });
+  svg += `</g></svg>`;
+  container.innerHTML = svg;
+  attachMapZoom(container, 15);
+}
+
 function renderFoodTab(dataType) {
   const DATA = dataType === "gourmet" ? (typeof GOURMET_DATA !== "undefined" ? GOURMET_DATA : [])
                                       : (typeof RAMEN_DATA   !== "undefined" ? RAMEN_DATA   : []);
@@ -1267,6 +1366,19 @@ function renderFoodTab(dataType) {
     });
     html += `</div></div>`;
   });
+
+  // ---- 地図 ----
+  {
+    const dotUnvisit = type => `<svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="none" stroke="${type === 'gourmet' ? '#00aa00' : '#cc0000'}" stroke-width="1.5"/></svg>`;
+    const dotVisit   = type => `<svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="${type === 'gourmet' ? '#00aa00' : '#cc0000'}" stroke="${type === 'gourmet' ? '#00aa00' : '#cc0000'}" stroke-width="1.5"/></svg>`;
+    html += `<div class="map-svg-section heritage-inline-map">
+      <div class="map-legend">
+        <span class="legend-item">${dotUnvisit(dataType)} 未訪問</span>
+        <span class="legend-item">${dotVisit(dataType)} 訪問済</span>
+      </div>
+      <div id="japan-${dataType}-map-svg"></div>
+    </div>`;
+  }
 
   // ---- 一覧リスト（世界遺産スタイル） ----
   const foodIcon = dataType === 'gourmet' ? '🍽' : '🍜';
@@ -1326,6 +1438,7 @@ function renderFoodTab(dataType) {
   }
 
   container.innerHTML = html;
+  renderFoodMapSVG(dataType, DATA, visitData, `japan-${dataType}-map-svg`);
 
   // ボタンイベント
   container.querySelectorAll(".food-btn").forEach(btn => {
@@ -1433,6 +1546,15 @@ function renderOnsenTab() {
     html += `</div></div>`;
   });
 
+  // ---- 地図 ----
+  html += `<div class="map-svg-section heritage-inline-map">
+    <div class="map-legend">
+      <span class="legend-item"><span style="color:#0055cc;font-size:14px;line-height:1">♨</span> 未訪問</span>
+      <span class="legend-item"><span style="color:#cc0000;font-size:14px;line-height:1">♨</span> 訪問済</span>
+    </div>
+    <div id="japan-onsen-map-svg"></div>
+  </div>`;
+
   // ---- 一覧リスト（世界遺産スタイル） ----
   html += `<div class="extra-list-section">
     <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal} / ${total}件</span></div>
@@ -1489,6 +1611,7 @@ function renderOnsenTab() {
   }
 
   container.innerHTML = html;
+  renderFoodMapSVG('onsen', DATA, visitData, 'japan-onsen-map-svg');
 
   // ボタンイベント
   container.querySelectorAll(".onsen-btn").forEach(btn => {
