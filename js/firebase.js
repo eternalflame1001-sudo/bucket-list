@@ -8,6 +8,9 @@ const _U        = new URLSearchParams(window.location.search).get('u') || 'maste
 const USER      = `users/${_U}`;
 const USER_LABEL = _U === 'hideki' ? "Hideki's List"
                 : _U === 'friend'  ? "Friend's List"
+                : _U === 'f01'     ? "f01's List"
+                : _U === 'f02'     ? "f02's List"
+                : _U === 'f03'     ? "f03's List"
                 : "Master's List";
 
 const FB = {
