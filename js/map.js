@@ -259,7 +259,7 @@ function attachHeritageClicks(container, tabType) {
 // ==========================================
 // ② SVG地図描画共通ズームヘルパー
 // ==========================================
-function attachMapZoom(container, maxScale, initScale = 1) {
+function attachMapZoom(container, maxScale, initScale = 1, initSouthKm = 0, initEastKm = 0) {
   const svgEl = container.querySelector('svg');
   // zoom-bg/zoom-markers の2レイヤー構造を優先、なければ旧来の最初のgを使用
   const bgG   = container.querySelector('svg g.zoom-bg');
@@ -315,14 +315,20 @@ function attachMapZoom(container, maxScale, initScale = 1) {
     });
   d3.select(svgEl).call(zoom);
 
-  // 初期ズーム（Japan地図用: 1.3倍で開始、中央基準）
-  if (initScale > 1) {
-    const vb = svgEl.viewBox.baseVal;
-    const vW = vb.width, vH = vb.height;
+  // 初期ズーム・位置オフセット
+  // initSouthKm/initEastKm: 表示中心を地理的に南/東にずらすkm数
+  if (initScale > 1 || initSouthKm !== 0 || initEastKm !== 0) {
+    const vb   = svgEl.viewBox.baseVal;
+    const vW   = vb.width, vH = vb.height;
+    // Japan本土幅 ≈ 1356km が (vW-10) SVG単位に対応
+    const svuPerKm = (vW - 10) / 1356;
     d3.select(svgEl).call(
       zoom.transform,
       d3.zoomIdentity
-        .translate(vW * (1 - initScale) / 2, vH * (1 - initScale) / 2)
+        .translate(
+          vW * (1 - initScale) / 2 - initScale * initEastKm  * svuPerKm,
+          vH * (1 - initScale) / 2 - initScale * initSouthKm * svuPerKm
+        )
         .scale(initScale)
     );
   }
@@ -412,7 +418,7 @@ async function renderJapanMap(visitData, containerId = "japan-svg-container", re
     });
   }
   attachHeritageClicks(container, 'japan');
-  attachMapZoom(container, 25, 2.2);  // 初期ズーム2.2倍 (1.3×1.3×1.3)
+  attachMapZoom(container, 25, 2.2, 100, 300);  // 初期ズーム2.2倍、南100km・東300kmオフセット
 }
 
 // ==========================================
@@ -1410,7 +1416,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
   svg += `<g class="zoom-markers">${markerSvg}</g>`;
   svg += `</svg>`;
   container.innerHTML = svg;
-  attachMapZoom(container, 25, 2.2);  // 初期ズーム2.2倍 (1.3×1.3×1.3)
+  attachMapZoom(container, 25, 2.2, 100, 300);  // 初期ズーム2.2倍、南100km・東300kmオフセット
 
   // 世界遺産★クリック
   container.querySelectorAll('.heritage-star').forEach(el => {
