@@ -384,7 +384,8 @@ document.querySelectorAll(".sub-tab").forEach(btn => {
       const scope = sub.replace("-heritage", "");
       window.renderHeritageList?.(scope);
     }
-    // グルメ・ラーメンタブ
+    // 温泉・グルメ・ラーメンタブ
+    if (sub === "japan-onsen")   window.renderOnsenTab?.();
     if (sub === "japan-gourmet") window.renderFoodTab?.("gourmet");
     if (sub === "japan-ramen")   window.renderFoodTab?.("ramen");
   });

@@ -1262,3 +1262,80 @@ function renderFoodTab(dataType) {
 }
 
 window.renderFoodTab = renderFoodTab;
+
+// ==========================================
+// 温泉タブ描画
+// ==========================================
+const ONSEN_REGION_ORDER = ['🌨️ 北海道','🍎 東北','🌸 関東','⛰️ 中部','🦌 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
+
+function renderOnsenTab() {
+  const DATA = typeof ONSEN_DATA !== "undefined" ? ONSEN_DATA : [];
+  const container = document.getElementById("japan-onsen-container");
+  if (!container || !DATA.length) return;
+
+  const visitData = window.appState?.visit?.onsen || {};
+
+  // 地域グループ化（regionフィールドで直接グループ）
+  const regionMap = {};
+  DATA.forEach(item => {
+    if (!regionMap[item.region]) regionMap[item.region] = [];
+    regionMap[item.region].push(item);
+  });
+
+  const visitedTotal = DATA.filter(item => !!visitData[item.key]).length;
+  const total = DATA.length;
+  const pct = total ? Math.round(visitedTotal / total * 100) : 0;
+
+  let html = `<div class="map-header-bar">
+    <h2 class="map-title">♨ 温泉</h2>
+    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span> / ${total} <span class="mstat-pct">${pct}%</span></div>
+  </div>`;
+
+  ONSEN_REGION_ORDER.forEach(region => {
+    const items = regionMap[region];
+    if (!items) return;
+    const gVisited = items.filter(item => !!visitData[item.key]).length;
+    const gTotal = items.length;
+    const gPct = gTotal ? Math.round(gVisited / gTotal * 100) : 0;
+    html += `<div class="visit-group">
+      <div class="visit-group-label">
+        <span class="group-label-text">${region}</span>
+        <span class="group-label-stat">${gVisited}/${gTotal} <em>${gPct}%</em></span>
+      </div>
+      <div class="visit-btn-grid onsen-btn-grid">`;
+    items.forEach(item => {
+      const val = visitData[item.key];
+      const year = (val === true) ? null : (val || null);
+      const visited = !!val;
+      const color = visited ? yearToColor(year) : "";
+      html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
+        data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
+        ${visited ? `style="background:${color};border-color:${color}"` : ""}>
+        ${item.name}
+        <small>${visited ? (year ? year : "✓") : item.starStr}</small>
+      </button>`;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll(".onsen-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const key     = btn.dataset.key;
+      const name    = btn.dataset.name;
+      const visited = btn.dataset.visited === "true";
+      if (visited) {
+        if (confirm(`「${name}」の訪問記録を削除しますか？`)) {
+          await saveVisit("onsen", key, null);
+          renderOnsenTab();
+        }
+      } else {
+        await openYearDialog("onsen", name, new Date().getFullYear(), key);
+        renderOnsenTab();
+      }
+    });
+  });
+}
+
+window.renderOnsenTab = renderOnsenTab;

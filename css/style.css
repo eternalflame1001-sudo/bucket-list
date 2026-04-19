@@ -353,10 +353,16 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .hcountry-body { padding: 8px; background: var(--bg1,#fff); }
 
 /* ==========================================
-   グルメ・ラーメンタブ
+   温泉・グルメ・ラーメンタブ
    ========================================== */
+/* 温泉: 2列（名前が長め） */
+.onsen-btn-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 5px; }
+.onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
+.onsen-btn small { font-size: 12px !important; }
+
+/* グルメ・ラーメン: 3列 */
 .food-btn-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
-.food-btn { font-size: 14px !important; font-weight: 700 !important; padding: 6px 3px !important; }
+.food-btn { font-size: 13px !important; font-weight: 700 !important; padding: 6px 3px !important; }
 .food-btn small { font-size: 11px !important; }
 
 /* 年号ダイアログ */
