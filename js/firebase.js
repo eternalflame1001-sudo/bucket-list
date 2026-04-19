@@ -8,12 +8,26 @@ const DB        = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.fir
 // 許可ユーザー一覧（ここにないパラメータはアクセス拒否）
 const ALLOWED_USERS = new Set(['master','hideki','friend','f01','f02','f03']);
 
-// URLパラメータ優先、なければlocalStorageから復元（iPhoneのPWAモード対策）
+// Cookie操作（SafariとPWAで共有される唯一の手段）
+function _setCookie(val) {
+  const exp = new Date(Date.now() + 365 * 864e5).toUTCString();
+  document.cookie = `bucket_user=${val};expires=${exp};path=/`;
+}
+function _getCookie() {
+  const m = document.cookie.match(/(?:^|; )bucket_user=([^;]+)/);
+  return m ? m[1] : null;
+}
+
+// URLパラメータ優先 → Cookie → localStorage → master の順で決定
 const _paramU = new URLSearchParams(window.location.search).get('u');
 if (_paramU && ALLOWED_USERS.has(_paramU)) {
-  localStorage.setItem('bucket_user', _paramU);  // 正規パラメータなら記憶
+  _setCookie(_paramU);                                    // Cookie（PWAと共有）
+  try { localStorage.setItem('bucket_user', _paramU); } catch(e) {}
 }
-const _U = _paramU || localStorage.getItem('bucket_user') || 'master';
+const _U = _paramU
+        || _getCookie()
+        || (() => { try { return localStorage.getItem('bucket_user'); } catch(e) { return null; } })()
+        || 'master';
 
 const USER_VALID    = ALLOWED_USERS.has(_U);
 
