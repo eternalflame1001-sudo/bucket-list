@@ -403,3 +403,48 @@ function startListener() {
 }
 
 init();
+
+// ==========================================
+// ピンチ拡大縮小（指を離すと元に戻る）
+// ==========================================
+(function() {
+  let startDist  = 0;
+  let startScale = 1;
+  let curScale   = 1;
+  const SCALE_MAX = 4;
+  const el = document.body;
+
+  function pinchDist(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+  }
+
+  el.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      startDist  = pinchDist(e.touches);
+      startScale = curScale;
+      el.style.transition = 'none';
+    }
+  }, { passive: true });
+
+  el.addEventListener('touchmove', e => {
+    if (e.touches.length !== 2) return;
+    e.preventDefault();
+    const ratio = pinchDist(e.touches) / startDist;
+    curScale = Math.min(SCALE_MAX, Math.max(1, startScale * ratio));
+    el.style.transformOrigin = 'center top';
+    el.style.transform = `scale(${curScale})`;
+  }, { passive: false });
+
+  function snapBack() {
+    if (curScale !== 1) {
+      el.style.transition = 'transform 0.35s ease';
+      el.style.transform  = 'scale(1)';
+      curScale = 1;
+    }
+  }
+
+  el.addEventListener('touchend',    snapBack, { passive: true });
+  el.addEventListener('touchcancel', snapBack, { passive: true });
+})();
