@@ -1298,11 +1298,22 @@ async function renderFoodMapSVG(type, DATA, visitData, containerId, onVisitChang
     }
     return item.coords || null;
   }
+  const japanVisit = window.appState?.visit?.japan || {};
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg">`;
 
-  // 全都道府県（沖縄含む・ズーム対象）
+  // 全都道府県（沖縄含む・ズーム対象）— 訪問済県に色付け
   svg += `<g class="zoom-bg">`;
-  features.forEach(f => { const d = pathGen(f); if (d) svg += `<path d="${d}" fill="#e8e4dc" stroke="#555" stroke-width="0.8"/>`; });
+  features.forEach(f => {
+    const d = pathGen(f);
+    if (!d) return;
+    const props = f.properties;
+    const full = props.nam_ja || props.name_ja || props.NAME || props.name || props.N03_001 || '';
+    const key = prefShort(full);
+    const val = japanVisit[key];
+    const year = (val === true) ? null : (val || null);
+    const fill = val ? yearToColor(year) : '#e8e4dc';
+    svg += `<path d="${d}" fill="${fill}" stroke="#555" stroke-width="0.8"/>`;
+  });
   svg += `</g>`;
   // マーカーレイヤー（ズーム外・位置のみ更新）
   let markerSvg = '';
