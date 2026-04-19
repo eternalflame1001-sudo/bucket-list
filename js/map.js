@@ -222,8 +222,8 @@ function heritageStarsSVG(sites, projection, hv, r) {
     if (!pt || isNaN(pt[0])) continue;
     const [x, y] = pt;
     const visited = hv && hv[String(s.id)];
-    const fill   = visited ? '#FFD700' : 'rgba(255,220,0,0.15)';
-    const stroke = visited ? '#b8860b' : '#cc9900';
+    const fill   = visited ? '#cc0000' : 'rgba(0,80,200,0.15)';
+    const stroke = visited ? '#880000' : '#0055cc';
     const sw     = visited ? 1.5 : 1.2;
     out += `<polygon points="${starPoints(x, y, r)}"
       fill="${fill}" stroke="${stroke}" stroke-width="${sw}"
@@ -961,7 +961,7 @@ async function renderHeritageList(scope) {
   if (scope === 'japan') {
     html += `<div class="map-svg-section heritage-inline-map">
       <div class="map-legend">
-        <span class="legend-item"><span style="color:#FFD700;font-size:13px;line-height:1">★</span> 世界遺産</span>
+        <span class="legend-item"><span style="color:#0055cc;font-size:13px;line-height:1">★</span>未/<span style="color:#cc0000;font-size:13px;line-height:1">★</span>済 世界遺産</span>
         <span class="legend-item"><span style="color:#0055cc;font-size:14px;line-height:1">♨</span> 温泉</span>
         <span class="legend-item"><svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="#00aa00" stroke="#00aa00" stroke-width="1.5"/></svg> グルメ</span>
         <span class="legend-item"><svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="#cc0000" stroke="#cc0000" stroke-width="1.5"/></svg> ラーメン</span>
@@ -1582,7 +1582,7 @@ function renderFoodTab(dataType) {
   // ---- 地図 ----
   html += `<div class="map-svg-section heritage-inline-map">
     <div class="map-legend">
-      <span class="legend-item"><span style="color:#FFD700;font-size:13px;line-height:1">★</span> 世界遺産</span>
+      <span class="legend-item"><span style="color:#0055cc;font-size:13px;line-height:1">★</span>未/<span style="color:#cc0000;font-size:13px;line-height:1">★</span>済 世界遺産</span>
       <span class="legend-item"><span style="color:#0055cc;font-size:14px;line-height:1">♨</span> 温泉</span>
       <span class="legend-item"><svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="#00aa00" stroke="#00aa00" stroke-width="1.5"/></svg> グルメ</span>
       <span class="legend-item"><svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="#cc0000" stroke="#cc0000" stroke-width="1.5"/></svg> ラーメン</span>
@@ -1759,7 +1759,7 @@ function renderOnsenTab() {
   // ---- 地図 ----
   html += `<div class="map-svg-section heritage-inline-map">
     <div class="map-legend">
-      <span class="legend-item"><span style="color:#FFD700;font-size:13px;line-height:1">★</span> 世界遺産</span>
+      <span class="legend-item"><span style="color:#0055cc;font-size:13px;line-height:1">★</span>未/<span style="color:#cc0000;font-size:13px;line-height:1">★</span>済 世界遺産</span>
       <span class="legend-item"><span style="color:#0055cc;font-size:14px;line-height:1">♨</span> 温泉</span>
       <span class="legend-item"><svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="#00aa00" stroke="#00aa00" stroke-width="1.5"/></svg> グルメ</span>
       <span class="legend-item"><svg width="12" height="12" style="vertical-align:middle"><circle cx="6" cy="6" r="4" fill="#cc0000" stroke="#cc0000" stroke-width="1.5"/></svg> ラーメン</span>
