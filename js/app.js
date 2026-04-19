@@ -372,6 +372,9 @@ document.querySelectorAll(".tab").forEach(btn => {
     if (['japan','china','world'].includes(state.tab)) {
       setTimeout(() => window.onMapTabActivate?.(state.tab), 50);
     }
+    if (state.tab === 'stats') {
+      setTimeout(() => window.renderStats?.(), 50);
+    }
     $(`tab-${state.tab}`).classList.add("active");
   });
 });

@@ -366,4 +366,93 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .food-btn { font-size: 13px !important; font-weight: 700 !important; padding: 6px 3px !important; }
 .food-btn small { font-size: 11px !important; }
 
+/* ==========================================
+   Stats タブ
+   ========================================== */
+#tab-stats { padding: 14px 12px 60px; }
+
+.stats-section { margin-bottom: 24px; }
+
+.stats-sec-title {
+  font-size: 15px; font-weight: 700; color: var(--accent);
+  margin-bottom: 12px; padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.stats-badge-count {
+  font-size: 12px; color: var(--text2); font-weight: 400;
+  margin-left: auto;
+}
+
+/* バッジグリッド */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.badge-card {
+  border-radius: 10px; padding: 10px 6px 8px;
+  text-align: center; border: 1px solid var(--border);
+  transition: transform .18s;
+}
+.badge-on {
+  background: linear-gradient(135deg, #fffbf0 0%, #fff5d6 100%);
+  border-color: var(--accent2);
+  box-shadow: 0 1px 4px rgba(196,129,58,.2);
+}
+.badge-off {
+  background: var(--bg2);
+  opacity: .38;
+  filter: grayscale(.6);
+}
+.badge-on:hover { transform: scale(1.05); }
+.badge-icon { font-size: 26px; line-height: 1; margin-bottom: 5px; }
+.badge-name {
+  font-size: 10px; font-weight: 700;
+  color: var(--accent); line-height: 1.2; margin-bottom: 3px;
+}
+.badge-off .badge-name { color: var(--text2); }
+.badge-desc { font-size: 9px; color: var(--text2); line-height: 1.3; }
+
+/* プログレスバー */
+.stats-sub-sec {
+  font-size: 12px; font-weight: 700; color: var(--text2);
+  margin-bottom: 8px;
+}
+.prog-chart { display: flex; flex-direction: column; gap: 7px; }
+.prog-row {
+  display: grid;
+  grid-template-columns: 108px 1fr 72px;
+  align-items: center; gap: 6px;
+}
+.prog-label { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prog-bar-wrap {
+  height: 8px; background: var(--bg3);
+  border-radius: 4px; overflow: hidden;
+}
+.prog-bar-fill {
+  height: 100%; border-radius: 4px;
+  transition: width .7s cubic-bezier(.4,0,.2,1);
+  min-width: 2px;
+}
+.prog-val {
+  font-size: 11px; color: var(--text2);
+  text-align: right; white-space: nowrap;
+}
+.prog-val em { font-style: normal; color: var(--accent); font-weight: 700; }
+
+/* 年別グラフ */
+.ychart-outer { overflow-x: auto; padding-bottom: 4px; }
+.ychart-legend {
+  display: flex; flex-wrap: wrap; gap: 6px 12px;
+  margin-top: 8px;
+}
+.ychart-legend-item {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--text2);
+}
+.ychart-dot {
+  width: 10px; height: 10px; border-radius: 2px; display: inline-block;
+}
+
 /* 年号ダイアログ */

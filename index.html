@@ -35,6 +35,7 @@
     <button class="tab" data-tab="japan"><span class="tab-icon">🇯🇵</span><span>Japan</span></button>
     <button class="tab" data-tab="china"><span class="tab-icon">🇨🇳</span><span>China</span></button>
     <button class="tab" data-tab="world"><span class="tab-icon">🌍</span><span>World</span></button>
+    <button class="tab" data-tab="stats"><span class="tab-icon">📊</span><span>Stats</span></button>
   </nav>
   <div id="cat-filter-bar">
     <div class="cat-btn active" data-cat=""><span class="cat-pct" id="cpct-all">0%</span><span class="cat-icon">📚</span><span class="cat-frac" id="cfrac-all">0/0</span></div>
@@ -174,6 +175,9 @@
     </div>
   </section>
 
+  <!-- Stats タブ -->
+  <section id="tab-stats" class="tab-content"></section>
+
   <!-- World タブ -->
   <section id="tab-world" class="tab-content">
     <div id="world-main" class="sub-tab-content active">
@@ -262,10 +266,11 @@
 <div id="toast" class="hidden"></div>
 <div id="sync-badge"><span id="sync-dot"></span>リアルタイム同期中</div>
 
+<script src="js/stats.js?v=20260420i"></script>
 <script src="js/firebase.js"></script>
 <script src="js/heritage-jp-cn.js"></script>
-<script src="bucket_list_data.js?v=20260420h"></script>
-<script src="js/map.js?v=20260420h"></script>
-<script src="js/app.js?v=20260420h"></script>
+<script src="bucket_list_data.js?v=20260420i"></script>
+<script src="js/map.js?v=20260420i"></script>
+<script src="js/app.js?v=20260420i"></script>
 </body>
 </html>
