@@ -4,10 +4,17 @@
 // ==========================================
 
 const DB        = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.firebasedatabase.app";
-const _U        = new URLSearchParams(window.location.search).get('u') || 'master';
 
 // 許可ユーザー一覧（ここにないパラメータはアクセス拒否）
 const ALLOWED_USERS = new Set(['master','hideki','friend','f01','f02','f03']);
+
+// URLパラメータ優先、なければlocalStorageから復元（iPhoneのPWAモード対策）
+const _paramU = new URLSearchParams(window.location.search).get('u');
+if (_paramU && ALLOWED_USERS.has(_paramU)) {
+  localStorage.setItem('bucket_user', _paramU);  // 正規パラメータなら記憶
+}
+const _U = _paramU || localStorage.getItem('bucket_user') || 'master';
+
 const USER_VALID    = ALLOWED_USERS.has(_U);
 
 const USER      = `users/${_U}`;
