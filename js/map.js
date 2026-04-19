@@ -259,7 +259,7 @@ function attachHeritageClicks(container, tabType) {
 // ==========================================
 // ② SVG地図描画共通ズームヘルパー
 // ==========================================
-function attachMapZoom(container, maxScale) {
+function attachMapZoom(container, maxScale, initScale = 1) {
   const svgEl = container.querySelector('svg');
   // zoom-bg/zoom-markers の2レイヤー構造を優先、なければ旧来の最初のgを使用
   const bgG   = container.querySelector('svg g.zoom-bg');
@@ -314,6 +314,19 @@ function attachMapZoom(container, maxScale) {
       }
     });
   d3.select(svgEl).call(zoom);
+
+  // 初期ズーム（Japan地図用: 1.3倍で開始、中央基準）
+  if (initScale > 1) {
+    const vb = svgEl.viewBox.baseVal;
+    const vW = vb.width, vH = vb.height;
+    d3.select(svgEl).call(
+      zoom.transform,
+      d3.zoomIdentity
+        .translate(vW * (1 - initScale) / 2, vH * (1 - initScale) / 2)
+        .scale(initScale)
+    );
+  }
+
   svgEl.addEventListener('dblclick', () => {
     d3.select(svgEl).transition().duration(300).call(zoom.transform, d3.zoomIdentity);
   });
@@ -340,7 +353,7 @@ async function renderJapanMap(visitData, containerId = "japan-svg-container", re
   const objKey = Object.keys(_japanTopo.objects)[0];
   const features = topojson.feature(_japanTopo, _japanTopo.objects[objKey]).features;
   const W = container.clientWidth || 370;
-  const H = Math.round(W * 1.82);  // 1.4 × 1.3
+  const H = Math.round(W * 1.6);  // 1.3倍ズーム時に縦方向がフィットする比率
 
   // 沖縄を除いた本州・北海道・四国・九州でフィット
   const isOk = f => (f.properties.nam_ja || f.properties.name || '').includes('沖縄');
@@ -399,7 +412,7 @@ async function renderJapanMap(visitData, containerId = "japan-svg-container", re
     });
   }
   attachHeritageClicks(container, 'japan');
-  attachMapZoom(container, 25);
+  attachMapZoom(container, 25, 1.3);  // 初期ズーム1.3倍
 }
 
 // ==========================================
@@ -1307,7 +1320,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
   const features = topojson.feature(_japanTopo, _japanTopo.objects[objKey]).features;
 
   const W = container.clientWidth || 370;
-  const H = Math.round(W * 1.82);  // 1.4 × 1.3
+  const H = Math.round(W * 1.6);  // 1.3倍ズーム時に縦方向がフィットする比率
 
   // 沖縄を除いた本州・北海道・四国・九州でフィット
   const isOkPref  = f => (f.properties.nam_ja || f.properties.name || '').includes('沖縄');
@@ -1397,7 +1410,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
   svg += `<g class="zoom-markers">${markerSvg}</g>`;
   svg += `</svg>`;
   container.innerHTML = svg;
-  attachMapZoom(container, 25);
+  attachMapZoom(container, 25, 1.3);  // 初期ズーム1.3倍
 
   // 世界遺産★クリック
   container.querySelectorAll('.heritage-star').forEach(el => {
