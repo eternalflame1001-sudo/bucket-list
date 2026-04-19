@@ -1253,8 +1253,8 @@ function makeMarker(type, x, y, visited, name, year) {
   if (type === 'onsen') {
     const fill = visited ? '#cc0000' : '#0055cc';
     return `<text x="${xt}" y="${yt}" text-anchor="middle" dominant-baseline="middle"
-      fill="${fill}" font-size="10" class="map-marker" data-ox="${xt}" data-oy="${yt}"
-      data-base-font-size="10" style="user-select:none">♨<title>${title}</title></text>`;
+      fill="${fill}" font-size="15" class="map-marker" data-ox="${xt}" data-oy="${yt}"
+      data-base-font-size="15" style="user-select:none">♨<title>${title}</title></text>`;
   }
   const fill   = visited ? (type === 'gourmet' ? '#00aa00' : '#cc0000') : 'none';
   const stroke = type === 'gourmet' ? '#00aa00' : '#cc0000';
