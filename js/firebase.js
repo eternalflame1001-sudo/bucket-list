@@ -5,6 +5,11 @@
 
 const DB        = "https://my-bucket-list-1a786-default-rtdb.asia-southeast1.firebasedatabase.app";
 const _U        = new URLSearchParams(window.location.search).get('u') || 'master';
+
+// 許可ユーザー一覧（ここにないパラメータはアクセス拒否）
+const ALLOWED_USERS = new Set(['master','hideki','friend','f01','f02','f03']);
+const USER_VALID    = ALLOWED_USERS.has(_U);
+
 const USER      = `users/${_U}`;
 const USER_LABEL = _U === 'hideki' ? "Hideki's List"
                 : _U === 'friend'  ? "Friend's List"

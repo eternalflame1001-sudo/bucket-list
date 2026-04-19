@@ -27,6 +27,17 @@ function toast(msg, type="ok") {
 
 // --- 初期化 ---
 async function init() {
+  // 許可ユーザー以外はブロック
+  if (typeof USER_VALID !== 'undefined' && !USER_VALID) {
+    document.body.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+                  height:100vh;background:#0a0000;color:#fff;font-family:sans-serif;gap:16px;">
+        <div style="font-size:48px;">🔒</div>
+        <div style="font-size:20px;font-weight:700;">このリストは存在しません</div>
+        <div style="font-size:14px;color:#aaa;">アドレスをご確認ください</div>
+      </div>`;
+    return;
+  }
   // ユーザーラベル表示
   const ulEl = document.getElementById('user-label');
   if (ulEl && typeof USER_LABEL !== 'undefined') ulEl.textContent = USER_LABEL;
