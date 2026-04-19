@@ -227,7 +227,8 @@ function heritageStarsSVG(sites, projection, hv, r) {
     const sw     = visited ? 1.5 : 1.2;
     out += `<polygon points="${starPoints(x, y, r)}"
       fill="${fill}" stroke="${stroke}" stroke-width="${sw}"
-      class="heritage-star" data-id="${s.id}" data-name-ja="${s.name_ja}"
+      class="heritage-star map-marker" data-ox="${x.toFixed(2)}" data-oy="${y.toFixed(2)}"
+      data-id="${s.id}" data-name-ja="${s.name_ja}"
       data-year="${s.year}" data-cat="${s.cat_ja}" style="cursor:pointer">
       <title>★ ${s.name_ja}（${s.year}年・${s.cat_ja}）</title>
     </polygon>`;
@@ -264,7 +265,30 @@ function attachMapZoom(container, maxScale) {
   if (!svgEl || !gEl) return;
   const zoom = d3.zoom()
     .scaleExtent([1, maxScale])
-    .on('zoom', e => { gEl.setAttribute('transform', e.transform); });
+    .on('zoom', e => {
+      gEl.setAttribute('transform', e.transform);
+      const k = e.transform.k;
+      // マーカーの見た目サイズを固定（要素種別ごとに属性を直接更新）
+      gEl.querySelectorAll('.map-marker').forEach(el => {
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'text') {
+          // font-size を逆スケール（transform だとフォント描画が崩れるため属性で制御）
+          const base = +(el.dataset.baseFontSize || 10);
+          el.setAttribute('font-size', (base / k).toFixed(4));
+        } else if (tag === 'circle') {
+          // r と stroke-width を逆スケール
+          const baseR  = +(el.dataset.baseR  || 3.5);
+          const baseSw = +(el.dataset.baseSw || 1.5);
+          el.setAttribute('r',            (baseR  / k).toFixed(4));
+          el.setAttribute('stroke-width', (baseSw / k).toFixed(4));
+        } else {
+          // polygon（世界遺産★）は逆スケール変換
+          const ox = +el.dataset.ox, oy = +el.dataset.oy;
+          el.setAttribute('transform',
+            `translate(${ox},${oy}) scale(${(1/k).toFixed(6)}) translate(${-ox},${-oy})`);
+        }
+      });
+    });
   d3.select(svgEl).call(zoom);
   svgEl.addEventListener('dblclick', () => {
     d3.select(svgEl).transition().duration(300).call(zoom.transform, d3.zoomIdentity);
@@ -368,7 +392,7 @@ async function renderJapanMap(visitData, containerId = "japan-svg-container", re
     });
   }
   attachHeritageClicks(container, 'japan');
-  attachMapZoom(container, 15);
+  attachMapZoom(container, 25);
 }
 
 // ==========================================
@@ -1224,11 +1248,13 @@ function makeMarker(type, x, y, visited, name, year) {
   if (type === 'onsen') {
     const fill = visited ? '#cc0000' : '#0055cc';
     return `<text x="${xt}" y="${yt}" text-anchor="middle" dominant-baseline="middle"
-      fill="${fill}" font-size="10" style="user-select:none">♨<title>${title}</title></text>`;
+      fill="${fill}" font-size="10" class="map-marker" data-ox="${xt}" data-oy="${yt}"
+      data-base-font-size="10" style="user-select:none">♨<title>${title}</title></text>`;
   }
   const fill   = visited ? (type === 'gourmet' ? '#00aa00' : '#cc0000') : 'none';
   const stroke = type === 'gourmet' ? '#00aa00' : '#cc0000';
-  return `<circle cx="${xt}" cy="${yt}" r="3.5" fill="${fill}" stroke="${stroke}" stroke-width="1.5">
+  return `<circle cx="${xt}" cy="${yt}" r="3.5" fill="${fill}" stroke="${stroke}" stroke-width="1.5"
+    class="map-marker" data-ox="${xt}" data-oy="${yt}" data-base-r="3.5" data-base-sw="1.5">
     <title>${title}</title></circle>`;
 }
 
@@ -1311,7 +1337,7 @@ async function renderFoodMapSVG(type, DATA, visitData, containerId) {
   });
   svg += `</g></svg>`;
   container.innerHTML = svg;
-  attachMapZoom(container, 15);
+  attachMapZoom(container, 25);
 }
 
 function renderFoodTab(dataType) {
