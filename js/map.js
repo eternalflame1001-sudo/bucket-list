@@ -1551,7 +1551,7 @@ function renderFoodTab(dataType) {
 
   let html = `<div class="map-header-bar">
     <h2 class="map-title">${label}</h2>
-    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span> / ${total} <span class="mstat-pct">${pct}%</span></div>
+    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span>/${total} <span class="mstat-pct">${pct}%</span></div>
   </div>`;
 
   FOOD_REGION_ORDER.forEach(region => {
@@ -1594,7 +1594,7 @@ function renderFoodTab(dataType) {
   // ---- 一覧リスト（世界遺産スタイル） ----
   const foodIcon = dataType === 'gourmet' ? '🍱' : '🍜';
   html += `<div class="extra-list-section">
-    <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal} / ${total}件</span></div>
+    <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件</span></div>
     <div class="heritage-list">`;
   DATA.forEach(item => {
     const val = visitData[item.key];
@@ -1738,7 +1738,7 @@ function renderOnsenTab() {
 
   let html = `<div class="map-header-bar">
     <h2 class="map-title">♨️ 温泉日本の１００名湯＋１１名湯</h2>
-    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span> / ${total} <span class="mstat-pct">${pct}%</span></div>
+    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span>/${total} <span class="mstat-pct">${pct}%</span></div>
   </div>`;
 
   // ---- ボタングリッド ----
@@ -1782,7 +1782,7 @@ function renderOnsenTab() {
 
   // ---- 一覧リスト（世界遺産スタイル） ----
   html += `<div class="extra-list-section">
-    <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal} / ${total}件</span></div>
+    <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件</span></div>
     <div class="heritage-list">`;
   DATA.forEach(item => {
     const val = visitData[item.key];
