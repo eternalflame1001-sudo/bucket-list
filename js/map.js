@@ -209,7 +209,7 @@ function renderButtons(container, groups, visitData, type) {
     html += `<div class="visit-group">
       <div class="visit-group-label">
         <span class="group-label-text">${group.label}</span>
-        <span class="group-label-stat">${gVisited}/${gTotal} <em>${gPct}%</em></span>
+        <span class="group-label-stat"><em>${gPct}%</em><span style="margin-left:20px">${gVisited}/${gTotal}</span></span>
       </div>
       <div class="visit-btn-grid">`;
     items.forEach(name => {
@@ -844,7 +844,7 @@ function refreshTab(type) {
 
   // 統計
   const statsEl = document.getElementById(`${type}-map-stats`);
-  if (statsEl) statsEl.innerHTML = `<span class="mstat-num">${visitedCount}</span>/${total} <span class="mstat-pct">${pct}%</span>`;
+  if (statsEl) statsEl.innerHTML = `<span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedCount}</span>/${total}</span>`;
 
   // ボタン
   const btnEl = document.getElementById(`${type}-btn-container`);
@@ -951,7 +951,7 @@ async function renderHeritageList(scope) {
       html += `<div class="visit-group">
         <div class="visit-group-label">
           <span class="group-label-text">${cg.icon} ${cg.label}</span>
-          <span class="group-label-stat">${gv}/${gt} <em>${gp}%</em></span>
+          <span class="group-label-stat"><em>${gp}%</em><span style="margin-left:20px">${gv}/${gt}</span></span>
         </div>
         <div class="visit-btn-grid heritage-btn-grid">`;
       grpSites.forEach(s => {
@@ -1012,7 +1012,7 @@ async function renderHeritageList(scope) {
           <button class="hcountry-header${expanded ? ' expanded' : ''}" data-iso="${iso}">
             <span class="hcountry-flag">${flag}</span>
             <span class="hcountry-name">${cName}</span>
-            <span class="hcountry-stat">${cVisited}/${cTotal} <em>${pct}%</em></span>
+            <span class="hcountry-stat"><em>${pct}%</em><span style="margin-left:20px">${cVisited}/${cTotal}</span></span>
             <span class="hcountry-arrow">${expanded ? '▲' : '▼'}</span>
           </button>`;
         if (expanded) {
@@ -1551,7 +1551,7 @@ function renderFoodTab(dataType) {
 
   let html = `<div class="map-header-bar">
     <h2 class="map-title">${label}</h2>
-    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span>/${total} <span class="mstat-pct">${pct}%</span></div>
+    <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/${total}</span></div>
   </div>`;
 
   FOOD_REGION_ORDER.forEach(region => {
@@ -1563,7 +1563,7 @@ function renderFoodTab(dataType) {
     html += `<div class="visit-group">
       <div class="visit-group-label">
         <span class="group-label-text">${region}</span>
-        <span class="group-label-stat">${gVisited}/${gTotal} <em>${gPct}%</em></span>
+        <span class="group-label-stat"><em>${gPct}%</em><span style="margin-left:20px">${gVisited}/${gTotal}</span></span>
       </div>
       <div class="visit-btn-grid food-btn-grid">`;
     items.forEach(item => {
@@ -1738,7 +1738,7 @@ function renderOnsenTab() {
 
   let html = `<div class="map-header-bar">
     <h2 class="map-title">♨️ 温泉日本の１００名湯＋１１名湯</h2>
-    <div class="map-stats-line"><span class="mstat-num">${visitedTotal}</span>/${total} <span class="mstat-pct">${pct}%</span></div>
+    <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/${total}</span></div>
   </div>`;
 
   // ---- ボタングリッド ----
@@ -1751,7 +1751,7 @@ function renderOnsenTab() {
     html += `<div class="visit-group">
       <div class="visit-group-label">
         <span class="group-label-text">${region}</span>
-        <span class="group-label-stat">${gVisited}/${gTotal} <em>${gPct}%</em></span>
+        <span class="group-label-stat"><em>${gPct}%</em><span style="margin-left:20px">${gVisited}/${gTotal}</span></span>
       </div>
       <div class="visit-btn-grid onsen-btn-grid">`;
     items.forEach(item => {
