@@ -375,7 +375,8 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .stats-section { margin-bottom: 24px; }
 
 .stats-sec-title {
-  font-size: 15px; font-weight: 700; color: var(--accent);
+  font-size: 24px; font-weight: 700; color: #8b2500;
+  font-family: 'Cormorant Garamond', serif;
   margin-bottom: 12px; padding-bottom: 6px;
   border-bottom: 2px solid var(--border);
   display: flex; align-items: center; gap: 10px;
