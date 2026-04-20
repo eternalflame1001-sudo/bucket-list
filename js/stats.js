@@ -147,7 +147,17 @@ function renderStats() {
   const gourmetTotal  = typeof GOURMET_DATA   !== 'undefined' ? GOURMET_DATA.length   : null;
   const ramenTotal    = typeof RAMEN_DATA     !== 'undefined' ? RAMEN_DATA.length     : null;
   const onsenTotal    = typeof ONSEN_DATA     !== 'undefined' ? ONSEN_DATA.length     : null;
-  const heritageTotal = typeof HERITAGE_JP_CN !== 'undefined' ? HERITAGE_JP_CN.length : null;
+
+  // 世界遺産 JP / CN / 合計 分割
+  const _her = typeof HERITAGE_JP_CN !== 'undefined' ? HERITAGE_JP_CN : [];
+  const _hasIso = (s, code) => Array.isArray(s.iso) ? s.iso.includes(code) : s.iso === code;
+  const herJpIds   = new Set(_her.filter(s => _hasIso(s,'jp')).map(s => String(s.id)));
+  const herCnIds   = new Set(_her.filter(s => _hasIso(s,'cn')).map(s => String(s.id)));
+  const herAllIds  = new Set(_her.map(s => String(s.id)));
+  const hv         = visit.heritage || {};
+  const herJpDone  = Object.keys(hv).filter(id => hv[id] && herJpIds.has(id)).length;
+  const herCnDone  = Object.keys(hv).filter(id => hv[id] && herCnIds.has(id)).length;
+  const herAllDone = Object.keys(hv).filter(id => hv[id] && herAllIds.has(id)).length;
 
   [
     { scope:'japan',    icon:'🗾', label:'都道府県', total:47,          color:'#5ab87e' },
@@ -156,11 +166,15 @@ function renderStats() {
     { scope:'onsen',    icon:'♨️', label:'温泉',     total:onsenTotal,  color:'#c4813a' },
     { scope:'gourmet',  icon:'🍱', label:'グルメ',   total:gourmetTotal,color:'#9b7ec8' },
     { scope:'ramen',    icon:'🍜', label:'ラーメン', total:ramenTotal,  color:'#d94a4a' },
-    { scope:'heritage', icon:'⭐', label:'世界遺産', total:heritageTotal,color:'#d4a800' },
   ].forEach(({ scope, icon, label, total, color }) => {
     const cnt = Object.values(visit[scope] || {}).filter(v => !!v).length;
     html += _progBar(`${icon} ${label}`, cnt, total, color);
   });
+
+  // 世界遺産 JP・CN・合計
+  html += _progBar('🌍 世界遺産 合計', herAllDone, herAllIds.size, '#d4a800');
+  html += _progBar('🇯🇵 日本 世界遺産', herJpDone,  herJpIds.size,  '#5ab87e');
+  html += _progBar('🇨🇳 中国 世界遺産', herCnDone,  herCnIds.size,  '#e07b4a');
   html += `</div>`;
 
   // 年別訪問グラフ
