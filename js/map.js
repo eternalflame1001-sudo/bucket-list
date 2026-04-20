@@ -110,6 +110,51 @@ const CHINA_REGIONS = [
   { label: "特別行政区", areas: ["香港特別行政区","マカオ特別行政区","台湾"] }
 ];
 
+// 国名→ISO alpha-2 マッピング（国旗絵文字用）
+const COUNTRY_ISO2 = {
+  "日本":"JP","韓国":"KR","中国":"CN","台湾":"TW","北朝鮮":"KP","モンゴル":"MN","香港":"HK","マカオ":"MO",
+  "タイ":"TH","ベトナム":"VN","インドネシア":"ID","フィリピン":"PH","マレーシア":"MY","シンガポール":"SG",
+  "ミャンマー":"MM","カンボジア":"KH","ラオス":"LA","ブルネイ":"BN","東ティモール":"TL",
+  "インド":"IN","パキスタン":"PK","バングラデシュ":"BD","スリランカ":"LK","ネパール":"NP",
+  "ブータン":"BT","モルディブ":"MV","アフガニスタン":"AF",
+  "カザフスタン":"KZ","ウズベキスタン":"UZ","トルクメニスタン":"TM","タジキスタン":"TJ","キルギス":"KG",
+  "トルコ":"TR","イラン":"IR","イラク":"IQ","サウジアラビア":"SA","アラブ首長国連邦":"AE",
+  "イスラエル":"IL","ヨルダン":"JO","レバノン":"LB","シリア":"SY","クウェート":"KW",
+  "カタール":"QA","バーレーン":"BH","オマーン":"OM","イエメン":"YE",
+  "ジョージア":"GE","アルメニア":"AM","アゼルバイジャン":"AZ","キプロス":"CY",
+  "フランス":"FR","ドイツ":"DE","イギリス":"GB","イタリア":"IT","スペイン":"ES","ポルトガル":"PT",
+  "オランダ":"NL","ベルギー":"BE","スイス":"CH","オーストリア":"AT","ルクセンブルク":"LU",
+  "アイルランド":"IE","モナコ":"MC","アンドラ":"AD","リヒテンシュタイン":"LI","マルタ":"MT",
+  "スウェーデン":"SE","ノルウェー":"NO","デンマーク":"DK","フィンランド":"FI","アイスランド":"IS",
+  "エストニア":"EE","ラトビア":"LV","リトアニア":"LT",
+  "ロシア":"RU","ポーランド":"PL","チェコ":"CZ","スロバキア":"SK","ハンガリー":"HU",
+  "ルーマニア":"RO","ブルガリア":"BG","ウクライナ":"UA","ベラルーシ":"BY","モルドバ":"MD",
+  "クロアチア":"HR","スロベニア":"SI","ボスニア・ヘルツェゴビナ":"BA","セルビア":"RS",
+  "モンテネグロ":"ME","アルバニア":"AL","コソボ":"XK","ギリシャ":"GR",
+  "アメリカ":"US","カナダ":"CA","メキシコ":"MX","キューバ":"CU","ジャマイカ":"JM",
+  "ハイチ":"HT","ドミニカ共和国":"DO","プエルトリコ":"PR","グアム":"GU",
+  "グアテマラ":"GT","ベリーズ":"BZ","ホンジュラス":"HN","エルサルバドル":"SV",
+  "ニカラグア":"NI","コスタリカ":"CR","パナマ":"PA",
+  "ブラジル":"BR","アルゼンチン":"AR","チリ":"CL","コロンビア":"CO","ペルー":"PE",
+  "ベネズエラ":"VE","エクアドル":"EC","ボリビア":"BO","パラグアイ":"PY","ウルグアイ":"UY",
+  "ガイアナ":"GY","スリナム":"SR",
+  "エジプト":"EG","モロッコ":"MA","チュニジア":"TN","アルジェリア":"DZ","リビア":"LY","スーダン":"SD",
+  "南アフリカ":"ZA","ナイジェリア":"NG","ケニア":"KE","エチオピア":"ET","タンザニア":"TZ",
+  "ガーナ":"GH","セネガル":"SN","コートジボワール":"CI","カメルーン":"CM","ウガンダ":"UG",
+  "ルワンダ":"RW","ジンバブエ":"ZW","モザンビーク":"MZ","マダガスカル":"MG","ナミビア":"NA",
+  "ボツワナ":"BW","ザンビア":"ZM","マラウイ":"MW","アンゴラ":"AO",
+  "コンゴ共和国":"CG","コンゴ民主共和国":"CD",
+  "オーストラリア":"AU","ニュージーランド":"NZ","フィジー":"FJ","パプアニューギニア":"PG",
+  "ソロモン諸島":"SB","バヌアツ":"VU","サモア":"WS","トンガ":"TO","パラオ":"PW",
+  "ミクロネシア":"FM","マーシャル諸島":"MH","ニューカレドニア":"NC","フランス領ポリネシア":"PF"
+};
+function countryFlag(name) {
+  const iso = COUNTRY_ISO2[name];
+  if (!iso || iso.length !== 2) return '';
+  return String.fromCodePoint(0x1F1E6 + iso.charCodeAt(0) - 65) +
+         String.fromCodePoint(0x1F1E6 + iso.charCodeAt(1) - 65);
+}
+
 const WORLD_REGIONS = [
   { label: "東アジア", countries: ["日本","韓国","中国","台湾","北朝鮮","モンゴル","香港","マカオ"] },
   { label: "東南アジア", countries: ["タイ","ベトナム","インドネシア","フィリピン","マレーシア","シンガポール","ミャンマー","カンボジア","ラオス","ブルネイ","東ティモール"] },
@@ -173,11 +218,12 @@ function renderButtons(container, groups, visitData, type) {
       const year = (val === true) ? null : (val || null);
       const visited = !!val;
       const color = visited ? yearToColor(year) : "";
-      const disp = type === "japan" ? name.replace(/[都府県]$/, "") : name;
+      const disp   = type === "japan" ? name.replace(/[都府県]$/, "") : name;
+      const flag   = type === "world" ? countryFlag(name) : "";
       html += `<button class="visit-btn ${visited ? "visited" : ""}"
         data-name="${key}" data-type="${type}" data-visited="${visited}"
         ${visited ? `style="background:${color};border-color:${color}"` : ""}>
-        ${disp}${year ? `<small>${year}</small>` : visited ? `<small>✓</small>` : ""}
+        ${flag}${disp}${year ? `<small>${year}</small>` : visited ? `<small>✓</small>` : ""}
       </button>`;
     });
     html += `</div></div>`;
@@ -595,7 +641,8 @@ function renderHistory(container, visitData, type) {
       <div class="history-year-label">${yr}年</div>
       <div class="history-places">`;
     byYear[yr].sort().forEach(name => {
-      html += `<button class="history-place-btn" data-name="${name}" data-type="${type}" data-year="${yr}">${name}</button>`;
+      const flag = type === "world" ? countryFlag(name) : "";
+      html += `<button class="history-place-btn" data-name="${name}" data-type="${type}" data-year="${yr}">${flag}${name}</button>`;
     });
     html += `</div></div>`;
   });
@@ -605,7 +652,8 @@ function renderHistory(container, visitData, type) {
       <div class="history-year-label">年不明</div>
       <div class="history-places">`;
     noYear.sort().forEach(name => {
-      html += `<button class="history-place-btn" data-name="${name}" data-type="${type}" data-year="">${name}</button>`;
+      const flag = type === "world" ? countryFlag(name) : "";
+      html += `<button class="history-place-btn" data-name="${name}" data-type="${type}" data-year="">${flag}${name}</button>`;
     });
     html += `</div></div>`;
   }
