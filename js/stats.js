@@ -206,7 +206,7 @@ function _progBar(label, done, total, color) {
   </div>`;
 }
 
-// ---- 年別棒グラフ ----
+// ---- 年別棒グラフ（横型・新しい年が上） ----
 function _yearChart(yearMap, years) {
   const COLORS = {
     japan:'#5ab87e', china:'#e07b4a', world:'#4a90d9',
@@ -218,65 +218,62 @@ function _yearChart(yearMap, years) {
   };
   const SCOPES = ['japan','china','world','onsen','gourmet','ramen','heritage'];
 
-  const maxTotal = Math.max(1, ...years.map(yr =>
+  // 新しい年を上に
+  const sorted = [...years].sort((a, b) => b - a);
+
+  const maxTotal = Math.max(1, ...sorted.map(yr =>
     SCOPES.reduce((s, sc) => s + (yearMap[yr][sc] || 0), 0)
   ));
 
-  const BAR_W  = 34;
+  const SVG_W  = 370;
+  const YEAR_W = 42;   // 年ラベル幅
+  const CNT_W  = 28;   // カウント幅
   const GAP    = 6;
-  const BAR_H  = 100;
-  const PAD_T  = 22;   // space above bar for count label
-  const PAD_B  = 36;   // space below bar for year label
-  const svgW   = years.length * (BAR_W + GAP);
-  const svgH   = PAD_T + BAR_H + PAD_B;
+  const BAR_W  = SVG_W - YEAR_W - CNT_W - GAP * 2;  // バー幅
+  const ROW_H  = 22;
+  const ROW_G  = 4;
+  const svgH   = sorted.length * (ROW_H + ROW_G);
 
-  let out = `<div class="ychart-outer"><svg width="${svgW}" height="${svgH}"
-    style="display:block;overflow:visible">`;
+  let out = `<div class="ychart-outer"><svg width="${SVG_W}" height="${svgH}" style="display:block">`;
 
-  years.forEach((yr, i) => {
-    const x     = i * (BAR_W + GAP);
+  sorted.forEach((yr, i) => {
+    const y     = i * (ROW_H + ROW_G);
+    const midY  = y + ROW_H / 2 + 4;
     const total = SCOPES.reduce((s, sc) => s + (yearMap[yr][sc] || 0), 0);
 
-    // stacked segments (bottom → top)
-    let segY = PAD_T + BAR_H;
+    // 年ラベル（右揃え）
+    out += `<text x="${YEAR_W}" y="${midY}" text-anchor="end"
+      font-size="13" font-weight="700" fill="#8b2500"
+      font-family="Cormorant Garamond, serif">${yr}</text>`;
+
+    // 横積みバー
+    let barX = YEAR_W + GAP;
     SCOPES.forEach(sc => {
       const n = yearMap[yr][sc] || 0;
       if (!n) return;
-      const h = Math.max(2, Math.round((n / maxTotal) * BAR_H));
-      segY -= h;
-      out += `<rect x="${x}" y="${segY}" width="${BAR_W}" height="${h}"
+      const w = Math.max(4, Math.round((n / maxTotal) * BAR_W));
+      out += `<rect x="${barX}" y="${y + 3}" width="${w}" height="${ROW_H - 6}"
         fill="${COLORS[sc]}" rx="2">
         <title>${yr}年 ${LABELS[sc]}: ${n}か所</title>
       </rect>`;
+      barX += w;
     });
 
-    // count label above top of bar
+    // カウント（バーの右）
     if (total > 0) {
-      const topBarY = SCOPES.reduce((acc, sc) => {
-        const n = yearMap[yr][sc] || 0;
-        return n ? acc - Math.max(2, Math.round((n / maxTotal) * BAR_H)) : acc;
-      }, PAD_T + BAR_H);
-      out += `<text x="${x + BAR_W / 2}" y="${topBarY - 3}"
-        text-anchor="middle" font-size="12" font-weight="700" fill="${COLORS[SCOPES.find(sc => (yearMap[yr][sc]||0)>0)]}">${total}</text>`;
+      const topColor = COLORS[SCOPES.find(sc => (yearMap[yr][sc] || 0) > 0)] || '#8b2500';
+      out += `<text x="${YEAR_W + GAP + BAR_W + GAP}" y="${midY}" text-anchor="start"
+        font-size="13" font-weight="700" fill="${topColor}">${total}</text>`;
     }
-
-    // year label (rotated -90°)
-    const lx = x + BAR_W / 2;
-    const ly = PAD_T + BAR_H + 4;
-    out += `<text x="${lx}" y="${ly}" text-anchor="start"
-      font-size="12" fill="#7a6a55"
-      transform="rotate(-90,${lx},${ly})">${yr}</text>`;
   });
 
   out += `</svg>`;
 
-  // legend — only scopes that appear in data
-  const usedScopes = SCOPES.filter(sc => years.some(yr => (yearMap[yr][sc] || 0) > 0));
+  // 凡例（使用スコープのみ）
+  const usedScopes = SCOPES.filter(sc => sorted.some(yr => (yearMap[yr][sc] || 0) > 0));
   out += `<div class="ychart-legend">`;
   usedScopes.forEach(sc => {
-    out += `<span class="ychart-legend-item">
-      <span class="ychart-dot" style="background:${COLORS[sc]}"></span>${LABELS[sc]}
-    </span>`;
+    out += `<span class="ychart-legend-item"><span class="ychart-dot" style="background:${COLORS[sc]}"></span>${LABELS[sc]}</span>`;
   });
   out += `</div></div>`;
 
