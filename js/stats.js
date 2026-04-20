@@ -194,15 +194,16 @@ function renderStats() {
 
 // ---- プログレスバー1行 ----
 function _progBar(label, done, total, color) {
-  const pct    = (total && total > 0) ? Math.round(done / total * 100) : 0;
-  const valStr = (total !== null) ? `${done}/${total}` : `${done}か所`;
-  const pctStr = (total !== null) ? ` <em>${pct}%</em>` : '';
+  const pct = (total && total > 0) ? Math.round(done / total * 100) : 0;
+  const valContent = (total !== null)
+    ? `<em>${pct}%</em><span style="margin-left:20px">${done}/${total}</span>`
+    : `${done}か所`;
   return `<div class="prog-row">
     <div class="prog-label">${label}</div>
     <div class="prog-bar-wrap">
       <div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div>
     </div>
-    <div class="prog-val">${valStr}${pctStr}</div>
+    <div class="prog-val">${valContent}</div>
   </div>`;
 }
 
