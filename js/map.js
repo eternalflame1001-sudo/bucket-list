@@ -247,6 +247,7 @@ async function loadHeritage() {
   } catch(e) {
     _heritageData = window.HERITAGE_JP_CN || [];
   }
+  window._heritageCache = _heritageData; // stats.js から参照用
   return _heritageData;
 }
 

@@ -153,11 +153,13 @@ function renderStats() {
   const _hasIso = (s, code) => Array.isArray(s.iso) ? s.iso.includes(code) : s.iso === code;
   const herJpIds   = new Set(_her.filter(s => _hasIso(s,'jp')).map(s => String(s.id)));
   const herCnIds   = new Set(_her.filter(s => _hasIso(s,'cn')).map(s => String(s.id)));
-  const herAllIds  = new Set(_her.map(s => String(s.id)));
   const hv         = visit.heritage || {};
   const herJpDone  = Object.keys(hv).filter(id => hv[id] && herJpIds.has(id)).length;
   const herCnDone  = Object.keys(hv).filter(id => hv[id] && herCnIds.has(id)).length;
-  const herAllDone = Object.keys(hv).filter(id => hv[id] && herAllIds.has(id)).length;
+  // 🌍 世界合計: heritage.json 全件（キャッシュ済みなら使用）
+  const _allHer    = window._heritageCache || _her;
+  const herAllTotal = _allHer.length || null;
+  const herAllDone  = Object.values(hv).filter(v => !!v).length;
 
   [
     { scope:'japan',    icon:'🗾', label:'都道府県', total:47,          color:'#5ab87e' },
@@ -174,7 +176,7 @@ function renderStats() {
   // 世界遺産 JP・CN・合計
   html += _progBar('⭐️世界遺産🇯🇵', herJpDone,  herJpIds.size,  '#5ab87e');
   html += _progBar('⭐️世界遺産🇨🇳', herCnDone,  herCnIds.size,  '#e07b4a');
-  html += _progBar('⭐️世界遺産🌍',  herAllDone, herAllIds.size, '#d4a800');
+  html += _progBar('⭐️世界遺産🌍',  herAllDone, herAllTotal,   '#d4a800');
   html += `</div>`;
 
   // 年別訪問グラフ
