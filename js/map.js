@@ -240,16 +240,19 @@ function attachHeritageClicks(container, tabType) {
   container.querySelectorAll('.heritage-star').forEach(el => {
     el.addEventListener('click', async e => {
       e.stopPropagation();
-      const id  = el.dataset.id;
+      const id   = el.dataset.id;
       const name = el.dataset.nameJa;
       const hv   = window.appState?.visit?.heritage || {};
       const val  = hv[id];
+      const rect = el.getBoundingClientRect();
+      const cx   = rect.left + rect.width / 2;
+      const cy   = rect.top  + rect.height / 2;
       if (val) {
         if (!confirm(`「${name}」の訪問記録を削除しますか？`)) return;
         await saveVisit('heritage', id, null);
       } else {
-        const curYear = new Date().getFullYear();
-        await openYearDialog('heritage', name, curYear);
+        const saved = await openYearDialog('heritage', name, new Date().getFullYear(), id);
+        if (saved) window.popConfetti?.(cx, cy, 12);
       }
       refreshTab(tabType);
     });
@@ -626,15 +629,24 @@ async function onBtnClick(btn, type) {
   const name = btn.dataset.name;
   const visited = btn.dataset.visited === "true";
   if (visited) {
-    // 2回目: 削除確認
     const disp = btn.textContent.replace(/\d{4}|✓/g, "").trim();
     if (confirm(`「${disp}」の訪問履歴を削除しますか？`)) {
       await saveVisit(type, name, null);
       refreshTab(type);
     }
   } else {
-    await openYearDialog(type, name, new Date().getFullYear());
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const saved = await openYearDialog(type, name, new Date().getFullYear());
     refreshTab(type);
+    if (saved) {
+      window.popConfetti?.(cx, cy, 12);
+      requestAnimationFrame(() => {
+        const nb = Array.from(document.querySelectorAll('.visit-btn')).find(b => b.dataset.name === name);
+        if (nb) { nb.classList.add('just-visited'); nb.addEventListener('animationend', () => nb.classList.remove('just-visited'), { once: true }); }
+      });
+    }
   }
 }
 
@@ -709,10 +721,10 @@ async function openYearDialog(type, name, defaultYear, saveKey) {
       const yr = getSelectedYear();
       done();
       await saveVisit(type, saveKey || name, yr);
-      resolve();
+      resolve(true);   // 保存成功
     };
-    btnCancel.onclick = () => { done(); resolve(); };
-    overlay.onclick = e => { if (e.target === overlay) { done(); resolve(); } };
+    btnCancel.onclick = () => { done(); resolve(false); };
+    overlay.onclick = e => { if (e.target === overlay) { done(); resolve(false); } };
   });
 }
 
@@ -1425,11 +1437,14 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
       const id   = el.dataset.id;
       const name = el.dataset.nameJa;
       const cur  = window.appState?.visit?.heritage || {};
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
       if (cur[id]) {
         if (!confirm(`「${name}」の訪問記録を削除しますか？`)) return;
         await saveVisit('heritage', id, null);
       } else {
-        await openYearDialog('heritage', name, new Date().getFullYear(), id);
+        const saved = await openYearDialog('heritage', name, new Date().getFullYear(), id);
+        if (saved) window.popConfetti?.(cx, cy, 12);
       }
       if (onVisitChange) onVisitChange();
     });
@@ -1444,11 +1459,14 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
       const t    = el.dataset.type;
       const vd   = window.appState?.visit?.[t] || {};
       const val  = vd[key];
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
       if (val) {
         if (!confirm(`「${disp}」の訪問記録を削除しますか？`)) return;
         await saveVisit(t, key, null);
       } else {
-        await openYearDialog(t, disp, new Date().getFullYear(), key);
+        const saved = await openYearDialog(t, disp, new Date().getFullYear(), key);
+        if (saved) window.popConfetti?.(cx, cy, 12);
       }
       if (onVisitChange) onVisitChange();
     });
@@ -1590,7 +1608,19 @@ function renderFoodTab(dataType) {
       };
       if (visited) {
         if (confirm(`「${disp}」の食事記録を削除しますか？`)) { await saveVisit(type, key, null); renderFoodTab(type); syncPartner(); }
-      } else { await openYearDialog(type, disp, new Date().getFullYear(), key); renderFoodTab(type); syncPartner(); }
+      } else {
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+        const saved = await openYearDialog(type, disp, new Date().getFullYear(), key);
+        renderFoodTab(type); syncPartner();
+        if (saved) {
+          window.popConfetti?.(cx, cy, 12);
+          requestAnimationFrame(() => {
+            const nb = container.querySelector(`.food-btn[data-key="${key}"]`);
+            if (nb) { nb.classList.add('just-visited'); nb.addEventListener('animationend', () => nb.classList.remove('just-visited'), { once: true }); }
+          });
+        }
+      }
     });
   });
 
@@ -1761,7 +1791,19 @@ function renderOnsenTab() {
       const visited = btn.dataset.visited === "true";
       if (visited) {
         if (confirm(`「${name}」の訪問記録を削除しますか？`)) { await saveVisit("onsen", key, null); renderOnsenTab(); }
-      } else { await openYearDialog("onsen", name, new Date().getFullYear(), key); renderOnsenTab(); }
+      } else {
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+        const saved = await openYearDialog("onsen", name, new Date().getFullYear(), key);
+        renderOnsenTab();
+        if (saved) {
+          window.popConfetti?.(cx, cy, 12);
+          requestAnimationFrame(() => {
+            const nb = container.querySelector(`.onsen-btn[data-key="${key}"]`);
+            if (nb) { nb.classList.add('just-visited'); nb.addEventListener('animationend', () => nb.classList.remove('just-visited'), { once: true }); }
+          });
+        }
+      }
     });
   });
 

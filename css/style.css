@@ -472,7 +472,9 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
   65%  { transform: scale(0.92); background: #5ab87e; }
   100% { transform: scale(1);    background: #5ab87e; }
 }
-.visit-btn.just-visited {
+.visit-btn.just-visited,
+.food-btn.just-visited,
+.onsen-btn.just-visited {
   animation: visitBtnPop 0.5s cubic-bezier(.36,.07,.19,.97) forwards;
 }
 
