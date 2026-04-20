@@ -142,7 +142,7 @@ function renderStats() {
   html += `</div>`;
 
   // 訪問スコア
-  html += `<div class="stats-sub-sec" style="margin-top:18px">訪問スコア</div>
+  html += `<div class="stats-sub-sec" style="margin-top:20px">訪問スコア</div>
     <div class="prog-chart">`;
   const gourmetTotal  = typeof GOURMET_DATA   !== 'undefined' ? GOURMET_DATA.length   : null;
   const ramenTotal    = typeof RAMEN_DATA     !== 'undefined' ? RAMEN_DATA.length     : null;
@@ -183,7 +183,7 @@ function renderStats() {
   const yearMap = _collectYearData();
   const years   = Object.keys(yearMap).map(Number).sort((a, b) => a - b);
   if (years.length > 0) {
-    html += `<div class="stats-sub-sec" style="margin-top:18px">年別訪問数</div>`;
+    html += `<div class="stats-sub-sec" style="margin-top:20px">年別訪問数</div>`;
     html += _yearChart(yearMap, years);
   }
 
