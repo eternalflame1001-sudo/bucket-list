@@ -72,11 +72,12 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .item.done .item-check { background: #888; border-color: #888; color: #fff; }
 .item-body { flex: 1; min-width: 0; align-self: center; }
 .item-title { font-size: 19px; font-weight: 700; line-height: 1.5; word-break: break-all; }
-.item-meta { display: flex; align-items: center; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
-.item-cat-badge { background: var(--bg2); color: var(--text2); font-size: 16px; padding: 2px 6px; border-radius: 10px; border: 1px solid var(--border); }
-.item-score { font-size: 15px; font-weight: 700; color: var(--accent); min-width: 20px; text-align: center; }
-.prio-row-label { font-size: 14px; font-weight: 700; color: var(--text2); }
-.prio-tag { font-size: 14px; font-weight: 700; padding: 2px 8px; border-radius: 5px; border: 1px solid var(--border); color: var(--text2); background: var(--bg); }
+.item-meta { display: flex; align-items: center; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+.item-cat-badge { background: var(--bg2); color: var(--text2); font-size: 15px; padding: 1px 5px; border-radius: 10px; border: 1px solid var(--border); }
+.item-score { font-size: 15px; font-weight: 700; color: var(--accent); min-width: 16px; text-align: center; }
+.prio-group { display: inline-flex; align-items: center; gap: 2px; }
+.prio-row-label { font-size: 12px; font-weight: 700; color: var(--text2); }
+.prio-tag { font-size: 13px; font-weight: 700; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); color: var(--text2); background: var(--bg); }
 .prio-tag.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 .item-detail-preview { font-size: 14px; font-weight: 700; color: var(--text2); margin-top: 4px; line-height: 1.5; }
 .item-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
