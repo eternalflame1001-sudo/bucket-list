@@ -267,7 +267,7 @@ function _yearChart(yearMap, years) {
   const CNT_W  = 44;   // 合計カウント幅（右詰め）
   const GAP    = 8;
   const BAR_W  = SVG_W - YEAR_W - CNT_W - GAP * 2;  // バー幅
-  const ROW_H  = 30;
+  const ROW_H  = 34;
   const ROW_G  = 4;
   const svgH   = sorted.length * (ROW_H + ROW_G);
 
@@ -304,7 +304,7 @@ function _yearChart(yearMap, years) {
       // バー内に数値（幅が16px以上なら表示）
       if (w >= 16) {
         out += `<text x="${barX + w / 2}" y="${midY}" text-anchor="middle"
-          font-size="13" font-weight="700" fill="#000"
+          font-size="20" font-weight="700" fill="#000"
           font-family="Cormorant Garamond, serif">${n}</text>`;
       }
       barX += w;
