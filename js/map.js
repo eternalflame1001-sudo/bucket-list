@@ -5,7 +5,7 @@
 
 // ISO code → 日本語国名
 const ISO_JA = {
-  ad:"アンドラ",ae:"UAE",af:"アフガニスタン",ag:"アンティグア・バーブーダ",al:"アルバニア",am:"アルメニア",
+  ad:"アンドラ",ae:"アラブ首長国連邦",af:"アフガニスタン",ag:"アンティグア・バーブーダ",al:"アルバニア",am:"アルメニア",
   ao:"アンゴラ",ar:"アルゼンチン",at:"オーストリア",au:"オーストラリア",
   az:"アゼルバイジャン",ba:"ボスニア・ヘルツェゴビナ",bb:"バルバドス",bd:"バングラデシュ",be:"ベルギー",
   bf:"ブルキナファソ",bg:"ブルガリア",bh:"バーレーン",bj:"ベナン",
@@ -607,6 +607,13 @@ async function renderWorldMap(visitData, containerId = "world-svg-container", re
 }
 
 // ==========================================
+// 旧名称 → 正式名称 エイリアス
+const NAME_ALIAS = {
+  "UAE":  "アラブ首長国連邦",
+  "英国": "イギリス",
+};
+function normalizeName(name) { return NAME_ALIAS[name] || name; }
+
 // ③ 渡航履歴リスト（年ごと・新しい順）
 // ==========================================
 function renderHistory(container, visitData, type) {
@@ -614,12 +621,17 @@ function renderHistory(container, visitData, type) {
     container.innerHTML = '<div class="history-empty">まだ訪問履歴がありません</div>';
     return;
   }
-  // 年ごとにグループ化
+  // 年ごとにグループ化（旧名称を正規化・重複除去）
   const byYear = {};
   const noYear = [];
-  Object.entries(visitData).forEach(([name, val]) => {
+  const seen = new Set();
+  Object.entries(visitData).forEach(([rawName, val]) => {
     if (!val) return;
+    const name = normalizeName(rawName);
     const year = (val === true) ? null : val;
+    const key = `${name}__${year}`;
+    if (seen.has(name)) return; // 重複スキップ
+    seen.add(name);
     if (year) {
       if (!byYear[year]) byYear[year] = [];
       byYear[year].push(name);
