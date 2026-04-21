@@ -125,7 +125,7 @@ function renderStats() {
   const bTotal = bItems.length;
   const bDone  = bItems.filter(i => i.done).length;
 
-  html += `<div class="stats-sub-sec">バケツリスト カテゴリ別</div>
+  html += `<div class="stats-sub-sec">Bucket List　カテゴリ別</div>
     <div class="prog-chart">`;
   html += _progBar('📚 全体', bDone, bTotal, '#c4813a');
   [
