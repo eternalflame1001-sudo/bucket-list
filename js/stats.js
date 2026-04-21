@@ -227,11 +227,11 @@ function _yearChart(yearMap, years) {
   ));
 
   const SVG_W  = 370;
-  const YEAR_W = 52;   // 年ラベル幅（20px Cormorant対応）
-  const CNT_W  = 28;   // カウント幅
-  const GAP    = 6;
+  const YEAR_W = 50;   // 年ラベル幅（左詰め）
+  const CNT_W  = 44;   // 合計カウント幅（右詰め）
+  const GAP    = 8;
   const BAR_W  = SVG_W - YEAR_W - CNT_W - GAP * 2;  // バー幅
-  const ROW_H  = 28;
+  const ROW_H  = 30;
   const ROW_G  = 4;
   const svgH   = sorted.length * (ROW_H + ROW_G);
 
@@ -246,33 +246,38 @@ function _yearChart(yearMap, years) {
   let out = `<div class="ychart-outer">${legend}<svg width="${SVG_W}" height="${svgH}" style="display:block;margin-top:10px">`;
 
   sorted.forEach((yr, i) => {
-    const y     = i * (ROW_H + ROW_G);
-    const midY  = y + ROW_H / 2 + 4;
+    const y    = i * (ROW_H + ROW_G);
+    const midY = y + ROW_H / 2 + 5;
     const total = SCOPES.reduce((s, sc) => s + (yearMap[yr][sc] || 0), 0);
 
-    // 年ラベル（右揃え）
-    out += `<text x="${YEAR_W}" y="${midY}" text-anchor="end"
-      font-size="24" font-weight="700" fill="#8b2500"
+    // 年ラベル（左詰め・黒）
+    out += `<text x="0" y="${midY}" text-anchor="start"
+      font-size="24" font-weight="700" fill="#000"
       font-family="Cormorant Garamond, serif">${yr}</text>`;
 
-    // 横積みバー
+    // 横積みバー＋バー内数値（黒文字）
     let barX = YEAR_W + GAP;
     SCOPES.forEach(sc => {
       const n = yearMap[yr][sc] || 0;
       if (!n) return;
       const w = Math.max(4, Math.round((n / maxTotal) * BAR_W));
-      out += `<rect x="${barX}" y="${y + 3}" width="${w}" height="${ROW_H - 6}"
+      out += `<rect x="${barX}" y="${y + 2}" width="${w}" height="${ROW_H - 4}"
         fill="${COLORS[sc]}" rx="2">
         <title>${yr}年 ${LABELS[sc]}: ${n}か所</title>
       </rect>`;
+      // バー内に数値（幅が16px以上なら表示）
+      if (w >= 16) {
+        out += `<text x="${barX + w / 2}" y="${midY}" text-anchor="middle"
+          font-size="13" font-weight="700" fill="#000"
+          font-family="Cormorant Garamond, serif">${n}</text>`;
+      }
       barX += w;
     });
 
-    // カウント（バーの右）
+    // 合計数（右詰め・黒）
     if (total > 0) {
-      const topColor = COLORS[SCOPES.find(sc => (yearMap[yr][sc] || 0) > 0)] || '#8b2500';
-      out += `<text x="${YEAR_W + GAP + BAR_W + GAP}" y="${midY}" text-anchor="start"
-        font-size="24" font-weight="700" fill="${topColor}"
+      out += `<text x="${SVG_W}" y="${midY}" text-anchor="end"
+        font-size="24" font-weight="700" fill="#000"
         font-family="Cormorant Garamond, serif">${total}</text>`;
     }
   });
