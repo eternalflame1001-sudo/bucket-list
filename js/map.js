@@ -1815,8 +1815,8 @@ function renderOnsenTab() {
       html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
         data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
         ${visited ? `style="background:${color};border-color:${color}"` : ""}>
-        ${item.name}${milkyBadge}${mixedBadge}
-        <small>${toOnsenStar(item.starStr)}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
+        ${item.name}
+        <small>${toOnsenStar(item.starStr)}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
       </button>`;
     });
     html += `</div></div>`;
