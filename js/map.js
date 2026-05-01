@@ -1727,12 +1727,47 @@ window.renderFoodTab = renderFoodTab;
 // ==========================================
 const ONSEN_REGION_ORDER = ['🌨️ 北海道','🍎 東北','🌸 関東','⛰️ 中部','🦌 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
 
+// ==========================================
+// js/map.js の末尾にある
+//   function renderOnsenTab() { ... }
+//   window.renderOnsenTab = renderOnsenTab;
+// を、このファイルの内容で丸ごと差し替える
+// ==========================================
+
+// ==========================================
+// 温泉フィルター状態
+// ==========================================
+if (!window.onsenFilter) window.onsenFilter = { milky: false, mixed: false, search: '' };
+
+window.toggleOnsenFilter = function(type) {
+  window.onsenFilter[type] = !window.onsenFilter[type];
+  renderOnsenTab();
+};
+
+// ==========================================
+// 温泉タブ描画（フィルター・バッジ対応版）
+// ==========================================
+const ONSEN_REGION_ORDER = ['🌨️ 北海道','🍎 東北','🌸 関東','⛰️ 中部','🦌 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
+
 function renderOnsenTab() {
   const DATA = typeof ONSEN_DATA !== "undefined" ? ONSEN_DATA : [];
   const container = document.getElementById("japan-onsen-container");
   if (!container || !DATA.length) return;
 
   const visitData = window.appState?.visit?.onsen || {};
+
+  // フィルター適用
+  let filteredData = DATA;
+  if (window.onsenFilter.milky)  filteredData = filteredData.filter(i => i.milky);
+  if (window.onsenFilter.mixed)  filteredData = filteredData.filter(i => i.mixed);
+  if (window.onsenFilter.search) {
+    const q = window.onsenFilter.search;
+    filteredData = filteredData.filter(i =>
+      i.name.includes(q) || i.pref.includes(q) || (i.dayBath||'').includes(q)
+    );
+  }
+  const isFiltering = window.onsenFilter.milky || window.onsenFilter.mixed || !!window.onsenFilter.search;
+  const filteredKeys = new Set(filteredData.map(i => i.key));
 
   // 地域グループ化
   const regionMap = {};
@@ -1745,7 +1780,6 @@ function renderOnsenTab() {
   const total = DATA.length;
   const pct = total ? Math.round(visitedTotal / total * 100) : 0;
 
-  // ★ → ♨️ 変換ヘルパー
   const toOnsenStar = str => (str || '').replace(/⭐/g, '♨️');
 
   let html = `<div class="map-header-bar">
@@ -1753,28 +1787,47 @@ function renderOnsenTab() {
     <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/${total}</span></div>
   </div>`;
 
+  // ---- フィルターバー ----
+  html += `<div class="onsen-filter-bar">
+    <button class="onsen-filter-btn${window.onsenFilter.milky ? ' active' : ''}" onclick="toggleOnsenFilter('milky')">🥛 乳白色</button>
+    <button class="onsen-filter-btn${window.onsenFilter.mixed ? ' active' : ''}" onclick="toggleOnsenFilter('mixed')">👫 混浴</button>
+    <input type="search" class="onsen-search-input" placeholder="🔍 検索..."
+      value="${(window.onsenFilter.search||'').replace(/"/g,'&quot;')}"
+      oninput="window.onsenFilter.search=this.value;renderOnsenTab()">
+    ${isFiltering ? `<span class="onsen-filter-count">${filteredData.length}件表示</span>` : ''}
+  </div>`;
+
   // ---- ボタングリッド ----
   ONSEN_REGION_ORDER.forEach(region => {
     const items = regionMap[region];
     if (!items) return;
+
+    const visibleItems = isFiltering ? items.filter(item => filteredKeys.has(item.key)) : items;
+    if (isFiltering && visibleItems.length === 0) return;
+
     const gVisited = items.filter(item => !!visitData[item.key]).length;
     const gTotal = items.length;
     const gPct = gTotal ? Math.round(gVisited / gTotal * 100) : 0;
+
     html += `<div class="visit-group">
       <div class="visit-group-label">
         <span class="group-label-text">${region}</span>
         <span class="group-label-stat"><em>${gPct}%</em><span style="margin-left:20px">${gVisited}/${gTotal}</span></span>
       </div>
       <div class="visit-btn-grid onsen-btn-grid">`;
+
     items.forEach(item => {
+      if (isFiltering && !filteredKeys.has(item.key)) return;
       const val = visitData[item.key];
       const year = (val === true) ? null : (val || null);
       const visited = !!val;
       const color = visited ? yearToColor(year) : "";
+      const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
+      const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
       html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
         data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
         ${visited ? `style="background:${color};border-color:${color}"` : ""}>
-        ${item.name}
+        ${item.name}${milkyBadge}${mixedBadge}
         <small>${toOnsenStar(item.starStr)}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
       </button>`;
     });
@@ -1792,19 +1845,22 @@ function renderOnsenTab() {
     <div id="japan-onsen-map-svg"></div>
   </div>`;
 
-  // ---- 一覧リスト（世界遺産スタイル） ----
+  // ---- 一覧リスト ----
+  const listData = isFiltering ? filteredData : DATA;
   html += `<div class="extra-list-section">
-    <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件</span></div>
+    <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件${isFiltering ? '（'+filteredData.length+'件フィルター中）' : ''}</span></div>
     <div class="heritage-list">`;
-  DATA.forEach(item => {
+  listData.forEach(item => {
     const val = visitData[item.key];
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
+    const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
+    const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
     html += `<div class="heritage-item${visited ? ' visited' : ''}"
       data-key="${item.key}" data-name="${item.name}" data-visited="${visited}">
       <div class="heritage-star-icon">${visited ? '★' : '☆'}</div>
       <div class="heritage-item-body">
-        <div class="heritage-item-name">${esc(item.name)}</div>
+        <div class="heritage-item-name">${esc(item.name)}${milkyBadge}${mixedBadge}</div>
         <div class="heritage-item-meta">
           ${item.starStr ? `<span class="extra-rank-badge">${toOnsenStar(item.starStr)}</span>` : ''}
           <span class="heritage-country">${esc(item.pref)}</span>
@@ -1850,7 +1906,7 @@ function renderOnsenTab() {
   container.innerHTML = html;
   renderCombinedJapanMap('japan-onsen-map-svg', () => renderOnsenTab());
 
-  // ボタンイベント
+  // ---- イベント ----
   container.querySelectorAll(".onsen-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const key = btn.dataset.key, name = btn.dataset.name;
@@ -1873,7 +1929,6 @@ function renderOnsenTab() {
     });
   });
 
-  // 一覧リストイベント
   container.querySelectorAll(".extra-list-section .heritage-item").forEach(row => {
     row.addEventListener("click", async () => {
       const key = row.dataset.key, name = row.dataset.name;
@@ -1884,10 +1939,10 @@ function renderOnsenTab() {
     });
   });
 
-  // 訪問履歴ボタンイベント
   container.querySelectorAll(".extra-history-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      const key = btn.dataset.key, name = btn.dataset.name, yr = Number(btn.dataset.year) || new Date().getFullYear();
+      const key = btn.dataset.key, name = btn.dataset.name;
+      const yr = Number(btn.dataset.year) || new Date().getFullYear();
       if (confirm(`「${name}」の訪問記録を削除しますか？`)) { await saveVisit("onsen", key, null); renderOnsenTab(); }
       else { await openYearDialog("onsen", name, yr, key); renderOnsenTab(); }
     });
@@ -1895,3 +1950,77 @@ function renderOnsenTab() {
 }
 
 window.renderOnsenTab = renderOnsenTab;
+
+
+// ==========================================
+// css/style.css に追加するCSS
+// ==========================================
+/*
+
+.onsen-filter-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 0 14px;
+  border-bottom: 1px solid var(--aged, #e8dfc8);
+  margin-bottom: 4px;
+}
+.onsen-filter-btn {
+  border: 1.5px solid #b0a090;
+  background: #f9f5ee;
+  padding: 5px 14px;
+  font-size: 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: #6a5a4a;
+  font-family: inherit;
+}
+.onsen-filter-btn.active {
+  background: #1a1209;
+  color: #c9a227;
+  border-color: #1a1209;
+}
+.onsen-search-input {
+  border: 1.5px solid #b0a090;
+  background: #fff;
+  padding: 5px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  outline: none;
+  font-family: inherit;
+  min-width: 130px;
+}
+.onsen-search-input:focus { border-color: #8b2c0a; }
+.onsen-filter-count {
+  font-size: 12px;
+  color: #8b2c0a;
+  font-weight: bold;
+}
+.onsen-badge-milky {
+  display: inline-block;
+  background: rgba(100,160,220,0.2);
+  color: #2a5a9a;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 3px;
+  vertical-align: middle;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+.onsen-badge-mixed {
+  display: inline-block;
+  background: rgba(139,44,10,0.15);
+  color: #8b2c0a;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 2px;
+  vertical-align: middle;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+*/
