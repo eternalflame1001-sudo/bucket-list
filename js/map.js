@@ -1743,7 +1743,7 @@ window.renderFoodTab = renderFoodTab;
 // ==========================================
 // 温泉タブ描画
 // ==========================================
-if (!window.onsenFilter) window.onsenFilter = { milky: false, mixed: false, search: '' };
+if (!window.onsenFilter) window.onsenFilter = { milky: false, mixed: false, hito: false, search: '' };
 
 window.toggleOnsenFilter = function(type) {
   window.onsenFilter[type] = !window.onsenFilter[type];
@@ -1764,6 +1764,7 @@ function renderOnsenTab() {
 
   // フィルター適用
   let filteredData = DATA;
+  if (window.onsenFilter.hito)   filteredData = filteredData.filter(i => i.key.startsWith('秘湯_'));
   if (window.onsenFilter.milky)  filteredData = filteredData.filter(i => i.milky);
   if (window.onsenFilter.mixed)  filteredData = filteredData.filter(i => i.mixed);
   if (window.onsenFilter.search) {
@@ -1772,7 +1773,7 @@ function renderOnsenTab() {
       i.name.includes(q) || i.pref.includes(q) || (i.dayBath||'').includes(q)
     );
   }
-  const isFiltering = window.onsenFilter.milky || window.onsenFilter.mixed || !!window.onsenFilter.search;
+  const isFiltering = window.onsenFilter.hito || window.onsenFilter.milky || window.onsenFilter.mixed || !!window.onsenFilter.search;
   const filteredKeys = new Set(filteredData.map(i => i.key));
 
   // 地域グループ化
@@ -1795,6 +1796,7 @@ function renderOnsenTab() {
 
   // ---- フィルターバー ----
   html += `<div class="onsen-filter-bar">
+    <button class="onsen-filter-btn${window.onsenFilter.hito  ? ' active' : ''}" onclick="toggleOnsenFilter('hito')">🔥 秘湯</button>
     <button class="onsen-filter-btn${window.onsenFilter.milky ? ' active' : ''}" onclick="toggleOnsenFilter('milky')">🥛 乳白色</button>
     <button class="onsen-filter-btn${window.onsenFilter.mixed ? ' active' : ''}" onclick="toggleOnsenFilter('mixed')">👫 混浴</button>
     <input type="search" class="onsen-search-input" placeholder="🔍 検索..."
@@ -1843,7 +1845,7 @@ function renderOnsenTab() {
         const year = (val === true) ? null : (val || null);
         const visited = !!val;
         const color = visited ? yearToColor(year) : "";
-        const hitoBadge  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito onsen-badge-hito${item.stars}">秘${item.stars}</span>` : '';
+        const hitoBadge  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars)}</span>` : '';
         const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
         const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
         html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
@@ -1878,7 +1880,7 @@ function renderOnsenTab() {
     const val = visitData[item.key];
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
-    const hitoBadge2  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito onsen-badge-hito${item.stars}">秘${item.stars}</span>` : '';
+    const hitoBadge2  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars)}</span>` : '';
     const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
     const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
     html += `<div class="heritage-item${visited ? ' visited' : ''}"
