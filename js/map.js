@@ -1725,18 +1725,6 @@ window.renderFoodTab = renderFoodTab;
 // ==========================================
 // 温泉タブ描画
 // ==========================================
-const ONSEN_REGION_ORDER = ['🌨️ 北海道','🍎 東北','🌸 関東','⛰️ 中部','🦌 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
-
-// ==========================================
-// js/map.js の末尾にある
-//   function renderOnsenTab() { ... }
-//   window.renderOnsenTab = renderOnsenTab;
-// を、このファイルの内容で丸ごと差し替える
-// ==========================================
-
-// ==========================================
-// 温泉フィルター状態
-// ==========================================
 if (!window.onsenFilter) window.onsenFilter = { milky: false, mixed: false, search: '' };
 
 window.toggleOnsenFilter = function(type) {
@@ -1951,76 +1939,3 @@ function renderOnsenTab() {
 
 window.renderOnsenTab = renderOnsenTab;
 
-
-// ==========================================
-// css/style.css に追加するCSS
-// ==========================================
-/*
-
-.onsen-filter-bar {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 10px 0 14px;
-  border-bottom: 1px solid var(--aged, #e8dfc8);
-  margin-bottom: 4px;
-}
-.onsen-filter-btn {
-  border: 1.5px solid #b0a090;
-  background: #f9f5ee;
-  padding: 5px 14px;
-  font-size: 13px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.15s;
-  color: #6a5a4a;
-  font-family: inherit;
-}
-.onsen-filter-btn.active {
-  background: #1a1209;
-  color: #c9a227;
-  border-color: #1a1209;
-}
-.onsen-search-input {
-  border: 1.5px solid #b0a090;
-  background: #fff;
-  padding: 5px 12px;
-  font-size: 13px;
-  border-radius: 20px;
-  outline: none;
-  font-family: inherit;
-  min-width: 130px;
-}
-.onsen-search-input:focus { border-color: #8b2c0a; }
-.onsen-filter-count {
-  font-size: 12px;
-  color: #8b2c0a;
-  font-weight: bold;
-}
-.onsen-badge-milky {
-  display: inline-block;
-  background: rgba(100,160,220,0.2);
-  color: #2a5a9a;
-  font-size: 9px;
-  padding: 1px 4px;
-  border-radius: 3px;
-  margin-left: 3px;
-  vertical-align: middle;
-  font-weight: bold;
-  letter-spacing: 0.05em;
-}
-.onsen-badge-mixed {
-  display: inline-block;
-  background: rgba(139,44,10,0.15);
-  color: #8b2c0a;
-  font-size: 9px;
-  padding: 1px 4px;
-  border-radius: 3px;
-  margin-left: 2px;
-  vertical-align: middle;
-  font-weight: bold;
-  letter-spacing: 0.05em;
-}
-
-*/
