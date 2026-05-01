@@ -535,3 +535,28 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 }
 
 /* 年号ダイアログ */
+.onsen-filter-bar {
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  padding:10px 0 14px;border-bottom:1px solid var(--aged,#e8dfc8);margin-bottom:4px;
+}
+.onsen-filter-btn {
+  border:1.5px solid #b0a090;background:#f9f5ee;padding:5px 14px;
+  font-size:13px;border-radius:20px;cursor:pointer;color:#6a5a4a;font-family:inherit;
+}
+.onsen-filter-btn.active { background:#1a1209;color:#c9a227;border-color:#1a1209; }
+.onsen-search-input {
+  border:1.5px solid #b0a090;background:#fff;padding:5px 12px;
+  font-size:13px;border-radius:20px;outline:none;font-family:inherit;min-width:130px;
+}
+.onsen-search-input:focus { border-color:#8b2c0a; }
+.onsen-filter-count { font-size:12px;color:#8b2c0a;font-weight:bold; }
+.onsen-badge-milky {
+  display:inline-block;background:rgba(100,160,220,0.2);color:#2a5a9a;
+  font-size:9px;padding:1px 4px;border-radius:3px;margin-left:3px;
+  vertical-align:middle;font-weight:bold;
+}
+.onsen-badge-mixed {
+  display:inline-block;background:rgba(139,44,10,0.15);color:#8b2c0a;
+  font-size:9px;padding:1px 4px;border-radius:3px;margin-left:2px;
+  vertical-align:middle;font-weight:bold;
+}
