@@ -163,7 +163,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
   -webkit-tap-highlight-color: transparent;
 }
 .visit-btn:active { transform: scale(0.93); }
-.visit-btn small { font-size: 20px; font-family: var(--font-jp); font-weight: 700; opacity: 1; }
+.visit-btn small { font-size: 13px; font-family: var(--font-jp); font-weight: 700; opacity: 1; }
 .visit-btn.visited { color: #2a1f0e; font-weight: 900; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
 
 /* 年号ピッカー */
@@ -231,13 +231,13 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 
 /* Japan: 8列グリッド */
 #japan-btn-container .visit-btn-grid { grid-template-columns: repeat(8, 1fr); gap: 3px; }
-#japan-btn-container .visit-btn { font-size: 11px; padding: 5px 1px; }
-#japan-btn-container .visit-btn small { font-size: 11px; }
+#japan-btn-container .visit-btn { font-size: 13px; padding: 5px 1px; }
+#japan-btn-container .visit-btn small { font-size: 13px; }
 
 /* China: 6列グリッド */
 #china-btn-container .visit-btn-grid { grid-template-columns: repeat(6, 1fr); gap: 3px; }
-#china-btn-container .visit-btn { font-size: 11px; padding: 5px 1px; }
-#china-btn-container .visit-btn small { font-size: 11px; }
+#china-btn-container .visit-btn { font-size: 13px; padding: 5px 1px; }
+#china-btn-container .visit-btn small { font-size: 13px; }
 
 /* SVG地図 */
 .map-svg-section { padding: 8px 8px 4px; }
@@ -360,12 +360,12 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 /* 温泉: 2列（名前が長め） */
 .onsen-btn-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; }
 .onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
-.onsen-btn small { font-size: 12px !important; }
+.onsen-btn small { font-size: 13px !important; }
 
 /* グルメ・ラーメン: 3列 */
 .food-btn-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
 .food-btn { font-size: 13px !important; font-weight: 700 !important; padding: 6px 3px !important; }
-.food-btn small { font-size: 11px !important; }
+.food-btn small { font-size: 13px !important; }
 
 /* ==========================================
    Stats タブ
