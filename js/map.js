@@ -1576,20 +1576,38 @@ function renderFoodTab(dataType) {
       <div class="visit-group-label">
         <span class="group-label-text">${region}</span>
         <span class="group-label-stat"><em>${gPct}%</em><span style="margin-left:20px">${gVisited}/${gTotal}</span></span>
-      </div>
-      <div class="visit-btn-grid food-btn-grid">`;
+      </div>`;
+
+    // 都道府県サブグループ
+    const prefMap = {}, prefOrder = [];
     items.forEach(item => {
-      const val = visitData[item.key];
-      const year = (val === true) ? null : (val || null);
-      const visited = !!val;
-      const color = visited ? yearToColor(year) : "";
-      html += `<button class="visit-btn food-btn ${visited ? "visited" : ""}"
-        data-key="${item.key}" data-type="${dataType}" data-visited="${visited}" data-food="${item.food}"
-        ${visited ? `style="background:${color};border-color:${color}"` : ""}>
-        ${item.food}${year ? `<small>${year}</small>` : visited ? `<small>✓</small>` : ""}
-      </button>`;
+      if (!prefMap[item.pref]) { prefMap[item.pref] = []; prefOrder.push(item.pref); }
+      prefMap[item.pref].push(item);
     });
-    html += `</div></div>`;
+    prefOrder.forEach(pref => {
+      const pi = prefMap[pref];
+      const pv = pi.filter(i => !!visitData[i.key]).length;
+      const pp = pi.length ? Math.round(pv / pi.length * 100) : 0;
+      html += `<div class="pref-subgroup">
+        <div class="pref-subgroup-label">
+          <span class="pref-label-text">${pref}</span>
+          <span class="pref-label-stat"><em>${pp}%</em><span style="margin-left:10px">${pv}/${pi.length}</span></span>
+        </div>
+        <div class="visit-btn-grid food-btn-grid">`;
+      pi.forEach(item => {
+        const val = visitData[item.key];
+        const year = (val === true) ? null : (val || null);
+        const visited = !!val;
+        const color = visited ? yearToColor(year) : "";
+        html += `<button class="visit-btn food-btn ${visited ? "visited" : ""}"
+          data-key="${item.key}" data-type="${dataType}" data-visited="${visited}" data-food="${item.food}"
+          ${visited ? `style="background:${color};border-color:${color}"` : ""}>
+          ${item.food}${year ? `<small>${year}</small>` : visited ? `<small>✓</small>` : ""}
+        </button>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div>`;
   });
 
   // ---- 地図 ----
@@ -1789,9 +1807,7 @@ function renderOnsenTab() {
   ONSEN_REGION_ORDER.forEach(region => {
     const items = regionMap[region];
     if (!items) return;
-
-    const visibleItems = isFiltering ? items.filter(item => filteredKeys.has(item.key)) : items;
-    if (isFiltering && visibleItems.length === 0) return;
+    if (isFiltering && !items.some(i => filteredKeys.has(i.key))) return;
 
     const gVisited = items.filter(item => !!visitData[item.key]).length;
     const gTotal = items.length;
@@ -1801,26 +1817,45 @@ function renderOnsenTab() {
       <div class="visit-group-label">
         <span class="group-label-text">${region}</span>
         <span class="group-label-stat"><em>${gPct}%</em><span style="margin-left:20px">${gVisited}/${gTotal}</span></span>
-      </div>
-      <div class="visit-btn-grid onsen-btn-grid">`;
+      </div>`;
 
+    // 都道府県サブグループ
+    const prefMap = {}, prefOrder = [];
     items.forEach(item => {
-      if (isFiltering && !filteredKeys.has(item.key)) return;
-      const val = visitData[item.key];
-      const year = (val === true) ? null : (val || null);
-      const visited = !!val;
-      const color = visited ? yearToColor(year) : "";
-      const hitoBadge  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito onsen-badge-hito${item.stars}">秘${item.stars}</span>` : '';
-      const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
-      const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
-      html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
-        data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
-        ${visited ? `style="background:${color};border-color:${color}"` : ""}>
-        ${item.name}
-        <small>${toOnsenStar(item.starStr)}${hitoBadge}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
-      </button>`;
+      if (!prefMap[item.pref]) { prefMap[item.pref] = []; prefOrder.push(item.pref); }
+      prefMap[item.pref].push(item);
     });
-    html += `</div></div>`;
+    prefOrder.forEach(pref => {
+      const pi = prefMap[pref];
+      const visible = isFiltering ? pi.filter(i => filteredKeys.has(i.key)) : pi;
+      if (isFiltering && visible.length === 0) return;
+      const pv = pi.filter(i => !!visitData[i.key]).length;
+      const pp = pi.length ? Math.round(pv / pi.length * 100) : 0;
+      html += `<div class="pref-subgroup">
+        <div class="pref-subgroup-label">
+          <span class="pref-label-text">${pref}</span>
+          <span class="pref-label-stat"><em>${pp}%</em><span style="margin-left:10px">${pv}/${pi.length}</span></span>
+        </div>
+        <div class="visit-btn-grid onsen-btn-grid">`;
+      pi.forEach(item => {
+        if (isFiltering && !filteredKeys.has(item.key)) return;
+        const val = visitData[item.key];
+        const year = (val === true) ? null : (val || null);
+        const visited = !!val;
+        const color = visited ? yearToColor(year) : "";
+        const hitoBadge  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito onsen-badge-hito${item.stars}">秘${item.stars}</span>` : '';
+        const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
+        const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
+        html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
+          data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
+          ${visited ? `style="background:${color};border-color:${color}"` : ""}>
+          ${item.name}
+          <small>${toOnsenStar(item.starStr)}${hitoBadge}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
+        </button>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div>`;
   });
 
   // ---- 地図 ----
