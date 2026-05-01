@@ -1810,13 +1810,14 @@ function renderOnsenTab() {
       const year = (val === true) ? null : (val || null);
       const visited = !!val;
       const color = visited ? yearToColor(year) : "";
+      const hitoBadge  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito onsen-badge-hito${item.stars}">秘${item.stars}</span>` : '';
       const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
       const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
       html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
         data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
         ${visited ? `style="background:${color};border-color:${color}"` : ""}>
         ${item.name}
-        <small>${toOnsenStar(item.starStr)}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
+        <small>${toOnsenStar(item.starStr)}${hitoBadge}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
       </button>`;
     });
     html += `</div></div>`;
@@ -1842,13 +1843,14 @@ function renderOnsenTab() {
     const val = visitData[item.key];
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
+    const hitoBadge2  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito onsen-badge-hito${item.stars}">秘${item.stars}</span>` : '';
     const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
     const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
     html += `<div class="heritage-item${visited ? ' visited' : ''}"
       data-key="${item.key}" data-name="${item.name}" data-visited="${visited}">
       <div class="heritage-star-icon">${visited ? '★' : '☆'}</div>
       <div class="heritage-item-body">
-        <div class="heritage-item-name">${esc(item.name)}${milkyBadge}${mixedBadge}</div>
+        <div class="heritage-item-name">${esc(item.name)}${hitoBadge2}${milkyBadge}${mixedBadge}</div>
         <div class="heritage-item-meta">
           ${item.starStr ? `<span class="extra-rank-badge">${toOnsenStar(item.starStr)}</span>` : ''}
           <span class="heritage-country">${esc(item.pref)}</span>
