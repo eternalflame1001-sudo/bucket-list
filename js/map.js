@@ -1800,7 +1800,7 @@ function renderOnsenTab() {
   if (navToolbar) {
     navToolbar.innerHTML = `
       <div class="onsen-chip-row">
-        ${chipBtn('秘湯','🔥')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
+        ${chipBtn('名湯100','♨️')}${chipBtn('秘湯','㊙️')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
       </div>
       <div class="onsen-search-wrap">
         <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
@@ -2037,6 +2037,7 @@ function filterOnsenContent() {
   const matches = item => {
     const matchSearch = !q || item.name.toLowerCase().includes(q) || item.pref.toLowerCase().includes(q) || (item.dayBath||'').toLowerCase().includes(q);
     const matchTags = activeTags.length === 0 || activeTags.some(tag => {
+      if (tag === '名湯100') return !!item.starStr;
       if (tag === '乳白色') return !!item.milky;
       if (tag === '混浴')   return !!item.mixed;
       if (tag === '秘湯')   return item.key.startsWith('秘湯_');
