@@ -1645,11 +1645,12 @@ function renderFoodTab(dataType) {
       data-key="${item.key}" data-type="${dataType}" data-food="${item.food}" data-visited="${visited}">
       <div class="heritage-star-icon">${visited ? '★' : '☆'}</div>
       <div class="heritage-item-body">
-        <div class="heritage-item-name">${esc(item.food)}</div>
-        <div class="heritage-item-meta">
-          <span class="extra-food-badge">${foodIcon}</span>
-          <span class="heritage-country">${esc(item.pref)}${item.city ? ' · ' + esc(item.city) : ''}</span>
-          ${visited ? `<span class="heritage-visit-year">${year ? year + '年訪問' : '訪問済'}</span>` : ''}
+        <div class="heritage-item-top">
+          <div class="heritage-item-name">${esc(item.food)}</div>
+          <div class="heritage-item-meta">
+            <span class="heritage-country">${esc(item.pref)}${item.city ? ' · ' + esc(item.city) : ''}</span>
+            ${visited ? `<span class="heritage-visit-year">${year ? year + '年訪問' : '訪問済'}</span>` : ''}
+          </div>
         </div>
         ${item.shop ? `<div class="heritage-item-desc">📍 ${esc(item.shop)}</div>` : ''}
         ${item.desc ? `<div class="extra-item-sub">${esc(item.desc)}</div>` : ''}
