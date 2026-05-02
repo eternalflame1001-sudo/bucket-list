@@ -1726,6 +1726,7 @@ window.renderFoodTab = renderFoodTab;
 // 温泉タブ描画
 // ==========================================
 const ONSEN_REGION_ORDER = ['🌨️ 北海道','🍎 東北','🌸 関東','⛰️ 中部','🦌 近畿','⛩️ 中国・四国','🌺 九州・沖縄'];
+const onsenState = { search: '', tags: [] };
 
 function renderOnsenTab() {
   const DATA = typeof ONSEN_DATA !== "undefined" ? ONSEN_DATA : [];
@@ -1748,9 +1749,22 @@ function renderOnsenTab() {
   // ★ → ♨️ 変換ヘルパー
   const toOnsenStar = str => (str || '').replace(/⭐/g, '♨️');
 
-  let html = `<div class="map-header-bar">
+  const chipBtn = (tag, emoji) => {
+    const active = onsenState.tags.includes(tag);
+    return `<button class="onsen-chip${active ? ' active' : ''}" data-tag="${tag}">${emoji} ${tag}</button>`;
+  };
+
+  let html = `<div class="onsen-toolbar">
+    <div class="onsen-chip-row">
+      ${chipBtn('秘湯','🔥')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
+    </div>
+    <div class="onsen-search-wrap">
+      <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
+    </div>
+  </div>
+  <div class="map-header-bar onsen-sticky-header">
     <h2 class="map-title">♨️ 温泉日本の１００名湯＋１１名湯</h2>
-    <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/${total}</span></div>
+    <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/<span class="mstat-tot">${total}</span></span></div>
   </div>`;
 
   // ---- ボタングリッド ----
@@ -1850,6 +1864,36 @@ function renderOnsenTab() {
   container.innerHTML = html;
   renderCombinedJapanMap('japan-onsen-map-svg', () => renderOnsenTab());
 
+  // スティッキーヘッダー top 設定
+  const stickyHdr = container.querySelector('.onsen-sticky-header');
+  if (stickyHdr) {
+    const nav = document.getElementById('sticky-nav');
+    stickyHdr.style.top = (nav ? nav.offsetHeight : 108) + 'px';
+  }
+
+  // フィルターチップ
+  container.querySelectorAll('.onsen-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const tag = chip.dataset.tag;
+      const idx = onsenState.tags.indexOf(tag);
+      if (idx >= 0) onsenState.tags.splice(idx, 1);
+      else onsenState.tags.push(tag);
+      chip.classList.toggle('active', onsenState.tags.includes(tag));
+      filterOnsenContent();
+    });
+  });
+
+  // 検索
+  const searchEl = container.querySelector('.onsen-search');
+  if (searchEl) {
+    searchEl.addEventListener('input', () => {
+      onsenState.search = searchEl.value;
+      filterOnsenContent();
+    });
+  }
+
+  if (onsenState.search || onsenState.tags.length) filterOnsenContent();
+
   // ボタンイベント
   container.querySelectorAll(".onsen-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -1895,3 +1939,42 @@ function renderOnsenTab() {
 }
 
 window.renderOnsenTab = renderOnsenTab;
+
+function filterOnsenContent() {
+  const container = document.getElementById("japan-onsen-container");
+  if (!container) return;
+  const DATA = typeof ONSEN_DATA !== "undefined" ? ONSEN_DATA : [];
+  const visitData = window.appState?.visit?.onsen || {};
+  const q = onsenState.search.toLowerCase().trim();
+  const activeTags = onsenState.tags;
+
+  const matches = item => {
+    const matchSearch = !q || item.name.toLowerCase().includes(q) || item.pref.toLowerCase().includes(q);
+    const matchTags = activeTags.length === 0 || activeTags.some(tag => (item.tags || []).includes(tag));
+    return matchSearch && matchTags;
+  };
+
+  container.querySelectorAll(".onsen-btn").forEach(btn => {
+    const item = DATA.find(d => d.key === btn.dataset.key);
+    btn.style.display = item && matches(item) ? '' : 'none';
+  });
+  container.querySelectorAll(".visit-group").forEach(grp => {
+    const vis = [...grp.querySelectorAll(".onsen-btn")].some(b => b.style.display !== 'none');
+    grp.style.display = vis ? '' : 'none';
+  });
+  container.querySelectorAll(".extra-list-section .heritage-item").forEach(row => {
+    const item = DATA.find(d => d.key === row.dataset.key);
+    row.style.display = item && matches(item) ? '' : 'none';
+  });
+
+  const filtered = DATA.filter(matches);
+  const visitedCount = filtered.filter(item => !!visitData[item.key]).length;
+  const tot = filtered.length;
+  const pct = tot ? Math.round(visitedCount / tot * 100) : 0;
+  const pctEl = container.querySelector('.mstat-pct');
+  const numEl = container.querySelector('.mstat-num');
+  const totEl = container.querySelector('.mstat-tot');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (numEl) numEl.textContent = visitedCount;
+  if (totEl) totEl.textContent = tot;
+}
