@@ -1954,6 +1954,7 @@ function renderOnsenTab() {
             ${visited ? `<span class="heritage-visit-year">${year ? year + '年訪問' : '訪問済'}</span>` : ''}
           </div>
         </div>
+        ${item.comment ? `<div class="heritage-item-desc">${esc(item.comment)}</div>` : ''}
         ${item.dayBath ? `<div class="heritage-item-desc">日帰り: ${esc(item.dayBath)}</div>` : ''}
       </div>
     </div>`;
