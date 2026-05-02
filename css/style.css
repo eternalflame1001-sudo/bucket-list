@@ -297,9 +297,10 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .heritage-star-icon { font-size: 24px; flex-shrink: 0; color: #ddd; line-height: 1.2; align-self: center; }
 .heritage-item.visited .heritage-star-icon { color: #FFD700; text-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .heritage-item-body { flex: 1; min-width: 0; }
-.heritage-item-name { font-size: 17px; font-weight: 700; line-height: 1.4; word-break: break-all; color: var(--text); }
+.heritage-item-top { display: flex; align-items: baseline; gap: 6px; }
+.heritage-item-name { flex: 0 0 50%; font-size: 17px; font-weight: 700; line-height: 1.4; word-break: break-all; color: var(--text); }
 .heritage-item-desc { font-size: 14px; color: var(--accent); margin-top: 3px; line-height: 1.4; font-weight: 700; }
-.heritage-item-meta { display: flex; align-items: center; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
+.heritage-item-meta { flex: 1; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 .heritage-criteria { font-size: 14px; font-weight: 700; color: var(--text); font-family: var(--font-en); }
 .heritage-cat-badge { font-size: 14px; padding: 1px 6px; border-radius: 8px; font-weight: 700; }
 .cat-c { background: #e8f0ff; color: #2a4a9a; }

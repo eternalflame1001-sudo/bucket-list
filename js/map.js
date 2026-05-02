@@ -1912,11 +1912,13 @@ function renderOnsenTab() {
       data-key="${item.key}" data-name="${item.name}" data-visited="${visited}">
       <div class="heritage-star-icon">${visited ? '★' : '☆'}</div>
       <div class="heritage-item-body">
-        <div class="heritage-item-name">${esc(item.name)}</div>
-        <div class="heritage-item-meta">
-          <span class="heritage-country">${esc(item.pref)}</span>
-          ${item.starStr ? `<span class="extra-rank-badge">${toOnsenStar(item.starStr)}</span>` : ''}${hitoBadge2}${milkyBadge}${mixedBadge}
-          ${visited ? `<span class="heritage-visit-year">${year ? year + '年訪問' : '訪問済'}</span>` : ''}
+        <div class="heritage-item-top">
+          <div class="heritage-item-name">${esc(item.name)}</div>
+          <div class="heritage-item-meta">
+            <span class="heritage-country">${esc(item.pref)}</span>
+            ${item.starStr ? `<span class="extra-rank-badge">${toOnsenStar(item.starStr)}</span>` : ''}${hitoBadge2}${milkyBadge}${mixedBadge}
+            ${visited ? `<span class="heritage-visit-year">${year ? year + '年訪問' : '訪問済'}</span>` : ''}
+          </div>
         </div>
         ${item.dayBath ? `<div class="heritage-item-desc">日帰り: ${esc(item.dayBath)}</div>` : ''}
       </div>
