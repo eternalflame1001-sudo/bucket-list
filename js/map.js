@@ -1795,14 +1795,35 @@ function renderOnsenTab() {
     return `<button class="onsen-chip${active ? ' active' : ''}" data-tag="${tag}">${emoji} ${tag}</button>`;
   };
 
-  let html = `<div class="onsen-toolbar" id="onsen-toolbar-el">
-    <div class="onsen-chip-row">
-      ${chipBtn('秘湯','🔥')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
-    </div>
-    <div class="onsen-search-wrap">
-      <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
-    </div>
-  </div>`;
+  // sticky-nav内のツールバーを更新
+  const navToolbar = document.getElementById('onsen-toolbar-nav');
+  if (navToolbar) {
+    navToolbar.innerHTML = `
+      <div class="onsen-chip-row">
+        ${chipBtn('秘湯','🔥')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
+      </div>
+      <div class="onsen-search-wrap">
+        <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
+      </div>`;
+    navToolbar.style.display = '';
+    navToolbar.querySelectorAll('.onsen-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const tag = chip.dataset.tag;
+        const idx = onsenState.tags.indexOf(tag);
+        if (idx >= 0) onsenState.tags.splice(idx, 1);
+        else onsenState.tags.push(tag);
+        chip.classList.toggle('active', onsenState.tags.includes(tag));
+        filterOnsenContent();
+      });
+    });
+    const searchEl = navToolbar.querySelector('.onsen-search');
+    if (searchEl) searchEl.addEventListener('input', () => {
+      onsenState.search = searchEl.value;
+      filterOnsenContent();
+    });
+  }
+
+  let html = ``;
 
 
   // ---- ボタングリッド ----
@@ -1936,12 +1957,6 @@ function renderOnsenTab() {
 
   container.innerHTML = html;
   renderCombinedJapanMap('japan-onsen-map-svg', () => renderOnsenTab());
-
-  // ツールバー sticky top 設定
-  const nav = document.getElementById('sticky-nav');
-  const navH = nav ? nav.offsetHeight : 108;
-  const toolbar = container.querySelector('#onsen-toolbar-el');
-  if (toolbar) toolbar.style.top = navH + 'px';
 
   // フィルターチップ
   container.querySelectorAll('.onsen-chip').forEach(chip => {

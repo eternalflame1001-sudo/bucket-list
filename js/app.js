@@ -393,6 +393,8 @@ document.querySelectorAll(".tab").forEach(btn => {
       const nav = document.getElementById(t + "-sub-nav");
       if (nav) nav.style.display = (state.tab === t) ? "flex" : "none";
     });
+    const onsenNav = document.getElementById('onsen-toolbar-nav');
+    if (onsenNav) onsenNav.style.display = 'none';
     if (['japan','china','world'].includes(state.tab)) {
       setTimeout(() => window.onMapTabActivate?.(state.tab), 50);
     }
@@ -431,6 +433,9 @@ document.querySelectorAll(".sub-tab").forEach(btn => {
       const scope = sub.replace("-heritage", "");
       window.renderHeritageList?.(scope);
     }
+    // 温泉ツールバーの表示切替
+    const onsenNav = document.getElementById('onsen-toolbar-nav');
+    if (onsenNav) onsenNav.style.display = sub === 'japan-onsen' ? '' : 'none';
     // 温泉・グルメ・ラーメンタブ
     if (sub === "japan-onsen")   window.renderOnsenTab?.();
     if (sub === "japan-gourmet") window.renderFoodTab?.("gourmet");
