@@ -163,7 +163,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
   -webkit-tap-highlight-color: transparent;
 }
 .visit-btn:active { transform: scale(0.93); }
-.visit-btn small { font-size: 20px; font-family: var(--font-jp); font-weight: 700; opacity: 1; }
+.visit-btn small { font-size: 13px; font-family: var(--font-jp); font-weight: 700; opacity: 1; }
 .visit-btn.visited { color: #2a1f0e; font-weight: 900; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
 
 /* 年号ピッカー */
@@ -231,13 +231,13 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 
 /* Japan: 8列グリッド */
 #japan-btn-container .visit-btn-grid { grid-template-columns: repeat(8, 1fr); gap: 3px; }
-#japan-btn-container .visit-btn { font-size: 11px; padding: 5px 1px; }
-#japan-btn-container .visit-btn small { font-size: 11px; }
+#japan-btn-container .visit-btn { font-size: 13px; padding: 5px 1px; }
+#japan-btn-container .visit-btn small { font-size: 13px; }
 
 /* China: 6列グリッド */
 #china-btn-container .visit-btn-grid { grid-template-columns: repeat(6, 1fr); gap: 3px; }
-#china-btn-container .visit-btn { font-size: 11px; padding: 5px 1px; }
-#china-btn-container .visit-btn small { font-size: 11px; }
+#china-btn-container .visit-btn { font-size: 13px; padding: 5px 1px; }
+#china-btn-container .visit-btn small { font-size: 13px; }
 
 /* SVG地図 */
 .map-svg-section { padding: 8px 8px 4px; }
@@ -360,7 +360,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 /* 温泉: 2列（名前が長め） */
 .onsen-btn-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; }
 .onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
-.onsen-btn small { font-size: 12px !important; }
+.onsen-btn small { font-size: 13px !important; }
 .onsen-toolbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
 .onsen-chip-row { display: flex; gap: 6px; }
 .onsen-chip { flex: 0 0 auto; padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text2); font-family: var(--font-jp); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
@@ -373,7 +373,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 /* グルメ・ラーメン: 3列 */
 .food-btn-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
 .food-btn { font-size: 13px !important; font-weight: 700 !important; padding: 6px 3px !important; }
-.food-btn small { font-size: 11px !important; }
+.food-btn small { font-size: 13px !important; }
 
 /* ==========================================
    Stats タブ
@@ -543,3 +543,47 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 }
 
 /* 年号ダイアログ */
+.onsen-filter-bar {
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  padding:10px 0 14px;border-bottom:1px solid var(--aged,#e8dfc8);margin-bottom:4px;
+}
+.onsen-filter-btn {
+  border:1.5px solid #b0a090;background:#f9f5ee;padding:5px 14px;
+  font-size:13px;border-radius:20px;cursor:pointer;color:#6a5a4a;font-family:inherit;
+}
+.onsen-filter-btn.active { background:#1a1209;color:#c9a227;border-color:#1a1209; }
+.onsen-search-input {
+  border:1.5px solid #b0a090;background:#fff;padding:5px 12px;
+  font-size:13px;border-radius:20px;outline:none;font-family:inherit;min-width:130px;
+}
+.onsen-search-input:focus { border-color:#8b2c0a; }
+.onsen-filter-count { font-size:12px;color:#8b2c0a;font-weight:bold; }
+.onsen-badge-milky {
+  display:inline-block;background:rgba(100,160,220,0.2);color:#2a5a9a;
+  font-size:13px;padding:1px 4px;border-radius:3px;margin-left:3px;
+  vertical-align:middle;font-weight:bold;
+}
+.onsen-badge-mixed {
+  display:inline-block;background:rgba(139,44,10,0.15);color:#8b2c0a;
+  font-size:13px;padding:1px 4px;border-radius:3px;margin-left:2px;
+  vertical-align:middle;font-weight:bold;
+}
+.onsen-badge-hito {
+  display:inline-block;color:#cc0000;
+  font-size:13px;margin-left:2px;
+  vertical-align:middle;font-weight:900;letter-spacing:-0.5px;
+}
+.pref-subgroup { margin: 4px 0 8px 0; }
+.pref-subgroup-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 8px 3px 12px;
+  background: rgba(0,0,0,0.04);
+  border-left: 3px solid var(--aged, #c9a227);
+  margin-bottom: 6px;
+  border-radius: 0 4px 4px 0;
+}
+.pref-label-text { font-size: 12px; font-weight: bold; color: var(--ink, #3a2c1a); }
+.pref-label-stat { font-size: 11px; color: #888; }
+.pref-label-stat em { font-style: normal; color: #8b2c0a; font-weight: bold; }
