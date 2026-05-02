@@ -1955,7 +1955,7 @@ function renderOnsenTab() {
           </div>
         </div>
         ${item.dayBath ? `<div class="heritage-item-desc">日帰り: ${esc(item.dayBath)}</div>` : ''}
-        ${item.comment ? `<div class="heritage-item-desc" style="color:#000">${esc(item.comment)}</div>` : ''}
+        ${item.comment ? `<div class="extra-item-sub">${esc(item.comment)}</div>` : ''}
       </div>
     </div>`;
   });
