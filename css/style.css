@@ -361,9 +361,9 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .onsen-btn-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; }
 .onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
 .onsen-btn small { font-size: 13px !important; }
-.onsen-toolbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 3px 10px; }
-.onsen-chip-row { display: flex; align-items: center; gap: 6px; }
-.onsen-chip { flex: 0 0 auto; padding: 3px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text2); font-family: var(--font-jp); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
+.onsen-toolbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 3px 0 3px 0; }
+.onsen-chip-row { display: flex; align-items: center; gap: 4px; }
+.onsen-chip { flex: 0 0 auto; padding: 3px 8px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text2); font-family: var(--font-jp); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
 .onsen-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .onsen-search-wrap { flex: 1; }
 .onsen-search { width: 100%; padding: 3px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: var(--font-jp); font-size: 13px; box-sizing: border-box; outline: none; }
