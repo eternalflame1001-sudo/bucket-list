@@ -99,6 +99,12 @@ const JAPAN_REGIONS = [
   { label: "九州・沖縄", prefs: ["福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"] }
 ];
 
+// 都道府県の正式順序マップ
+const JAPAN_PREF_ORDER = {};
+JAPAN_REGIONS.forEach(r => r.prefs.forEach((p, i) => {
+  JAPAN_PREF_ORDER[p] = JAPAN_REGIONS.slice(0, JAPAN_REGIONS.indexOf(r)).reduce((s, rr) => s + rr.prefs.length, 0) + i;
+}));
+
 const CHINA_REGIONS = [
   { label: "直轄市", areas: ["北京市","天津市","上海市","重慶市"] },
   { label: "東北", areas: ["遼寧省","吉林省","黒竜江省"] },
@@ -1584,7 +1590,7 @@ function renderFoodTab(dataType) {
       if (!prefMap[item.pref]) { prefMap[item.pref] = []; prefOrder.push(item.pref); }
       prefMap[item.pref].push(item);
     });
-    prefOrder.forEach(pref => {
+    prefOrder.slice().sort((a,b) => (JAPAN_PREF_ORDER[a]??99)-(JAPAN_PREF_ORDER[b]??99)).forEach(pref => {
       const pi = prefMap[pref];
       const pv = pi.filter(i => !!visitData[i.key]).length;
       const pp = pi.length ? Math.round(pv / pi.length * 100) : 0;
@@ -1626,7 +1632,12 @@ function renderFoodTab(dataType) {
   html += `<div class="extra-list-section">
     <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件</span></div>
     <div class="heritage-list">`;
-  DATA.forEach(item => {
+  const sortedFoodList = DATA.slice().sort((a, b) => {
+    const ra = FOOD_REGION_ORDER.indexOf(a.region), rb = FOOD_REGION_ORDER.indexOf(b.region);
+    if (ra !== rb) return ra - rb;
+    return (JAPAN_PREF_ORDER[a.pref] ?? 99) - (JAPAN_PREF_ORDER[b.pref] ?? 99);
+  });
+  sortedFoodList.forEach(item => {
     const val = visitData[item.key];
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
@@ -1852,7 +1863,7 @@ function renderOnsenTab() {
       if (!prefMap[item.pref]) { prefMap[item.pref] = []; prefOrder.push(item.pref); }
       prefMap[item.pref].push(item);
     });
-    prefOrder.forEach(pref => {
+    prefOrder.slice().sort((a,b) => (JAPAN_PREF_ORDER[a]??99)-(JAPAN_PREF_ORDER[b]??99)).forEach(pref => {
       const pi = prefMap[pref];
       const visible = isFiltering ? pi.filter(i => filteredKeys.has(i.key)) : pi;
       if (isFiltering && visible.length === 0) return;
@@ -1907,7 +1918,7 @@ function renderOnsenTab() {
       if (!prefMap[i.pref]) { prefMap[i.pref] = []; prefOrder.push(i.pref); }
       prefMap[i.pref].push(i);
     });
-    prefOrder.forEach(pref => {
+    prefOrder.slice().sort((a, b) => (JAPAN_PREF_ORDER[a] ?? 99) - (JAPAN_PREF_ORDER[b] ?? 99)).forEach(pref => {
       const sorted = prefMap[pref].slice().sort((a, b) => {
         const aStars = (a.starStr || '').length;
         const bStars = (b.starStr || '').length;
