@@ -32,7 +32,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-jp); f
 
 /* タブ */
 #tab-nav { display: flex; justify-content: space-around; border-bottom: 1px solid var(--border); }
-.tab { flex: 1; padding: 8px 2px 6px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 18px; font-weight: 700; cursor: pointer; border-bottom: 7px solid transparent; transition: all .2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.tab { flex: 1; padding: 3px 2px 3px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 18px; font-weight: 700; cursor: pointer; border-bottom: 7px solid transparent; transition: all .2s; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1px; }
 .tab .tab-icon { font-size: 28px; line-height: 1; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
@@ -89,7 +89,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .sub-tab-nav { display: flex; background: var(--bg3); border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .sub-tab-nav::-webkit-scrollbar { display: none; }
 .sub-tab { flex: 0 0 auto; padding: 10px 12px; background: none; border: none; color: var(--text2); font-family: var(--font-jp); font-size: 14px; font-weight: 700; cursor: pointer; border-bottom: 7px solid transparent; transition: all .2s; white-space: nowrap; }
-.japan-sub-nav .sub-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 4px; }
+.japan-sub-nav .sub-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 3px 4px; }
 .japan-sub-nav .stab-icon { font-size: 24px; line-height: 1; }
 .japan-sub-nav .stab-label { font-size: 14px; font-weight: 700; line-height: 1; }
 .sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
@@ -189,7 +189,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
    地図タブ v3
    ========================================== */
 .map-tab-inner { padding: 0 0 40px; }
-.map-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px; }
+.map-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 3px 20px; }
 .map-title { font-family: var(--font-en); font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: 1px; }
 #japan-onsen-container .map-title { font-size: 15px; letter-spacing: 0; white-space: nowrap; }
 .map-stats-line { font-size: 20px; font-weight: 700; color: var(--accent); font-family: var(--font-en); }
@@ -201,7 +201,7 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 
 /* ボタングループ */
 .visit-group { padding: 0 12px 8px; }
-.visit-group-label { display: flex; align-items: center; font-size: 14px; font-weight: 700; color: var(--text); padding: 8px 4px 5px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+.visit-group-label { display: flex; align-items: center; font-size: 14px; font-weight: 700; color: var(--text); padding: 3px 4px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
 .group-label-text { letter-spacing: 2px; }
 .group-label-stat { margin-left: auto; font-family: var(--font-en); font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: 0; white-space: nowrap; }
 .group-label-stat em { color: var(--accent); font-style: normal; margin-left: 20px; }
@@ -361,12 +361,12 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .onsen-btn-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; }
 .onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
 .onsen-btn small { font-size: 13px !important; }
-.onsen-toolbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
+.onsen-toolbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 3px 10px; display: flex; flex-direction: column; gap: 3px; }
 .onsen-chip-row { display: flex; gap: 6px; }
-.onsen-chip { flex: 0 0 auto; padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text2); font-family: var(--font-jp); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
+.onsen-chip { flex: 0 0 auto; padding: 3px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text2); font-family: var(--font-jp); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
 .onsen-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .onsen-search-wrap { width: 100%; }
-.onsen-search { width: 100%; padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: var(--font-jp); font-size: 14px; box-sizing: border-box; outline: none; }
+.onsen-search { width: 100%; padding: 3px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: var(--font-jp); font-size: 14px; box-sizing: border-box; outline: none; }
 .onsen-search:focus { border-color: var(--accent); }
 .onsen-sticky-header { background: var(--bg); border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,.06); }
 
