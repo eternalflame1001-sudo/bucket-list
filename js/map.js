@@ -1645,7 +1645,7 @@ function renderFoodTab(dataType) {
       data-key="${item.key}" data-type="${dataType}" data-food="${item.food}" data-visited="${visited}">
       <div class="heritage-star-icon">${visited ? '★' : '☆'}</div>
       <div class="heritage-item-body">
-        <div class="heritage-item-top">
+        <div class="food-item-top">
           <div class="heritage-item-name">${esc(item.food)}</div>
           <div class="heritage-item-meta">
             <span class="heritage-country">${esc(item.pref)}${item.city ? ' · ' + esc(item.city) : ''}</span>
