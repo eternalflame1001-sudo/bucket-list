@@ -1897,7 +1897,29 @@ function renderOnsenTab() {
   </div>`;
 
   // ---- 一覧リスト ----
-  const listData = isFiltering ? filteredData : DATA;
+  // 地域順 → 都道府県順 → ♨多い順 → バッジ多い順
+  const sortedListData = [];
+  ONSEN_REGION_ORDER.forEach(region => {
+    const regionItems = (isFiltering ? filteredData : DATA).filter(i => i.region === region);
+    if (!regionItems.length) return;
+    const prefMap = {}, prefOrder = [];
+    regionItems.forEach(i => {
+      if (!prefMap[i.pref]) { prefMap[i.pref] = []; prefOrder.push(i.pref); }
+      prefMap[i.pref].push(i);
+    });
+    prefOrder.forEach(pref => {
+      const sorted = prefMap[pref].slice().sort((a, b) => {
+        const aStars = (a.starStr || '').length;
+        const bStars = (b.starStr || '').length;
+        if (bStars !== aStars) return bStars - aStars;
+        const aBadge = (a.key.startsWith('秘湯_') || a.hito ? 1 : 0) + (a.milky ? 1 : 0) + (a.mixed ? 1 : 0);
+        const bBadge = (b.key.startsWith('秘湯_') || b.hito ? 1 : 0) + (b.milky ? 1 : 0) + (b.mixed ? 1 : 0);
+        return bBadge - aBadge;
+      });
+      sortedListData.push(...sorted);
+    });
+  });
+  const listData = sortedListData;
   html += `<div class="extra-list-section">
     <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件${isFiltering ? '（'+filteredData.length+'件フィルター中）' : ''}</span></div>
     <div class="heritage-list">`;
