@@ -1801,9 +1801,9 @@ function renderOnsenTab() {
     navToolbar.innerHTML = `
       <div class="onsen-chip-row">
         ${chipBtn('名湯100','♨️')}${chipBtn('秘湯','㊙️')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
-      </div>
-      <div class="onsen-search-wrap">
-        <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
+        <div class="onsen-search-wrap">
+          <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
+        </div>
       </div>`;
     navToolbar.style.display = '';
     navToolbar.querySelectorAll('.onsen-chip').forEach(chip => {
