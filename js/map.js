@@ -1765,7 +1765,7 @@ function renderOnsenTab() {
 
   // フィルター適用
   let filteredData = DATA;
-  if (window.onsenFilter.hito)   filteredData = filteredData.filter(i => i.key.startsWith('秘湯_'));
+  if (window.onsenFilter.hito)   filteredData = filteredData.filter(i => i.key.startsWith('秘湯_') || i.hito);
   if (window.onsenFilter.milky)  filteredData = filteredData.filter(i => i.milky);
   if (window.onsenFilter.mixed)  filteredData = filteredData.filter(i => i.mixed);
   if (window.onsenFilter.search) {
@@ -1870,7 +1870,7 @@ function renderOnsenTab() {
         const year = (val === true) ? null : (val || null);
         const visited = !!val;
         const color = visited ? yearToColor(year) : "";
-        const hitoBadge  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars)}</span>` : '';
+        const hitoBadge  = (item.key.startsWith('秘湯_') || item.hito) ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars || 1)}</span>` : '';
         const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
         const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
         html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
@@ -1905,7 +1905,7 @@ function renderOnsenTab() {
     const val = visitData[item.key];
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
-    const hitoBadge2  = item.key.startsWith('秘湯_') ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars)}</span>` : '';
+    const hitoBadge2  = (item.key.startsWith('秘湯_') || item.hito) ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars || 1)}</span>` : '';
     const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
     const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
     html += `<div class="heritage-item${visited ? ' visited' : ''}"
@@ -2040,7 +2040,7 @@ function filterOnsenContent() {
       if (tag === '名湯100') return !!item.starStr;
       if (tag === '乳白色') return !!item.milky;
       if (tag === '混浴')   return !!item.mixed;
-      if (tag === '秘湯')   return item.key.startsWith('秘湯_');
+      if (tag === '秘湯')   return item.key.startsWith('秘湯_') || !!item.hito;
       return false;
     });
     return matchSearch && matchTags;
