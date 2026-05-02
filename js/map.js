@@ -1795,31 +1795,21 @@ function renderOnsenTab() {
     return `<button class="onsen-chip${active ? ' active' : ''}" data-tag="${tag}">${emoji} ${tag}</button>`;
   };
 
-  let html = `<div class="onsen-toolbar">
+  let html = `<div class="onsen-toolbar" id="onsen-toolbar-el">
     <div class="onsen-chip-row">
       ${chipBtn('秘湯','🔥')}${chipBtn('乳白色','🥛')}${chipBtn('混浴','👫')}
     </div>
     <div class="onsen-search-wrap">
       <input type="search" class="onsen-search" placeholder="🔍 検索..." value="${onsenState.search.replace(/"/g,'&quot;')}">
     </div>
-  </div>
-  <div class="map-header-bar onsen-sticky-header">
-    <h2 class="map-title">♨️ 温泉日本の１００名湯＋１１名湯</h2>
-    <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/<span class="mstat-tot">${total}</span></span></div>
   </div>`;
 
-  // ---- フィルターバー ----
-  html += `<div class="onsen-filter-bar">
-    <button class="onsen-filter-btn${window.onsenFilter.hito  ? ' active' : ''}" onclick="toggleOnsenFilter('hito')">🔥 秘湯</button>
-    <button class="onsen-filter-btn${window.onsenFilter.milky ? ' active' : ''}" onclick="toggleOnsenFilter('milky')">🥛 乳白色</button>
-    <button class="onsen-filter-btn${window.onsenFilter.mixed ? ' active' : ''}" onclick="toggleOnsenFilter('mixed')">👫 混浴</button>
-    <input type="search" class="onsen-search-input" placeholder="🔍 検索..."
-      value="${(window.onsenFilter.search||'').replace(/"/g,'&quot;')}"
-      oninput="window.onsenFilter.search=this.value;renderOnsenTab()">
-    ${isFiltering ? `<span class="onsen-filter-count">${filteredData.length}件表示</span>` : ''}
-  </div>`;
 
   // ---- ボタングリッド ----
+  html += `<div class="map-header-bar onsen-sticky-header">
+    <h2 class="map-title">♨️ 温泉日本の１００名湯<br><span style="padding-left:1.8em">＋１１９名湯　秘湯・乳白・混浴</span></h2>
+    <div class="map-stats-line"><span class="mstat-pct">${pct}%</span><span style="margin-left:20px"><span class="mstat-num">${visitedTotal}</span>/<span class="mstat-tot">${total}</span></span></div>
+  </div>`;
   ONSEN_REGION_ORDER.forEach(region => {
     const items = regionMap[region];
     if (!items) return;
@@ -1947,12 +1937,11 @@ function renderOnsenTab() {
   container.innerHTML = html;
   renderCombinedJapanMap('japan-onsen-map-svg', () => renderOnsenTab());
 
-  // スティッキーヘッダー top 設定
-  const stickyHdr = container.querySelector('.onsen-sticky-header');
-  if (stickyHdr) {
-    const nav = document.getElementById('sticky-nav');
-    stickyHdr.style.top = (nav ? nav.offsetHeight : 108) + 'px';
-  }
+  // ツールバー sticky top 設定
+  const nav = document.getElementById('sticky-nav');
+  const navH = nav ? nav.offsetHeight : 108;
+  const toolbar = container.querySelector('#onsen-toolbar-el');
+  if (toolbar) toolbar.style.top = navH + 'px';
 
   // フィルターチップ
   container.querySelectorAll('.onsen-chip').forEach(chip => {

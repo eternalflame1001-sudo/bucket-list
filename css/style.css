@@ -361,14 +361,14 @@ ul { list-style: none; padding: 0; margin-top: 6px; }
 .onsen-btn-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; }
 .onsen-btn { font-size: 13px !important; padding: 8px 4px !important; }
 .onsen-btn small { font-size: 13px !important; }
-.onsen-toolbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
+.onsen-toolbar { position: sticky; z-index: 50; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
 .onsen-chip-row { display: flex; gap: 6px; }
 .onsen-chip { flex: 0 0 auto; padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text2); font-family: var(--font-jp); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
 .onsen-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .onsen-search-wrap { width: 100%; }
 .onsen-search { width: 100%; padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: var(--font-jp); font-size: 14px; box-sizing: border-box; outline: none; }
 .onsen-search:focus { border-color: var(--accent); }
-.onsen-sticky-header { position: sticky; background: var(--bg); z-index: 20; border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,.06); }
+.onsen-sticky-header { background: var(--bg); border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,.06); }
 
 /* グルメ・ラーメン: 3列 */
 .food-btn-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
