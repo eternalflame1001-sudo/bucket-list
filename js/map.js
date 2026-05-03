@@ -1889,7 +1889,7 @@ function renderOnsenTab() {
           data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
           ${visited ? `style="background:${color};border-color:${color}"` : ""}>
           ${item.name}
-          <small>${toOnsenStar(item.starStr)}${hitoBadge}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
+          <small>${toOnsenStar('⭐'.repeat(item.stars || 0))}${hitoBadge}${milkyBadge}${mixedBadge}${visited ? (year ? ' '+year : ' ✓') : ''}</small>
         </button>`;
       });
       html += `</div></div>`;
@@ -1921,8 +1921,8 @@ function renderOnsenTab() {
     });
     prefOrder.slice().sort((a, b) => (JAPAN_PREF_ORDER[a] ?? 99) - (JAPAN_PREF_ORDER[b] ?? 99)).forEach(pref => {
       const sorted = prefMap[pref].slice().sort((a, b) => {
-        const aStars = (a.starStr || '').length;
-        const bStars = (b.starStr || '').length;
+        const aStars = a.stars || 0;
+        const bStars = b.stars || 0;
         if (bStars !== aStars) return bStars - aStars;
         const aBadge = (a.key.startsWith('秘湯_') || a.hito ? 1 : 0) + (a.milky ? 1 : 0) + (a.mixed ? 1 : 0);
         const bBadge = (b.key.startsWith('秘湯_') || b.hito ? 1 : 0) + (b.milky ? 1 : 0) + (b.mixed ? 1 : 0);
@@ -1950,7 +1950,7 @@ function renderOnsenTab() {
           <div class="heritage-item-name">${esc(item.name)}</div>
           <div class="heritage-item-meta">
             <span class="heritage-country">${esc(item.pref)}</span>
-            ${item.starStr ? `<span class="extra-rank-badge">${toOnsenStar(item.starStr)}</span>` : ''}${hitoBadge2}${milkyBadge}${mixedBadge}
+            ${item.stars ? `<span class="extra-rank-badge">${toOnsenStar('⭐'.repeat(item.stars))}</span>` : ''}${hitoBadge2}${milkyBadge}${mixedBadge}
             ${visited ? `<span class="heritage-visit-year">${year ? year + '年訪問' : '訪問済'}</span>` : ''}
           </div>
         </div>
@@ -2074,7 +2074,7 @@ function filterOnsenContent() {
   const matches = item => {
     const matchSearch = !q || item.name.toLowerCase().includes(q) || item.pref.toLowerCase().includes(q) || (item.dayBath||'').toLowerCase().includes(q);
     const matchTags = activeTags.length === 0 || activeTags.some(tag => {
-      if (tag === '名湯100') return !!item.starStr;
+      if (tag === '名湯100') return !!item.stars;
       if (tag === '乳白') return !!item.milky;
       if (tag === '混浴')   return !!item.mixed;
       if (tag === '秘湯')   return item.key.startsWith('秘湯_') || !!item.hito;
