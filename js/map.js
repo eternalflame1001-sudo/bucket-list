@@ -105,6 +105,46 @@ JAPAN_REGIONS.forEach(r => r.prefs.forEach((p, i) => {
   JAPAN_PREF_ORDER[p] = JAPAN_REGIONS.slice(0, JAPAN_REGIONS.indexOf(r)).reduce((s, rr) => s + rr.prefs.length, 0) + i;
 }));
 
+// ============================================
+// BUCKET_LIST_DB ヘルパー関数
+// ============================================
+function getOnsenArray() {
+  if (typeof BUCKET_LIST_DB === 'undefined') return [];
+  return Object.entries(BUCKET_LIST_DB)
+    .filter(([k, v]) => v.type === 'onsen')
+    .map(([k, v]) => ({ key: k, ...v }));
+}
+
+function getGourmetArray() {
+  if (typeof BUCKET_LIST_DB === 'undefined') return [];
+  return Object.entries(BUCKET_LIST_DB)
+    .filter(([k, v]) => v.type === 'gourmet')
+    .map(([k, v]) => ({ key: k, ...v }));
+}
+
+function getRamenArray() {
+  if (typeof BUCKET_LIST_DB === 'undefined') return [];
+  return Object.entries(BUCKET_LIST_DB)
+    .filter(([k, v]) => v.type === 'ramen')
+    .map(([k, v]) => ({ key: k, ...v }));
+}
+
+function getRegionLabel(pref) {
+  return (typeof REGION_MAP !== 'undefined' && REGION_MAP[pref]) ? REGION_MAP[pref] : '🌸 その他';
+}
+
+function hasMilky(flags) {
+  return typeof FLAGS !== 'undefined' && (flags & FLAGS.MILKY) !== 0;
+}
+
+function hasMixed(flags) {
+  return typeof FLAGS !== 'undefined' && (flags & FLAGS.MIXED) !== 0;
+}
+
+function getFoodRegionLabel(pref) {
+  return (typeof FOOD_PREF_REGION !== 'undefined' && FOOD_PREF_REGION[pref]) ? FOOD_PREF_REGION[pref] : '🌸 北海道・東北';
+}
+
 const CHINA_REGIONS = [
   { label: "直轄市", areas: ["北京市","天津市","上海市","重慶市"] },
   { label: "東北", areas: ["遼寧省","吉林省","黒竜江省"] },
@@ -1458,9 +1498,9 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
   markerSvg += heritageStarsSVG(jpSites, projection, hv, 7);
 
   // ② 温泉 ♨
-  const ONSEN = typeof ONSEN_DATA !== 'undefined' ? ONSEN_DATA : [];
+  const ONSEN = getOnsenArray();
   ONSEN.forEach(item => {
-    const coords = (typeof ONSEN_COORDS !== 'undefined' && ONSEN_COORDS[item.key]) ? ONSEN_COORDS[item.key] : null;
+    const coords = item.coords;
     if (!coords) return;
     const xy = projection(coords);
     if (!xy) return;
@@ -1472,7 +1512,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
   });
 
   // ③ グルメ ●
-  const GOURMET = typeof GOURMET_DATA !== 'undefined' ? GOURMET_DATA : [];
+  const GOURMET = getGourmetArray();
   GOURMET.forEach(item => {
     if (!item.coords) return;
     const xy = projection(item.coords);
@@ -1485,7 +1525,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
   });
 
   // ④ ラーメン ●
-  const RAMEN = typeof RAMEN_DATA !== 'undefined' ? RAMEN_DATA : [];
+  const RAMEN = getRamenArray();
   RAMEN.forEach(item => {
     if (!item.coords) return;
     const xy = projection(item.coords);
@@ -1546,8 +1586,7 @@ async function renderCombinedJapanMap(containerId, onVisitChange) {
 }
 
 function renderFoodTab(dataType) {
-  const DATA = dataType === "gourmet" ? (typeof GOURMET_DATA !== "undefined" ? GOURMET_DATA : [])
-                                      : (typeof RAMEN_DATA   !== "undefined" ? RAMEN_DATA   : []);
+  const DATA = dataType === "gourmet" ? getGourmetArray() : getRamenArray();
   const containerId = `japan-${dataType}-container`;
   const container = document.getElementById(containerId);
   if (!container || !DATA.length) return;
@@ -1557,7 +1596,7 @@ function renderFoodTab(dataType) {
   // 地域グループ化
   const regionMap = {};
   DATA.forEach(item => {
-    const region = FOOD_PREF_REGION[item.pref] || '🌸 北海道・東北';
+    const region = getFoodRegionLabel(item.pref);
     if (!regionMap[region]) regionMap[region] = [];
     regionMap[region].push(item);
   });
@@ -1633,7 +1672,7 @@ function renderFoodTab(dataType) {
     <div class="extra-list-title">一覧 <span class="extra-list-stat">${visitedTotal}/${total}件</span></div>
     <div class="heritage-list">`;
   const sortedFoodList = DATA.slice().sort((a, b) => {
-    const ra = FOOD_REGION_ORDER.indexOf(a.region), rb = FOOD_REGION_ORDER.indexOf(b.region);
+    const ra = FOOD_REGION_ORDER.indexOf(getFoodRegionLabel(a.pref)), rb = FOOD_REGION_ORDER.indexOf(getFoodRegionLabel(b.pref));
     if (ra !== rb) return ra - rb;
     return (JAPAN_PREF_ORDER[a.pref] ?? 99) - (JAPAN_PREF_ORDER[b.pref] ?? 99);
   });
@@ -1769,7 +1808,7 @@ const ONSEN_REGION_ORDER = ['🌨️ 北海道','🍎 東北','🌸 関東','⛰
 const onsenState = { search: '', tags: [] };
 
 function renderOnsenTab() {
-  const DATA = typeof ONSEN_DATA !== "undefined" ? ONSEN_DATA : [];
+  const DATA = getOnsenArray();
   const container = document.getElementById("japan-onsen-container");
   if (!container || !DATA.length) return;
 
@@ -1778,8 +1817,8 @@ function renderOnsenTab() {
   // フィルター適用
   let filteredData = DATA;
   if (window.onsenFilter.hito)   filteredData = filteredData.filter(i => i.key.startsWith('秘湯_') || i.hito);
-  if (window.onsenFilter.milky)  filteredData = filteredData.filter(i => i.milky);
-  if (window.onsenFilter.mixed)  filteredData = filteredData.filter(i => i.mixed);
+  if (window.onsenFilter.milky)  filteredData = filteredData.filter(i => hasMilky(i.flags || 0));
+  if (window.onsenFilter.mixed)  filteredData = filteredData.filter(i => hasMixed(i.flags || 0));
   if (window.onsenFilter.search) {
     const q = window.onsenFilter.search;
     filteredData = filteredData.filter(i =>
@@ -1792,8 +1831,9 @@ function renderOnsenTab() {
   // 地域グループ化
   const regionMap = {};
   DATA.forEach(item => {
-    if (!regionMap[item.region]) regionMap[item.region] = [];
-    regionMap[item.region].push(item);
+    const region = getRegionLabel(item.pref);
+    if (!regionMap[region]) regionMap[region] = [];
+    regionMap[region].push(item);
   });
 
   const visitedTotal = DATA.filter(item => !!visitData[item.key]).length;
@@ -1883,8 +1923,8 @@ function renderOnsenTab() {
         const visited = !!val;
         const color = visited ? yearToColor(year) : "";
         const hitoBadge  = (item.key.startsWith('秘湯_') || item.hito) ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars || 1)}</span>` : '';
-        const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
-        const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
+        const milkyBadge = hasMilky(item.flags || 0) ? '<span class="onsen-badge-milky">乳</span>' : '';
+        const mixedBadge = hasMixed(item.flags || 0) ? '<span class="onsen-badge-mixed">混</span>' : '';
         html += `<button class="visit-btn onsen-btn ${visited ? "visited" : ""}"
           data-key="${item.key}" data-name="${item.name}" data-visited="${visited}"
           ${visited ? `style="background:${color};border-color:${color}"` : ""}>
@@ -1912,7 +1952,7 @@ function renderOnsenTab() {
   // 地域順 → 都道府県順 → ♨多い順 → バッジ多い順
   const sortedListData = [];
   ONSEN_REGION_ORDER.forEach(region => {
-    const regionItems = (isFiltering ? filteredData : DATA).filter(i => i.region === region);
+    const regionItems = (isFiltering ? filteredData : DATA).filter(i => getRegionLabel(i.pref) === region);
     if (!regionItems.length) return;
     const prefMap = {}, prefOrder = [];
     regionItems.forEach(i => {
@@ -1924,8 +1964,8 @@ function renderOnsenTab() {
         const aStars = a.stars || 0;
         const bStars = b.stars || 0;
         if (bStars !== aStars) return bStars - aStars;
-        const aBadge = (a.key.startsWith('秘湯_') || a.hito ? 1 : 0) + (a.milky ? 1 : 0) + (a.mixed ? 1 : 0);
-        const bBadge = (b.key.startsWith('秘湯_') || b.hito ? 1 : 0) + (b.milky ? 1 : 0) + (b.mixed ? 1 : 0);
+        const aBadge = (a.key.startsWith('秘湯_') || a.hito ? 1 : 0) + (hasMilky(a.flags || 0) ? 1 : 0) + (hasMixed(a.flags || 0) ? 1 : 0);
+        const bBadge = (b.key.startsWith('秘湯_') || b.hito ? 1 : 0) + (hasMilky(b.flags || 0) ? 1 : 0) + (hasMixed(b.flags || 0) ? 1 : 0);
         return bBadge - aBadge;
       });
       sortedListData.push(...sorted);
@@ -1940,8 +1980,8 @@ function renderOnsenTab() {
     const year = (val === true) ? null : (val || null);
     const visited = !!val;
     const hitoBadge2  = (item.key.startsWith('秘湯_') || item.hito) ? `<span class="onsen-badge-hito">${'秘'.repeat(item.stars || 1)}</span>` : '';
-    const milkyBadge = item.milky ? '<span class="onsen-badge-milky">乳</span>' : '';
-    const mixedBadge = item.mixed ? '<span class="onsen-badge-mixed">混</span>' : '';
+    const milkyBadge = hasMilky(item.flags || 0) ? '<span class="onsen-badge-milky">乳</span>' : '';
+    const mixedBadge = hasMixed(item.flags || 0) ? '<span class="onsen-badge-mixed">混</span>' : '';
     html += `<div class="heritage-item${visited ? ' visited' : ''}"
       data-key="${item.key}" data-name="${item.name}" data-visited="${visited}">
       <div class="heritage-star-icon">${visited ? '★' : '☆'}</div>
@@ -2066,7 +2106,7 @@ window.renderOnsenTab = renderOnsenTab;
 function filterOnsenContent() {
   const container = document.getElementById("japan-onsen-container");
   if (!container) return;
-  const DATA = typeof ONSEN_DATA !== "undefined" ? ONSEN_DATA : [];
+  const DATA = getOnsenArray();
   const visitData = window.appState?.visit?.onsen || {};
   const q = onsenState.search.toLowerCase().trim();
   const activeTags = onsenState.tags;
@@ -2075,8 +2115,8 @@ function filterOnsenContent() {
     const matchSearch = !q || item.name.toLowerCase().includes(q) || item.pref.toLowerCase().includes(q) || (item.dayBath||'').toLowerCase().includes(q);
     const matchTags = activeTags.length === 0 || activeTags.some(tag => {
       if (tag === '名湯100') return !!item.stars;
-      if (tag === '乳白') return !!item.milky;
-      if (tag === '混浴')   return !!item.mixed;
+      if (tag === '乳白') return hasMilky(item.flags || 0);
+      if (tag === '混浴')   return hasMixed(item.flags || 0);
       if (tag === '秘湯')   return item.key.startsWith('秘湯_') || !!item.hito;
       return false;
     });
